@@ -131,6 +131,12 @@
   }
   #abertura[data-saindo] { opacity: 0; pointer-events: none; }
   #abertura video { width: 100%; height: 100%; object-fit: cover; }
+  /* Em tela em pé, `cover` num vídeo 16:9 corta três quartos da largura, e o
+     que está no centro é justamente o wordmark. Aí a peça entra contida: o
+     fundo dela é o mesmo creme da abertura, então a sobra não aparece. */
+  @media (max-aspect-ratio: 1 / 1) {
+    #abertura video { object-fit: contain; }
+  }
   #abertura .pular {
     position: absolute; right: 26px; bottom: 24px;
     font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.16em;
@@ -1241,11 +1247,30 @@
     }
     if (quieto) sair()
     else {
-      filme.addEventListener('timeupdate', () => { if (filme.currentTime >= 4.7) sair() })
+      /* A peça tem quatro segundos e termina no lockup: deixa correr até o
+         fim em vez de cortar num instante arbitrário. */
       filme.addEventListener('ended', sair)
       filme.addEventListener('error', sair)
       a.addEventListener('click', sair)
-      setTimeout(sair, 6200)
+
+      /* Dois relógios diferentes, porque são duas falhas diferentes.
+
+         O primeiro cobre o vídeo que não começa: rede ruim, autoplay
+         recusado, arquivo que não chega. Dois segundos e meio olhando um
+         creme parado já é demais, e a página abaixo está pronta.
+
+         O segundo cobre o vídeo que começa e trava no meio. Ele só é armado
+         depois que a reprodução de fato começou, e dá a duração da peça mais
+         uma margem. Um relógio só teria de escolher entre ser curto demais
+         para quem assiste e longo demais para quem não vê nada. */
+      let comecou = false
+      const naoComecou = setTimeout(() => { if (!comecou) sair() }, 2500)
+      filme.addEventListener('playing', () => {
+        comecou = true
+        clearTimeout(naoComecou)
+        setTimeout(sair, (filme.duration || 4) * 1000 + 900)
+      }, { once: true })
+
       filme.play().catch(sair)
     }
   }
