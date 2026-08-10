@@ -47,7 +47,7 @@
     color: var(--areia);
     font-family: var(--sans);
     -webkit-font-smoothing: antialiased;
-    padding: clamp(40px, 8vw, 96px) clamp(20px, 5vw, 64px);
+    padding: clamp(56px, 8vw, 104px) clamp(24px, 5vw, 64px);
     overflow-x: hidden;
     position: relative;
     isolation: isolate;
@@ -81,7 +81,7 @@
 
   .aviso {
     display: inline-flex; align-items: center; gap: 10px;
-    margin: clamp(30px, 3.6vw, 44px) 0 clamp(20px, 2.4vw, 28px);
+    margin: clamp(34px, 4vw, 48px) 0 clamp(28px, 3.2vw, 40px);
     padding: 9px 16px; border-radius: 100px;
     border: 1px solid color-mix(in srgb, var(--onda) 42%, transparent);
     font-family: var(--mono); font-size: clamp(12px, 1vw, 13.5px);
@@ -94,21 +94,21 @@
   h1 {
     margin: 0;
     font-size: clamp(44px, 6.4vw, 104px);
-    font-weight: 600; letter-spacing: -0.045em; line-height: 0.94;
+    font-weight: 600; letter-spacing: -0.04em; line-height: 1.06;
     max-width: 12ch;
   }
   h1 em { font-style: normal; color: var(--onda); }
 
   .lema {
-    margin: clamp(18px, 2vw, 26px) 0 0;
+    margin: clamp(26px, 2.6vw, 34px) 0 0;
     font-size: clamp(18px, 1.55vw, 24px);
-    line-height: 1.45; color: var(--fraco); max-width: 34ch;
+    line-height: 1.55; color: var(--fraco); max-width: 34ch;
   }
 
   .explica {
-    margin: clamp(20px, 2.2vw, 30px) 0 0;
+    margin: clamp(28px, 2.8vw, 38px) 0 0;
     font-size: clamp(16px, 1.15vw, 18.5px);
-    line-height: 1.6; color: var(--fraco); max-width: 52ch;
+    line-height: 1.75; color: var(--fraco); max-width: 52ch;
   }
 
   /* O contato é o motivo de esta página existir, e por isso não é rodapé:
@@ -123,20 +123,20 @@
   }
 
   .contato h2 {
-    margin: 0 0 14px;
+    margin: 0 0 18px;
     font-family: var(--mono); font-size: 12px; font-weight: 500;
     letter-spacing: 0.16em; text-transform: uppercase; color: var(--mudo);
   }
 
-  .contato ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
-  .contato li { font-size: clamp(16px, 1.15vw, 18.5px); line-height: 1.45; }
+  .contato ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 16px; }
+  .contato li { font-size: clamp(16px, 1.15vw, 18.5px); line-height: 1.5; }
   .contato a {
     color: var(--areia); text-decoration: none;
     border-bottom: 1px solid transparent;
     transition: color 220ms var(--entra), border-color 220ms var(--entra);
   }
-  .contato small { display: block; font-size: 13.5px; color: var(--mudo); margin-bottom: 2px; }
-  .contato address { font-style: normal; font-size: 16px; line-height: 1.65; color: var(--fraco); }
+  .contato small { display: block; font-size: 13.5px; line-height: 1.5; color: var(--mudo); margin-bottom: 5px; }
+  .contato address { font-style: normal; font-size: 16px; line-height: 1.8; color: var(--fraco); }
 
   @media (hover: hover) {
     .contato a:hover { color: var(--onda); border-bottom-color: color-mix(in srgb, var(--onda) 50%, transparent); }
@@ -147,7 +147,7 @@
     margin-top: clamp(30px, 3.2vw, 44px);
     padding-top: 20px;
     border-top: 1px solid var(--linha);
-    font-size: 14px; color: var(--mudo);
+    font-size: 14px; line-height: 1.7; color: var(--mudo);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -170,9 +170,10 @@
   </p>
 
   <p class="explica">
-    Estamos revisando o conteúdo do site e ele volta ao ar em breve. A associação
-    segue funcionando normalmente: segurança, zeladoria, meio ambiente e a
-    representação dos moradores diante do poder público, como todos os dias desde 1986.
+    Estamos reformando o site para melhorar a experiência do associado e do morador
+    de Jurerê Internacional. A associação segue funcionando normalmente: segurança,
+    zeladoria, meio ambiente e a representação dos moradores diante do poder público,
+    como todos os dias desde 1986.
   </p>
 
   <div class="contato">
