@@ -47,17 +47,23 @@
     color: var(--areia);
     font-family: var(--sans);
     -webkit-font-smoothing: antialiased;
-    padding: clamp(56px, 8vw, 104px) clamp(24px, 5vw, 64px);
+    padding: clamp(26px, 4svh, 72px) clamp(22px, 5vw, 64px);
     overflow-x: hidden;
     position: relative;
     isolation: isolate;
   }
 
   /* As mesmas duas luzes da capa do site, em deriva lenta: a página está
-     parada, a marca não precisa estar. */
+     parada, a marca não precisa estar.
+
+     `fixed`, e não `absolute`: em absoluto o `inset: -25%` estende a caixa
+     um quarto de altura para além do corpo e cria rolagem do nada. A página
+     ganhava trezentos e tantos pixels que não eram conteúdo, e o conteúdo
+     centralizado era empurrado para fora da primeira tela. Presas à
+     viewport, as luzes não medem nada. */
   body::before, body::after {
     content: '';
-    position: absolute;
+    position: fixed;
     inset: -25%;
     z-index: -1;
     pointer-events: none;
@@ -77,11 +83,11 @@
 
   .folha { width: 100%; max-width: 1180px; margin-inline: auto; }
 
-  .marca { height: clamp(34px, 4.4vw, 52px); width: auto; display: block; }
+  .marca { height: clamp(34px, 4.8svh, 54px); width: auto; display: block; }
 
   .aviso {
     display: inline-flex; align-items: center; gap: 10px;
-    margin: clamp(34px, 4vw, 48px) 0 clamp(28px, 3.2vw, 40px);
+    margin: clamp(20px, 3svh, 34px) 0 clamp(16px, 2.4svh, 28px);
     padding: 9px 16px; border-radius: 100px;
     border: 1px solid color-mix(in srgb, var(--onda) 42%, transparent);
     font-family: var(--mono); font-size: clamp(12px, 1vw, 13.5px);
@@ -93,62 +99,62 @@
 
   h1 {
     margin: 0;
-    font-size: clamp(44px, 6.4vw, 104px);
+    font-size: clamp(34px, min(5.6vw, 8.4svh), 84px);
     font-weight: 600; letter-spacing: -0.04em; line-height: 1.06;
     max-width: 12ch;
   }
   h1 em { font-style: normal; color: var(--onda); }
 
   .lema {
-    margin: clamp(26px, 2.6vw, 34px) 0 0;
-    font-size: clamp(18px, 1.55vw, 24px);
-    line-height: 1.55; color: var(--fraco); max-width: 34ch;
+    margin: clamp(16px, 2.4svh, 26px) 0 0;
+    font-size: clamp(17px, 1.5vw, 22px);
+    line-height: 1.5; color: var(--fraco); max-width: 34ch;
   }
 
-  .explica {
-    margin: clamp(28px, 2.8vw, 38px) 0 0;
-    font-size: clamp(16px, 1.15vw, 18.5px);
-    line-height: 1.75; color: var(--fraco); max-width: 52ch;
+  .lema span {
+    display: block;
+    margin-top: clamp(12px, 1.8svh, 20px);
+    font-size: clamp(15.5px, 1.1vw, 18px);
+    line-height: 1.6;
+    color: var(--mudo);
+    max-width: 50ch;
   }
 
   /* O contato é o motivo de esta página existir, e por isso não é rodapé:
      tem o mesmo peso do título e fica logo abaixo dele. */
   .contato {
-    margin-top: clamp(34px, 3.6vw, 52px);
-    padding-top: clamp(26px, 2.8vw, 36px);
+    margin-top: clamp(22px, 3.4svh, 40px);
+    padding-top: clamp(18px, 2.6svh, 30px);
     border-top: 1px solid var(--linha);
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: clamp(26px, 3vw, 44px);
+    grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+    gap: clamp(16px, 2.4svh, 40px) clamp(24px, 3vw, 44px);
   }
 
+  .contato > div:last-child { grid-column: 1 / -1; }
+  @media (min-width: 780px) { .contato > div:last-child { grid-column: auto } }
+
   .contato h2 {
-    margin: 0 0 18px;
+    margin: 0 0 12px;
     font-family: var(--mono); font-size: 12px; font-weight: 500;
     letter-spacing: 0.16em; text-transform: uppercase; color: var(--mudo);
   }
 
-  .contato ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 16px; }
+  .contato ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 11px; }
   .contato li { font-size: clamp(16px, 1.15vw, 18.5px); line-height: 1.5; }
   .contato a {
-    color: var(--areia); text-decoration: none;
+    color: var(--areia); text-decoration: none; white-space: nowrap;
     border-bottom: 1px solid transparent;
     transition: color 220ms var(--entra), border-color 220ms var(--entra);
   }
-  .contato small { display: block; font-size: 13.5px; line-height: 1.5; color: var(--mudo); margin-bottom: 5px; }
-  .contato address { font-style: normal; font-size: 16px; line-height: 1.8; color: var(--fraco); }
+  .contato small { display: block; font-size: 13px; line-height: 1.5; color: var(--mudo); }
+  .contato address { font-style: normal; font-size: 16px; line-height: 1.65; color: var(--fraco); }
 
   @media (hover: hover) {
     .contato a:hover { color: var(--onda); border-bottom-color: color-mix(in srgb, var(--onda) 50%, transparent); }
   }
   .contato a:focus-visible { outline: 2px solid var(--onda); outline-offset: 3px; border-radius: 3px; }
 
-  .pe {
-    margin-top: clamp(30px, 3.2vw, 44px);
-    padding-top: 20px;
-    border-top: 1px solid var(--linha);
-    font-size: 14px; line-height: 1.7; color: var(--mudo);
-  }
 
   @media (prefers-reduced-motion: reduce) {
     body::before, body::after, .aviso i { animation: none }
@@ -167,46 +173,37 @@
 
   <p class="lema">
     Construindo o futuro de Jurerê Internacional todos os dias.
-  </p>
-
-  <p class="explica">
-    Estamos reformando o site para melhorar a experiência do associado e do morador
-    de Jurerê Internacional. A associação segue funcionando normalmente: segurança,
-    zeladoria, meio ambiente e a representação dos moradores diante do poder público,
-    como todos os dias desde 1986.
+    <span>
+      Estamos reformando o site para melhorar a experiência do associado e do morador.
+      A associação segue funcionando normalmente.
+    </span>
   </p>
 
   <div class="contato">
     <div>
-      <h2>Falar com a associação</h2>
+      <h2>Contato</h2>
       <ul>
-        <li><small>E-mail</small><a href="mailto:ajin@ajin.org.br">ajin@ajin.org.br</a></li>
-        <li><small>WhatsApp</small><a href="https://wa.me/5548999497419">(48) 99949-7419</a></li>
-        <li><small>Instagram</small><a href="https://www.instagram.com/ajinjurere">@ajinjurere</a></li>
+        <li><small>E-mail</small> <a href="mailto:ajin@ajin.org.br">ajin@ajin.org.br</a></li>
+        <li><small>WhatsApp</small> <a href="https://wa.me/5548999497419">(48) 99949-7419</a></li>
+        <li><small>Instagram</small> <a href="https://www.instagram.com/ajinjurere">@ajinjurere</a></li>
       </ul>
     </div>
 
     <div>
       <h2>Telefones</h2>
       <ul>
-        <li><small>Escritório</small><a href="tel:+554832821590">(48) 3282-1590</a></li>
-        <li><small>Segurança, 24 horas</small><a href="tel:+554832664300">(48) 3266-4300</a></li>
+        <li><small>Escritório</small> <a href="tel:+554832821590">(48) 3282-1590</a></li>
+        <li><small>Segurança, 24h</small> <a href="tel:+554832664300">(48) 3266-4300</a></li>
       </ul>
     </div>
 
     <div>
-      <h2>Onde estamos</h2>
+      <h2>Endereço</h2>
       <address>
-        Rod. Maurício Sirotski Sobrinho, 5451<br />
-        esquina com Avenida dos Dourados<br />
-        Sala 04, subsolo do Supermercado Imperatriz<br />
-        Jurerê Internacional<br />
-        Florianópolis / SC, CEP 88053-410
+        Rod. Maurício Sirotski Sobrinho, 5451, sala 04<br />
+        Jurerê Internacional, Florianópolis / SC
       </address>
     </div>
   </div>
 
-  <p class="pe">
-    © 1986 / 2026 Associação Jurerê Internacional · organização da sociedade civil de interesse público
-  </p>
 </div>
