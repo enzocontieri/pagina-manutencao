@@ -130,8 +130,6 @@
   @media (max-width: 980px) { .navegar { display: none } }
   .barra__direita { display: flex; align-items: center; gap: 14px; }
   /* O relógio da referência: um detalhe que diz "isto está vivo". */
-  .relogio { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mudo); text-align: right; line-height: 1.5; }
-  @media (max-width: 760px) { .relogio { display: none } }
   .pilula { font-size: 15px; font-weight: 600; padding: 11px 20px; border-radius: 100px; background: var(--navy); color: var(--areia); transition: transform 0.16s var(--entra), background 0.25s var(--entra); }
   .pilula:active { transform: scale(0.97); }
   .pilula:hover { background: var(--onda); color: var(--navy); }
@@ -393,7 +391,6 @@
     <a href="#agenda">Agenda</a>
   </nav>
   <div class="barra__direita">
-    <div class="relogio" id="relogio" aria-hidden="true">Jurerê Internacional<br />—</div>
     <a class="doc" href="documentos/estatuto-ajin-2026.pdf" download title="Estatuto da AJIN, PDF de 6,4 MB"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8m0 0 3-3m-3 3L5 7"/><path d="M2.5 11.5v1a1.5 1.5 0 0 0 1.5 1.5h8a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg><b>Estatuto</b></a>
     <a class="doc" href="documentos/revista-ajin-2025-2026.pdf" download title="Relatório anual da AJIN, PDF de 10,1 MB"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8m0 0 3-3m-3 3L5 7"/><path d="M2.5 11.5v1a1.5 1.5 0 0 0 1.5 1.5h8a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg><b>Relatório</b></a>
     <a class="pilula" href="/preview/cadastro/">Associe-se</a>
@@ -816,18 +813,6 @@
     const passo = () => (t.querySelector('.quadro')?.getBoundingClientRect().width || 300) + 18
     document.getElementById('antes').addEventListener('click', () => t.scrollBy({ left: -passo(), behavior: quieto ? 'auto' : 'smooth' }))
     document.getElementById('depois').addEventListener('click', () => t.scrollBy({ left: passo(), behavior: quieto ? 'auto' : 'smooth' }))
-  }
-
-  /* ---------- Relógio ---------- */
-  {
-    const el = document.getElementById('relogio')
-    const tique = () => {
-      const d = new Date()
-      const data = d.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' }).replace('.', '')
-      const hora = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-      el.innerHTML = 'Jurerê Internacional<br />' + data + ' · ' + hora
-    }
-    tique(); setInterval(tique, 30000)
   }
 
   /* ---------- Um listener de rolagem: barra, fio da agenda, índice lateral ---------- */
