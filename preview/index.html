@@ -292,9 +292,9 @@
      seção não diz nada a quem chega pelo telemóvel ou passa direto. */
 
   .linhas { border-top: 1px solid var(--linha-forte); }
-  .linha { display: grid; grid-template-columns: 54px 1fr auto; gap: 18px; align-items: center; padding: clamp(16px, 1.8vw, 24px) 0; border-bottom: 1px solid var(--linha); cursor: default; }
+  .linha { display: grid; grid-template-columns: 60px 1fr auto; gap: 20px; align-items: center; padding: clamp(21px, 2.4vw, 32px) 0; border-bottom: 1px solid var(--linha); cursor: default; }
   .linha__n { font-family: var(--mono); font-size: 13px; color: var(--onda); }
-  .linha h3 { font-size: clamp(19px, 1.85vw, 26px); letter-spacing: -0.02em; transition: transform 0.35s var(--entra), color 0.3s var(--entra); }
+  .linha h3 { font-size: clamp(21px, 2.2vw, 31px); letter-spacing: -0.022em; transition: transform 0.35s var(--entra), color 0.3s var(--entra); }
   .linha__frente { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mudo); text-align: right; transition: color 0.3s var(--entra); }
   /* O item ativo é o que está sendo mostrado ao lado. Sem esse sinal, a foto
      troca sozinha e não se sabe a que projeto ela pertence. */
@@ -308,10 +308,10 @@
   /* A coluna da imagem é a menor das duas: o texto é o que se lê, e um
      quadro de meia página empurrava a sanfona inteira para baixo. */
   .sanfona { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(28px, 4vw, 64px); align-items: start; }
-  .sanfona--projetos { grid-template-columns: minmax(0, 1.28fr) minmax(0, 0.72fr); }
+  .sanfona--projetos { grid-template-columns: minmax(0, 1.28fr) minmax(0, 0.72fr); align-items: stretch; }
   @media (max-width: 900px) { .sanfona { grid-template-columns: 1fr } }
   .sanfona__imagem { position: sticky; top: 110px; aspect-ratio: 4 / 5; border-radius: var(--raio); overflow: hidden; background: var(--superficie-2); }
-  .sanfona__imagem--projetos { aspect-ratio: 5 / 4; }
+  .sanfona__imagem--projetos { position: static; aspect-ratio: auto; align-self: stretch; }
   /* A troca é um fade curto: a dobra abre e a foto acompanha, sem piscar. */
   .sanfona__imagem img { width: 100%; height: 100%; max-width: none; object-fit: cover; transition: opacity 0.32s var(--entra); }
   .sanfona__imagem img[data-trocando] { opacity: 0; }
