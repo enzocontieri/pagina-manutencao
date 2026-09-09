@@ -286,26 +286,32 @@
   .missao { margin-top: clamp(56px, 7vw, 100px); padding: clamp(30px, 3.6vw, 52px); border-radius: var(--raio); background: var(--superficie); border: 1px solid var(--linha); }
   .missao .duas { align-items: center; }
 
-  /* =====================  PROJETOS (linhas com imagem que segue o cursor)  ===================== */
+  /* =====================  PROJETOS  =====================
+     Mesma mecânica dos pilares, espelhada: a lista à esquerda, a foto
+     grudada à direita. A foto troca por rolagem, não só por hover, senão a
+     seção não diz nada a quem chega pelo telemóvel ou passa direto. */
 
   .linhas { border-top: 1px solid var(--linha-forte); }
-  .linha { display: grid; grid-template-columns: 90px 1fr auto; gap: 24px; align-items: center; padding: clamp(22px, 2.6vw, 34px) 0; border-bottom: 1px solid var(--linha); cursor: default; transition: padding 0.3s var(--entra); }
-  .linha__n { font-family: var(--mono); font-size: 14px; color: var(--onda); }
-  .linha h3 { font-size: clamp(22px, 2.4vw, 34px); letter-spacing: -0.025em; transition: transform 0.35s var(--entra); }
-  .linha:hover h3 { transform: translateX(10px); }
-  .linha__frente { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mudo); text-align: right; }
+  .linha { display: grid; grid-template-columns: 54px 1fr auto; gap: 18px; align-items: center; padding: clamp(16px, 1.8vw, 24px) 0; border-bottom: 1px solid var(--linha); cursor: default; }
+  .linha__n { font-family: var(--mono); font-size: 13px; color: var(--onda); }
+  .linha h3 { font-size: clamp(19px, 1.85vw, 26px); letter-spacing: -0.02em; transition: transform 0.35s var(--entra), color 0.3s var(--entra); }
+  .linha__frente { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mudo); text-align: right; transition: color 0.3s var(--entra); }
+  /* O item ativo é o que está sendo mostrado ao lado. Sem esse sinal, a foto
+     troca sozinha e não se sabe a que projeto ela pertence. */
+  .linha[data-ativa] h3 { transform: translateX(10px); }
+  .linha[data-ativa] .linha__frente { color: var(--onda); }
+  @media (max-width: 560px) { .linha { grid-template-columns: 40px 1fr } .linha__frente { display: none } }
   @media (max-width: 640px) { .linha { grid-template-columns: 60px 1fr } .linha__frente { grid-column: 2; text-align: left } }
-  /* A foto do projeto acompanha o cursor, com uma inércia de 0.16. */
-  .flutua { position: fixed; z-index: 80; width: 260px; aspect-ratio: 4 / 3; pointer-events: none; opacity: 0; transform: translate(-50%, -50%) scale(0.9) rotate(-4deg); transition: opacity 0.35s var(--entra), transform 0.35s var(--entra); }
-  .flutua[data-ligado] { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-  .flutua img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; border-radius: var(--raio); box-shadow: 0 30px 60px color-mix(in srgb, var(--navy) 30%, transparent); }
-  @media (hover: none) { .flutua { display: none } }
 
   /* =====================  PILARES (sanfona com imagem)  ===================== */
 
-  .sanfona { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 80px); align-items: start; }
+  /* A coluna da imagem é a menor das duas: o texto é o que se lê, e um
+     quadro de meia página empurrava a sanfona inteira para baixo. */
+  .sanfona { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(28px, 4vw, 64px); align-items: start; }
+  .sanfona--projetos { grid-template-columns: minmax(0, 1.28fr) minmax(0, 0.72fr); }
   @media (max-width: 900px) { .sanfona { grid-template-columns: 1fr } }
   .sanfona__imagem { position: sticky; top: 110px; aspect-ratio: 4 / 5; border-radius: var(--raio); overflow: hidden; background: var(--superficie-2); }
+  .sanfona__imagem--projetos { aspect-ratio: 5 / 4; }
   /* A troca é um fade curto: a dobra abre e a foto acompanha, sem piscar. */
   .sanfona__imagem img { width: 100%; height: 100%; max-width: none; object-fit: cover; transition: opacity 0.32s var(--entra); }
   .sanfona__imagem img[data-trocando] { opacity: 0; }
@@ -404,7 +410,6 @@
     .cartao__foto { animation: none; transform: none; opacity: 0 }
     .cartao__foto[style*='--i:0'] { opacity: 1 }
     mark::before { transition: none }
-    .flutua { display: none }
   }
 </style>
 
@@ -529,18 +534,23 @@
   <div class="caixa">
     <div class="cabeca">
       <div><span class="sobrancelha" data-revela>Projetos</span><h2 class="display-l" data-revela>Iniciativas que já são parte do bairro.</h2></div>
-      <p class="corpo" data-revela>Passe o cursor sobre cada projeto para ver onde ele acontece.</p>
+      <p class="corpo" data-revela>Cinco frentes que saíram do papel e viraram rotina do bairro.</p>
     </div>
-    <div class="linhas" id="projetos" data-revela>
-      <div class="linha" data-flutua data-foto="fotos/proj-olhar-digital.jpg"><span class="linha__n">01</span><h3>Projeto Olhar Digital</h3><span class="linha__frente">Segurança</span></div>
-      <div class="linha" data-flutua data-foto="fotos/proj-pedefruta.jpg"><span class="linha__n">02</span><h3>Pé-de-Fruta</h3><span class="linha__frente">Meio ambiente</span></div>
-      <div class="linha" data-flutua data-foto="fotos/proj-horta.jpg"><span class="linha__n">03</span><h3>Horta Comunitária Manoel Azeredo Saraiva</h3><span class="linha__frente">Meio ambiente</span></div>
-      <div class="linha" data-flutua data-foto="fotos/vinho-jantar.jpg"><span class="linha__n">04</span><h3>Confraria do Vinho</h3><span class="linha__frente">Cultura e lazer</span></div>
-      <div class="linha" data-flutua data-foto="fotos/roda-grupo.jpg"><span class="linha__n">05</span><h3>Rodas de conversa</h3><span class="linha__frente">Saúde e bem-estar</span></div>
+
+    <div class="sanfona sanfona--projetos">
+      <div class="linhas" id="projetos" data-revela>
+          <div class="linha" data-projeto data-foto="fotos/proj-olhar-digital.jpg" data-legenda="Câmera do Projeto Olhar Digital" data-ativa><span class="linha__n">01</span><h3>Projeto Olhar Digital</h3><span class="linha__frente">Segurança</span></div>
+          <div class="linha" data-projeto data-foto="fotos/proj-pedefruta.jpg" data-legenda="Plantio do Pé-de-Fruta"><span class="linha__n">02</span><h3>Pé-de-Fruta</h3><span class="linha__frente">Meio ambiente</span></div>
+          <div class="linha" data-projeto data-foto="fotos/proj-horta.jpg" data-legenda="Horta Comunitária Manoel Azeredo Saraiva"><span class="linha__n">03</span><h3>Horta Comunitária Manoel Azeredo Saraiva</h3><span class="linha__frente">Meio ambiente</span></div>
+          <div class="linha" data-projeto data-foto="fotos/vinho-jantar.jpg" data-legenda="Encontro da Confraria do Vinho"><span class="linha__n">04</span><h3>Confraria do Vinho</h3><span class="linha__frente">Cultura e lazer</span></div>
+          <div class="linha" data-projeto data-foto="fotos/roda-grupo.jpg" data-legenda="Roda de conversa na sede da AJIN"><span class="linha__n">05</span><h3>Rodas de conversa</h3><span class="linha__frente">Saúde e bem-estar</span></div>
+      </div>
+      <div class="sanfona__imagem sanfona__imagem--projetos" data-revela>
+        <img id="projetoFoto" src="fotos/proj-olhar-digital.jpg" alt="Câmera do Projeto Olhar Digital" />
+      </div>
     </div>
   </div>
 </section>
-<div class="flutua" id="flutua" aria-hidden="true"><img id="flutuaFoto" src="fotos/proj-olhar-digital.jpg" alt="" /></div>
 
 <!-- =====================  PILARES  ===================== -->
 <section id="pilares" class="risca">
@@ -802,30 +812,57 @@
     }
   }
 
-  /* ---------- Imagem que segue o cursor nas linhas de projeto ---------- */
+  /* ---------- Projetos: a foto da direita segue a linha ativa ---------- */
+  var projetoAtivo = () => {}
   {
-    const flutua = document.getElementById('flutua')
-    const foto = document.getElementById('flutuaFoto')
-    let x = 0, y = 0, ax = 0, ay = 0, vivo = false
-    const seguir = () => { ax += (x - ax) * 0.16; ay += (y - ay) * 0.16; flutua.style.left = ax + 'px'; flutua.style.top = ay + 'px'; if (vivo) requestAnimationFrame(seguir) }
-    for (const linha of document.querySelectorAll('[data-flutua]')) {
-      linha.addEventListener('mouseenter', (e) => { foto.src = linha.dataset.foto; x = ax = e.clientX; y = ay = e.clientY; flutua.setAttribute('data-ligado', ''); if (!vivo) { vivo = true; seguir() } })
-      linha.addEventListener('mousemove', (e) => { x = e.clientX; y = e.clientY })
-      linha.addEventListener('mouseleave', () => { flutua.removeAttribute('data-ligado'); vivo = false })
+    const linhas = [...document.querySelectorAll('[data-projeto]')]
+    const foto = document.getElementById('projetoFoto')
+    let atual = 0
+
+    const mostrar = (i) => {
+      if (i === atual || !linhas[i]) return
+      atual = i
+      linhas.forEach((l, j) => l.toggleAttribute('data-ativa', j === i))
+      trocarFoto(foto, linhas[i].dataset.foto, linhas[i].dataset.legenda)
     }
+
+    /* Por rolagem: vale a linha mais próxima do meio do quadro que está
+       grudado ao lado. É o que faz a seção contar alguma coisa para quem só
+       passa por ela, sem cursor e sem clique. */
+    projetoAtivo = () => {
+      const alvo = innerHeight * 0.42
+      let perto = 0, menor = Infinity
+      linhas.forEach((l, i) => {
+        const r = l.getBoundingClientRect()
+        const d = Math.abs(r.top + r.height / 2 - alvo)
+        if (d < menor) { menor = d; perto = i }
+      })
+      mostrar(perto)
+    }
+
+    /* Por cursor: quem está com o mouse na lista manda mais do que a rolagem. */
+    linhas.forEach((l, i) => l.addEventListener('mouseenter', () => mostrar(i)))
+  }
+
+  /* Troca com pré-carga: sem isso a imagem some no fade e volta depois,
+     porque o navegador só começa a buscar o arquivo quando o `src` muda. */
+  function trocarFoto(el, src, legenda) {
+    if (el.getAttribute('src') === src) return
+    el.setAttribute('data-trocando', '')
+    const pronta = new Image()
+    pronta.onload = () => {
+      el.src = src
+      if (legenda !== undefined) el.alt = legenda
+      el.removeAttribute('data-trocando')
+    }
+    pronta.src = src
   }
 
   /* ---------- Sanfona dos pilares: uma aberta por vez, e a imagem troca ---------- */
   {
     const dobras = [...document.querySelectorAll('.dobra')]
     const foto = document.getElementById('pilarFoto')
-    const trocar = (src) => {
-      if (foto.getAttribute('src').endsWith(src)) return
-      foto.setAttribute('data-trocando', '')
-      const pronta = new Image()
-      pronta.onload = () => { foto.src = src; foto.removeAttribute('data-trocando') }
-      pronta.src = src
-    }
+    const trocar = (src) => trocarFoto(foto, src)
     for (const d of dobras) {
       d.querySelector('.dobra__cabeca').addEventListener('click', () => {
         const aberta = d.hasAttribute('data-aberta')
@@ -862,6 +899,7 @@
       let aqui = null
       for (const s of alvos) { const r = s.getBoundingClientRect(); if (r.top <= alt * 0.4 && r.bottom > alt * 0.4) aqui = '#' + s.id }
       for (const a of links) a.toggleAttribute('data-aqui', a.getAttribute('href') === aqui)
+      projetoAtivo()
     }
     addEventListener('scroll', () => { if (!pedido) { pedido = true; requestAnimationFrame(medir) } }, { passive: true })
     addEventListener('resize', medir, { passive: true })
