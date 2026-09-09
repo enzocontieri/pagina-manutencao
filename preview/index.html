@@ -201,16 +201,15 @@
   .cartao__dizer p { margin: 14px 0 22px; font-size: 16px; line-height: 1.6; color: var(--fraco); max-width: 40ch; }
   .cartao__acoes { display: flex; flex-wrap: wrap; gap: 10px; }
 
-  /* Estatuto e relatório anual ficam ao lado do "Associe-se", num degrau
-     abaixo de propósito: são o documento que sustenta a confiança de quem
-     está decidindo, não a ação que se pede. Contraste vem do fio e do
-     hover, não de área de cor, senão competem com o botão. */
-  .cartao__docs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--areia) 16%, transparent); }
-  .doc { display: inline-flex; align-items: center; gap: 9px; padding: 9px 13px; border-radius: 12px; border: 1px solid color-mix(in srgb, var(--areia) 20%, transparent); color: color-mix(in srgb, var(--areia) 78%, var(--navy)); transition: border-color 0.24s var(--entra), color 0.24s var(--entra), background 0.24s var(--entra); }
-  .doc:hover { color: var(--areia); border-color: var(--onda); background: color-mix(in srgb, var(--onda) 14%, transparent); }
-  .doc svg { width: 15px; height: 15px; flex: none; }
-  .doc b { display: block; font-size: 13.5px; font-weight: 500; letter-spacing: -0.005em; }
-  .doc i { display: block; font-style: normal; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.62; margin-top: 2px; }
+  /* Estatuto e relatório anual, na barra, ao lado do "Associe-se". Num
+     degrau abaixo de propósito: são o documento que sustenta a confiança de
+     quem está decidindo, não a ação que se pede. O contraste vem do fio e do
+     hover, não de área de cor, senão competiriam com o botão. */
+  .doc { display: inline-flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 100px; border: 1px solid var(--linha-forte); color: var(--fraco); white-space: nowrap; transition: border-color 0.24s var(--entra), color 0.24s var(--entra), background 0.24s var(--entra); }
+  .doc:hover { color: var(--tinta); border-color: var(--onda); background: color-mix(in srgb, var(--onda) 12%, transparent); }
+  .doc svg { width: 14px; height: 14px; flex: none; }
+  .doc b { font-size: 13.5px; font-weight: 500; letter-spacing: -0.005em; }
+  @media (max-width: 1180px) { .doc { display: none } }
   .cartao .btn { padding: 12px 20px; font-size: 15px; }
   .cartao .btn--linha { color: var(--areia); border-color: color-mix(in srgb, var(--areia) 30%, transparent); }
 
@@ -271,18 +270,20 @@
   .linha:hover h3 { transform: translateX(10px); }
   .linha__frente { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mudo); text-align: right; }
   @media (max-width: 640px) { .linha { grid-template-columns: 60px 1fr } .linha__frente { grid-column: 2; text-align: left } }
-  /* A imagem que acompanha o cursor. Sem foto ainda, é um lugar de imagem
-     que flutua; quando houver foto, entra no mesmo lugar. */
+  /* A foto do projeto acompanha o cursor, com uma inércia de 0.16. */
   .flutua { position: fixed; z-index: 80; width: 260px; aspect-ratio: 4 / 3; pointer-events: none; opacity: 0; transform: translate(-50%, -50%) scale(0.9) rotate(-4deg); transition: opacity 0.35s var(--entra), transform 0.35s var(--entra); }
   .flutua[data-ligado] { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-  .flutua .lugar { position: absolute; inset: 0; box-shadow: 0 30px 60px color-mix(in srgb, var(--navy) 30%, transparent); }
+  .flutua img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; border-radius: var(--raio); box-shadow: 0 30px 60px color-mix(in srgb, var(--navy) 30%, transparent); }
   @media (hover: none) { .flutua { display: none } }
 
   /* =====================  PILARES (sanfona com imagem)  ===================== */
 
   .sanfona { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 80px); align-items: start; }
   @media (max-width: 900px) { .sanfona { grid-template-columns: 1fr } }
-  .sanfona__imagem { position: sticky; top: 110px; aspect-ratio: 4 / 5; }
+  .sanfona__imagem { position: sticky; top: 110px; aspect-ratio: 4 / 5; border-radius: var(--raio); overflow: hidden; background: var(--superficie-2); }
+  /* A troca é um fade curto: a dobra abre e a foto acompanha, sem piscar. */
+  .sanfona__imagem img { width: 100%; height: 100%; max-width: none; object-fit: cover; transition: opacity 0.32s var(--entra); }
+  .sanfona__imagem img[data-trocando] { opacity: 0; }
   @media (max-width: 900px) { .sanfona__imagem { display: none } }
   .dobra { border-top: 1px solid var(--linha); }
   .dobra__cabeca { width: 100%; display: grid; grid-template-columns: 56px 1fr 40px; align-items: center; gap: 18px; padding: clamp(20px, 2.4vw, 30px) 0; background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
@@ -305,8 +306,8 @@
   .carta { position: sticky; top: calc(90px + var(--i) * 18px); border-radius: 26px; padding: clamp(28px, 3.4vw, 52px); min-height: 60vh; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(24px, 4vw, 64px); align-items: center; border: 1px solid var(--linha); box-shadow: 0 -20px 60px color-mix(in srgb, var(--navy) 10%, transparent); }
   .carta:nth-child(odd) { background: var(--navy); color: var(--areia); --tinta: var(--areia); --fraco: color-mix(in srgb, var(--areia) 74%, var(--navy)); --mudo: color-mix(in srgb, var(--areia) 54%, var(--navy)); --superficie-2: color-mix(in srgb, var(--navy) 82%, var(--areia)); --linha: color-mix(in srgb, var(--areia) 14%, transparent); }
   .carta:nth-child(even) { background: var(--superficie); }
-  @media (max-width: 900px) { .carta { grid-template-columns: 1fr; min-height: auto } .carta .lugar { aspect-ratio: 16 / 10 } }
-  .carta .lugar { aspect-ratio: 4 / 3; }
+  @media (max-width: 900px) { .carta { grid-template-columns: 1fr; min-height: auto } .carta__foto { aspect-ratio: 16 / 10 } }
+  .carta__foto { aspect-ratio: 4 / 3; width: 100%; max-width: none; object-fit: cover; border-radius: var(--raio); }
   .carta h3 { font-size: clamp(30px, 3.6vw, 52px); letter-spacing: -0.03em; line-height: 1.06; margin: 14px 0 18px; }
   .carta__n { font-family: var(--mono); font-size: 13px; letter-spacing: 0.16em; color: var(--onda); }
 
@@ -335,10 +336,14 @@
 
   .trilho-h { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 0 18px; scrollbar-width: none; margin-inline: calc(-1 * var(--lado)); padding-inline: var(--lado); }
   .trilho-h::-webkit-scrollbar { display: none; }
-  .quadro { flex: 0 0 min(84vw, 380px); scroll-snap-align: start; border-radius: var(--raio); border: 1px solid var(--linha); background: var(--superficie); padding: 26px; min-height: 250px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.5s var(--entra), border-color 0.3s var(--entra); }
+  .quadro { flex: 0 0 min(84vw, 380px); scroll-snap-align: start; border-radius: var(--raio); border: 1px solid var(--linha); background: var(--superficie); overflow: hidden; display: flex; flex-direction: column; transition: transform 0.5s var(--entra), border-color 0.3s var(--entra); }
+  .quadro__foto { width: 100%; aspect-ratio: 4 / 3; max-width: none; object-fit: cover; }
+  .quadro__n, .quadro h3 { padding-inline: 26px; }
+  .quadro__n { padding-top: 22px; }
+  .quadro h3 { padding-bottom: 26px; }
   .quadro:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--onda) 55%, transparent); }
   .quadro__n { font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.16em; color: var(--onda); }
-  .quadro h3 { font-size: clamp(22px, 2vw, 28px); letter-spacing: -0.02em; margin-top: 40px; }
+  .quadro h3 { font-size: clamp(20px, 1.75vw, 25px); letter-spacing: -0.02em; margin-top: 10px; text-wrap: balance; }
   .setas { display: flex; gap: 10px; }
   .seta { width: 46px; height: 46px; border-radius: 999px; border: 1px solid var(--linha-forte); background: transparent; color: inherit; cursor: pointer; display: grid; place-items: center; transition: background 0.25s var(--entra), color 0.25s var(--entra), border-color 0.25s var(--entra), transform 0.16s var(--entra); }
   .seta:hover { background: var(--navy); color: var(--areia); border-color: var(--navy); }
@@ -389,6 +394,8 @@
   </nav>
   <div class="barra__direita">
     <div class="relogio" id="relogio" aria-hidden="true">Jurerê Internacional<br />—</div>
+    <a class="doc" href="documentos/estatuto-ajin-2026.pdf" download title="Estatuto da AJIN, PDF de 6,4 MB"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8m0 0 3-3m-3 3L5 7"/><path d="M2.5 11.5v1a1.5 1.5 0 0 0 1.5 1.5h8a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg><b>Estatuto</b></a>
+    <a class="doc" href="documentos/revista-ajin-2025-2026.pdf" download title="Relatório anual da AJIN, PDF de 10,1 MB"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8m0 0 3-3m-3 3L5 7"/><path d="M2.5 11.5v1a1.5 1.5 0 0 0 1.5 1.5h8a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg><b>Relatório</b></a>
     <a class="pilula" href="/preview/cadastro/">Associe-se</a>
   </div>
 </header>
@@ -426,14 +433,6 @@
         <div class="cartao__acoes">
           <a class="btn" href="/preview/cadastro/">Associe-se</a>
           <a class="btn btn--linha" href="#quem-somos">Conheça a AJIN</a>
-        </div>
-        <div class="cartao__docs">
-          <a class="doc" href="documentos/estatuto-ajin-2026.pdf" download>
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8m0 0 3-3m-3 3L5 7"/><path d="M2.5 11.5v1a1.5 1.5 0 0 0 1.5 1.5h8a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg><span><b>Estatuto</b><i>PDF · 6,4 MB</i></span>
-          </a>
-          <a class="doc" href="documentos/revista-ajin-2025-2026.pdf" download>
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8m0 0 3-3m-3 3L5 7"/><path d="M2.5 11.5v1a1.5 1.5 0 0 0 1.5 1.5h8a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg><span><b>Relatório anual</b><i>PDF · 10,1 MB</i></span>
-          </a>
         </div>
       </div>
     </div>
@@ -505,18 +504,18 @@
   <div class="caixa">
     <div class="cabeca">
       <div><span class="sobrancelha" data-revela>Projetos</span><h2 class="display-l" data-revela>Iniciativas que já são parte do bairro.</h2></div>
-      <p class="corpo" data-revela>Passe o cursor sobre cada projeto. As imagens entram quando forem definidas.</p>
+      <p class="corpo" data-revela>Passe o cursor sobre cada projeto para ver onde ele acontece.</p>
     </div>
     <div class="linhas" id="projetos" data-revela>
-      <div class="linha" data-flutua><span class="linha__n">01</span><h3>Projeto Olhar Digital</h3><span class="linha__frente">Segurança</span></div>
-      <div class="linha" data-flutua><span class="linha__n">02</span><h3>Pé-de-Fruta</h3><span class="linha__frente">Meio ambiente</span></div>
-      <div class="linha" data-flutua><span class="linha__n">03</span><h3>Horta Comunitária Manoel Azeredo Saraiva</h3><span class="linha__frente">Meio ambiente</span></div>
-      <div class="linha" data-flutua><span class="linha__n">04</span><h3>Confraria do Vinho</h3><span class="linha__frente">Cultura e lazer</span></div>
-      <div class="linha" data-flutua><span class="linha__n">05</span><h3>Rodas de conversa</h3><span class="linha__frente">Saúde e bem-estar</span></div>
+      <div class="linha" data-flutua data-foto="fotos/proj-olhar-digital.jpg"><span class="linha__n">01</span><h3>Projeto Olhar Digital</h3><span class="linha__frente">Segurança</span></div>
+      <div class="linha" data-flutua data-foto="fotos/proj-pedefruta.jpg"><span class="linha__n">02</span><h3>Pé-de-Fruta</h3><span class="linha__frente">Meio ambiente</span></div>
+      <div class="linha" data-flutua data-foto="fotos/proj-horta.jpg"><span class="linha__n">03</span><h3>Horta Comunitária Manoel Azeredo Saraiva</h3><span class="linha__frente">Meio ambiente</span></div>
+      <div class="linha" data-flutua data-foto="fotos/vinho-jantar.jpg"><span class="linha__n">04</span><h3>Confraria do Vinho</h3><span class="linha__frente">Cultura e lazer</span></div>
+      <div class="linha" data-flutua data-foto="fotos/roda-grupo.jpg"><span class="linha__n">05</span><h3>Rodas de conversa</h3><span class="linha__frente">Saúde e bem-estar</span></div>
     </div>
   </div>
 </section>
-<div class="flutua" id="flutua" aria-hidden="true"><div class="lugar"><span>imagem do projeto</span></div></div>
+<div class="flutua" id="flutua" aria-hidden="true"><img id="flutuaFoto" src="fotos/proj-olhar-digital.jpg" alt="" /></div>
 
 <!-- =====================  PILARES  ===================== -->
 <section id="pilares" class="risca">
@@ -527,9 +526,9 @@
     </div>
 
     <div class="sanfona">
-      <div class="sanfona__imagem lugar" data-revela><span id="pilar-rotulo">imagem · representatividade</span></div>
+      <div class="sanfona__imagem" data-revela><img id="pilarFoto" src="fotos/pilar-representatividade.jpg" alt="" /></div>
       <div data-revela>
-        <div class="dobra" data-aberta data-imagem="representatividade">
+        <div class="dobra" data-aberta data-foto="fotos/pilar-representatividade.jpg">
           <button class="dobra__cabeca" aria-expanded="true"><span class="dobra__n">01</span><h3>Representatividade comunitária</h3><span class="dobra__mais"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v12M2 8h12"/></svg></span></button>
           <div class="dobra__corpo"><div class="dobra__dentro"><div class="dobra__texto">
             <strong>A voz de Jurerê Internacional.</strong>
@@ -537,7 +536,7 @@
             <p class="corpo">Mantemos diálogo permanente com o poder público, forças de segurança, órgãos municipais e instituições que atuam em Jurerê Internacional, levando as demandas dos associados e trabalhando pela preservação da identidade e da qualidade de vida do bairro.</p>
           </div></div></div>
         </div>
-        <div class="dobra" data-imagem="segurança">
+        <div class="dobra" data-foto="fotos/pilar-seguranca.jpg">
           <button class="dobra__cabeca" aria-expanded="false"><span class="dobra__n">02</span><h3>Segurança</h3><span class="dobra__mais"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v12M2 8h12"/></svg></span></button>
           <div class="dobra__corpo"><div class="dobra__dentro"><div class="dobra__texto">
             <strong>Proteção que acontece todos os dias.</strong>
@@ -545,7 +544,7 @@
             <p class="corpo">Por meio do Projeto Olhar Digital e das iniciativas de segurança comunitária, buscamos uma atuação preventiva, integrada e permanente, porque segurança não deve acontecer apenas quando um problema aparece.</p>
           </div></div></div>
         </div>
-        <div class="dobra" data-imagem="zeladoria">
+        <div class="dobra" data-foto="fotos/pilar-zeladoria.jpg">
           <button class="dobra__cabeca" aria-expanded="false"><span class="dobra__n">03</span><h3>Zeladoria</h3><span class="dobra__mais"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v12M2 8h12"/></svg></span></button>
           <div class="dobra__corpo"><div class="dobra__dentro"><div class="dobra__texto">
             <strong>Cuidar do bairro é cuidar de onde a vida acontece.</strong>
@@ -553,7 +552,7 @@
             <p class="corpo">É um trabalho contínuo, muitas vezes silencioso, mas presente todos os dias.</p>
           </div></div></div>
         </div>
-        <div class="dobra" data-imagem="saúde, cultura e lazer">
+        <div class="dobra" data-foto="fotos/pilar-saude.jpg">
           <button class="dobra__cabeca" aria-expanded="false"><span class="dobra__n">04</span><h3>Saúde, cultura e lazer</h3><span class="dobra__mais"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v12M2 8h12"/></svg></span></button>
           <div class="dobra__corpo"><div class="dobra__dentro"><div class="dobra__texto">
             <strong>Um bairro também é feito pelas pessoas que nele convivem.</strong>
@@ -561,7 +560,7 @@
             <p class="corpo">Da Confraria do Vinho às rodas de conversa, ações de conscientização e atividades de integração, são iniciativas que ajudam a transformar Jurerê Internacional em uma comunidade cada vez mais próxima.</p>
           </div></div></div>
         </div>
-        <div class="dobra" data-imagem="meio ambiente">
+        <div class="dobra" data-foto="fotos/pilar-ambiente.jpg">
           <button class="dobra__cabeca" aria-expanded="false"><span class="dobra__n">05</span><h3>Sustentabilidade e meio ambiente</h3><span class="dobra__mais"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v12M2 8h12"/></svg></span></button>
           <div class="dobra__corpo"><div class="dobra__dentro"><div class="dobra__texto">
             <strong>Preservar o bairro é preservar aquilo que o torna único.</strong>
@@ -569,7 +568,7 @@
             <p class="corpo">Projetos como o Pé-de-Fruta, a Horta Comunitária Manoel Azeredo Saraiva e iniciativas de educação ambiental aproximam a comunidade da natureza e estimulam uma relação mais consciente com o lugar onde vivemos.</p>
           </div></div></div>
         </div>
-        <div class="dobra" data-imagem="voluntariado">
+        <div class="dobra" data-foto="fotos/pedefruta-plantio.jpg">
           <button class="dobra__cabeca" aria-expanded="false"><span class="dobra__n">06</span><h3>Voluntariado e comunidade</h3><span class="dobra__mais"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v12M2 8h12"/></svg></span></button>
           <div class="dobra__corpo"><div class="dobra__dentro"><div class="dobra__texto">
             <strong>Jurerê Internacional é construído por muitas mãos.</strong>
@@ -593,19 +592,19 @@
     <div class="pilha">
       <article class="carta" style="--i:0">
         <div><span class="carta__n">01 · Eventos</span><h3>Momentos de encontro, integração e participação.</h3><p class="corpo">Confrarias, rodas de conversa, ações de conscientização, atividades culturais, iniciativas ambientais e encontros comunitários criam oportunidades para que os moradores estejam juntos e fortaleçam os vínculos que fazem de Jurerê Internacional uma comunidade.</p></div>
-        <div class="lugar"><span>imagem · eventos</span></div>
+        <img class="carta__foto" src="fotos/horta-inauguracao.jpg" alt="Inauguração da Horta Comunitária Manoel Azeredo Saraiva" loading="lazy" decoding="async" />
       </article>
       <article class="carta" style="--i:1">
         <div><span class="carta__n">02 · Ações</span><h3>Projetos que geram impacto concreto no bairro.</h3><p class="corpo">Revitalizações de espaços públicos, melhorias de infraestrutura, ações ambientais, parcerias institucionais e projetos de segurança fazem parte de uma atuação que busca transformar demandas da comunidade em resultados.</p></div>
-        <div class="lugar"><span>imagem · ações</span></div>
+        <img class="carta__foto" src="fotos/faz-acoes.jpg" alt="Plantio de mudas na horta" loading="lazy" decoding="async" />
       </article>
       <article class="carta" style="--i:2">
         <div><span class="carta__n">03 · Atividades</span><h3>O que acontece continuamente.</h3><p class="corpo">O cuidado com áreas verdes, a manutenção de espaços adotados, as atividades da Horta Comunitária, as rondas e vistorias de segurança e outras iniciativas fazem parte de uma rotina permanente de cuidado. Porque cuidar de um bairro não é uma ação pontual. É presença.</p></div>
-        <div class="lugar"><span>imagem · atividades</span></div>
+        <img class="carta__foto" src="fotos/horta-familia.jpg" alt="Moradores na Horta Comunitária" loading="lazy" decoding="async" />
       </article>
       <article class="carta" style="--i:3">
         <div><span class="carta__n">04 · Agenda</span><h3>Faça parte do que acontece em Jurerê Internacional.</h3><p class="corpo">A agenda reúne os próximos eventos, atividades e iniciativas da AJIN. É o espaço para descobrir o que está acontecendo, participar das ações da Associação e encontrar novas formas de fazer parte da comunidade.</p><p style="margin-top:22px"><a class="btn btn--linha" href="#agenda">Veja o que vem por aí</a></p></div>
-        <div class="lugar"><span>imagem · agenda</span></div>
+        <img class="carta__foto" src="fotos/essencia-autografo.jpg" alt="Lançamento de livro na sede da AJIN" loading="lazy" decoding="async" />
       </article>
     </div>
   </div>
@@ -662,14 +661,14 @@
       </div>
     </div>
     <div class="trilho-h" id="trilhoH" data-revela>
-      <div class="quadro"><span class="quadro__n">01</span><h3>Nas ruas</h3></div>
-      <div class="quadro"><span class="quadro__n">02</span><h3>Nas praças</h3></div>
-      <div class="quadro"><span class="quadro__n">03</span><h3>Nas áreas verdes</h3></div>
-      <div class="quadro"><span class="quadro__n">04</span><h3>Nos projetos</h3></div>
-      <div class="quadro"><span class="quadro__n">05</span><h3>Nas reuniões com o poder público</h3></div>
-      <div class="quadro"><span class="quadro__n">06</span><h3>Nos equipamentos de segurança</h3></div>
-      <div class="quadro"><span class="quadro__n">07</span><h3>Nos encontros comunitários</h3></div>
-      <div class="quadro"><span class="quadro__n">08</span><h3>Nas pessoas que dedicam seu tempo ao bairro</h3></div>
+      <div class="quadro"><img class="quadro__foto" src="fotos/morrinhos-brinq.jpg" alt="Parquinho do Parque dos Morrinhos" loading="lazy" decoding="async" /><span class="quadro__n">01</span><h3>Nas praças</h3></div>
+      <div class="quadro"><img class="quadro__foto" src="fotos/pedefruta-ponte.jpg" alt="Passarela do Pé-de-Fruta" loading="lazy" decoding="async" /><span class="quadro__n">02</span><h3>Nas áreas verdes</h3></div>
+      <div class="quadro"><img class="quadro__foto" src="fotos/horta-colheita.jpg" alt="Colheita na Horta Comunitária" loading="lazy" decoding="async" /><span class="quadro__n">03</span><h3>Nos projetos</h3></div>
+      <div class="quadro"><img class="quadro__foto" src="fotos/inst-planodiretor.jpg" alt="Reunião sobre o Plano Diretor" loading="lazy" decoding="async" /><span class="quadro__n">04</span><h3>Nas reuniões com o poder público</h3></div>
+      <div class="quadro"><img class="quadro__foto" src="fotos/seguranca-camera.jpg" alt="Câmera do Projeto Olhar Digital" loading="lazy" decoding="async" /><span class="quadro__n">05</span><h3>Nos equipamentos de segurança</h3></div>
+      <div class="quadro"><img class="quadro__foto" src="fotos/bairro-encontros.jpg" alt="Encontro comunitário na horta" loading="lazy" decoding="async" /><span class="quadro__n">06</span><h3>Nos encontros comunitários</h3></div>
+      <div class="quadro"><img class="quadro__foto" src="fotos/horta-semana.jpg" alt="Voluntários da Horta Comunitária" loading="lazy" decoding="async" /><span class="quadro__n">07</span><h3>Nas pessoas que dedicam seu tempo ao bairro</h3></div>
+    
     </div>
     <p class="corpo-l" data-revela style="margin-top:36px">É essa presença que transforma representação em ação.</p>
   </div>
@@ -781,11 +780,11 @@
   /* ---------- Imagem que segue o cursor nas linhas de projeto ---------- */
   {
     const flutua = document.getElementById('flutua')
-    const rotulo = flutua.querySelector('span')
+    const foto = document.getElementById('flutuaFoto')
     let x = 0, y = 0, ax = 0, ay = 0, vivo = false
     const seguir = () => { ax += (x - ax) * 0.16; ay += (y - ay) * 0.16; flutua.style.left = ax + 'px'; flutua.style.top = ay + 'px'; if (vivo) requestAnimationFrame(seguir) }
     for (const linha of document.querySelectorAll('[data-flutua]')) {
-      linha.addEventListener('mouseenter', (e) => { rotulo.textContent = linha.querySelector('h3').textContent; x = ax = e.clientX; y = ay = e.clientY; flutua.setAttribute('data-ligado', ''); if (!vivo) { vivo = true; seguir() } })
+      linha.addEventListener('mouseenter', (e) => { foto.src = linha.dataset.foto; x = ax = e.clientX; y = ay = e.clientY; flutua.setAttribute('data-ligado', ''); if (!vivo) { vivo = true; seguir() } })
       linha.addEventListener('mousemove', (e) => { x = e.clientX; y = e.clientY })
       linha.addEventListener('mouseleave', () => { flutua.removeAttribute('data-ligado'); vivo = false })
     }
@@ -794,12 +793,19 @@
   /* ---------- Sanfona dos pilares: uma aberta por vez, e a imagem troca ---------- */
   {
     const dobras = [...document.querySelectorAll('.dobra')]
-    const rotulo = document.getElementById('pilar-rotulo')
+    const foto = document.getElementById('pilarFoto')
+    const trocar = (src) => {
+      if (foto.getAttribute('src').endsWith(src)) return
+      foto.setAttribute('data-trocando', '')
+      const pronta = new Image()
+      pronta.onload = () => { foto.src = src; foto.removeAttribute('data-trocando') }
+      pronta.src = src
+    }
     for (const d of dobras) {
       d.querySelector('.dobra__cabeca').addEventListener('click', () => {
         const aberta = d.hasAttribute('data-aberta')
         dobras.forEach((o) => { o.removeAttribute('data-aberta'); o.querySelector('button').setAttribute('aria-expanded', 'false') })
-        if (!aberta) { d.setAttribute('data-aberta', ''); d.querySelector('button').setAttribute('aria-expanded', 'true'); rotulo.textContent = 'imagem · ' + d.dataset.imagem }
+        if (!aberta) { d.setAttribute('data-aberta', ''); d.querySelector('button').setAttribute('aria-expanded', 'true'); trocar(d.dataset.foto) }
       })
     }
   }
