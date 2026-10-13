@@ -50,16 +50,15 @@ const AREAS = [
     ],
     materias: [
       {
-        titulo: 'A horta ganha o nome do Sr. Saraiva',
+        titulo: 'A Horta Comunitária é inaugurada',
         data: '13 de setembro de 2025',
         resumo: 'Inauguração com 118 pessoas, 35 delas crianças, e mais de 100 mudas plantadas.',
         corpo: [
           'A horta foi reconstruída: canteiros novos, cerca, portões, depósito de ferramentas, composteiras e irrigação com temporizador.',
-          'Na inauguração houve oficina de compostagem, música e uma homenagem ao Sr. Manoel Azeredo Saraiva, associado de 102 anos que dá nome à horta.',
+          'Na inauguração houve oficina de compostagem, música e o plantio das primeiras mudas com as crianças.',
         ],
         fotos: [
-          [F + 'horta-inaug-placa.jpg', 'A placa da Horta Comunitária Manoel Azeredo Saraiva'],
-          [F + 'capa-saraiva.jpg', 'O Sr. Saraiva com as crianças na inauguração'],
+          [F + 'horta-inaug-aerea.jpg', 'A horta vista de cima, com os canteiros novos'],
           [F + 'horta-inaug-maos.jpg', 'Mãos de criança plantando uma muda'],
           [F + 'horta-inaug-publico.jpg', 'Famílias reunidas na inauguração'],
         ],

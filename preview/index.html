@@ -9,19 +9,19 @@
 <meta name="theme-color" content="#1f2a44" />
 <link rel="icon" type="image/png" href="marca/ajin-navy.png" />
 <link rel="preload" href="fontes/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="preload" href="fotos/bairro-aereo.jpg" as="image" fetchpriority="high" />
+<link rel="preload" as="image" href="fotos/capa-bairro.jpg" imagesrcset="fotos/capa-bairro-m.jpg 1600w, fotos/capa-bairro.jpg 3200w" imagesizes="100vw" fetchpriority="high" />
 
 <style>
   /* ===================================================================
      AJIN, site institucional.
 
      Eixo: história, voz, cuidado, território, quem faz. As ações entram
-     como prova (no mapa e na linha do tempo), nunca como assunto principal.
+     como prova (no mapa e na linha do tempo).
 
-     Referências (refero): Arva para o mosaico de superfícies que alternam
-     as quatro cores; A-dam e Kobu para deixar a foto do mar carregar a
-     emoção num chão quase neutro; Column para o navy como confiança e o
-     laranja como sinal raro; Mapbox para o bairro em campo escuro.
+     Calor: o chão é areia aquecida pela onda, com textura de papel, e cada
+     tela traz um elemento da própria marca (a curva de areia das placas, o
+     arco laranja, os três traços, o círculo vazado, o rabisco solto, a foto
+     em selo postal). Nada de fundo chapado só com texto.
 
      Quatro cores, nenhuma outra. Tom intermediário é mistura declarada.
      Laranja nunca é texto sobre fundo claro: ali ele é linha e forma.
@@ -35,102 +35,149 @@
     --areia: #e9e2d3;
     --branco: #ffffff;
 
-    --papel: var(--areia);
+    /* chão quente: areia com um pouco de sol */
+    --papel: color-mix(in srgb, var(--areia) 90%, var(--onda));
+    --duna:  color-mix(in srgb, var(--areia) 78%, var(--onda));
+    --areia-clara: color-mix(in srgb, var(--areia) 55%, var(--branco));
+    --areia-funda: color-mix(in srgb, var(--areia) 82%, var(--navy));
+    --noite: color-mix(in srgb, var(--navy) 82%, black);
+
     --tinta: var(--navy);
-    --fraco: color-mix(in srgb, var(--navy) 78%, var(--areia));
+    --fraco: color-mix(in srgb, var(--navy) 80%, var(--areia));
     --linha: color-mix(in srgb, var(--navy) 16%, transparent);
     --linha-forte: color-mix(in srgb, var(--navy) 30%, transparent);
-    --areia-funda: color-mix(in srgb, var(--areia) 84%, var(--navy));
-    --areia-clara: color-mix(in srgb, var(--areia) 55%, var(--branco));
-    --noite: color-mix(in srgb, var(--navy) 82%, black);
 
     --caixa: 1240px;
     --lado: clamp(16px, 4.4vw, 64px);
-    --respiro: clamp(88px, 10vw, 156px);
+    --respiro: clamp(88px, 10vw, 150px);
     --raio: 22px;
     --entra: cubic-bezier(0.22, 1, 0.36, 1);
     --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --textura: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .16 0 0 0 0 .27 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
   .escuro {
     background: var(--navy); color: var(--areia);
     --tinta: var(--areia);
-    --fraco: color-mix(in srgb, var(--areia) 80%, var(--navy));
+    --fraco: color-mix(in srgb, var(--areia) 82%, var(--navy));
     --linha: color-mix(in srgb, var(--areia) 16%, transparent);
     --linha-forte: color-mix(in srgb, var(--areia) 32%, transparent);
   }
 
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-  body { margin: 0; background: var(--papel); color: var(--tinta); font-family: var(--sans); font-size: 18px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: clip; font-feature-settings: 'ss01', 'cv11'; }
+  body { margin: 0; background: var(--papel); color: var(--tinta); font-family: var(--sans); font-size: 18px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: clip; }
   a { color: inherit; }
   img { max-width: 100%; display: block; }
+  svg { display: block; }
   ::selection { background: var(--onda); color: var(--navy); }
   button { font: inherit; color: inherit; cursor: pointer; }
   :focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; border-radius: 6px; }
   .escuro :focus-visible, .capa :focus-visible, .bairro :focus-visible { outline-color: var(--onda); }
   .so-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  /* ---------- tipografia: grande, pesada, entrelinha fechada ---------- */
+  /* textura de papel sobre os chãos claros */
+  /* um só grão de papel sobre a página inteira: igual em todos os chãos, sem emenda */
+  body::after { content: ''; position: fixed; inset: 0; z-index: 45; background-image: var(--textura); background-size: 240px; opacity: 0.16; mix-blend-mode: multiply; pointer-events: none; }
+
+  /* ---------- tipografia ---------- */
   h1, h2, h3, h4 { margin: 0; text-wrap: balance; letter-spacing: -0.035em; }
   .t-capa   { font-size: clamp(46px, 7.6vw, 118px); font-weight: 900; line-height: 0.94; letter-spacing: -0.045em; }
-  .t-secao  { font-size: clamp(38px, 5.4vw, 80px); font-weight: 850; line-height: 1; }
-  .t-media  { font-size: clamp(28px, 3.2vw, 46px); font-weight: 800; line-height: 1.06; }
+  .t-secao  { font-size: clamp(38px, 5.2vw, 76px); font-weight: 850; line-height: 1; }
+  .t-media  { font-size: clamp(28px, 3vw, 44px); font-weight: 800; line-height: 1.06; }
   .t-cartao { font-size: clamp(22px, 1.9vw, 28px); font-weight: 750; line-height: 1.15; letter-spacing: -0.02em; }
-  .lead { font-size: clamp(19px, 1.55vw, 23px); line-height: 1.55; color: var(--fraco); max-width: 44ch; margin: 0; text-wrap: pretty; }
+  .lead { font-size: clamp(19px, 1.5vw, 22px); line-height: 1.55; color: var(--fraco); max-width: 44ch; margin: 0; text-wrap: pretty; }
   .corpo { color: var(--fraco); max-width: 58ch; margin: 0; text-wrap: pretty; }
   .rotulo { display: inline-flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mar); }
   .rotulo::before { content: ''; width: 28px; height: 3px; border-radius: 3px; background: var(--onda); }
-  .escuro .rotulo, .capa .rotulo { color: var(--onda); }
+  .escuro .rotulo, .capa .rotulo, .placa .rotulo { color: var(--onda); }
   .sublinha { background: linear-gradient(var(--onda), var(--onda)) no-repeat 0 92% / 0 0.09em; transition: background-size 1s var(--entra) 0.45s; }
-  [data-visivel] .sublinha, .sublinha[data-visivel] { background-size: 100% 0.09em; }
+  [data-visivel] .sublinha, [data-visivel].sublinha { background-size: 100% 0.09em; }
 
-  .caixa { max-width: var(--caixa); margin-inline: auto; width: 100%; }
+  .caixa { max-width: var(--caixa); margin-inline: auto; width: 100%; position: relative; }
   section { padding: var(--respiro) var(--lado); position: relative; }
-  .cabeca { display: grid; gap: 24px clamp(32px, 6vw, 96px); grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: end; margin-bottom: clamp(48px, 6vw, 88px); }
+  .cabeca { display: grid; gap: 24px clamp(32px, 6vw, 96px); grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: end; margin-bottom: clamp(48px, 6vw, 80px); }
   .cabeca > div { display: grid; gap: 22px; }
   @media (max-width: 860px) { .cabeca { grid-template-columns: 1fr; } }
 
-  .btn { display: inline-flex; align-items: center; gap: 12px; min-height: 54px; padding: 0 28px; border-radius: 100px; font-size: 17px; font-weight: 700; text-decoration: none; letter-spacing: -0.005em; background: var(--onda); color: var(--navy); border: 1.5px solid var(--onda); transition: transform 0.18s var(--entra), background-color 0.3s var(--entra), color 0.3s var(--entra), border-color 0.3s var(--entra); }
+  .btn { display: inline-flex; align-items: center; gap: 12px; min-height: 54px; padding: 0 28px; border-radius: 100px; font-size: 17px; font-weight: 700; text-decoration: none; background: var(--onda); color: var(--navy); border: 1.5px solid var(--onda); transition: transform 0.18s var(--entra), background-color 0.3s var(--entra), color 0.3s var(--entra), border-color 0.3s var(--entra); }
   .btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.35s var(--entra); }
   .btn:hover svg { transform: translateX(4px); }
   .btn:active { transform: scale(0.97); }
   .btn--linha { background: transparent; color: var(--tinta); border-color: var(--linha-forte); }
   .btn--linha:hover { border-color: var(--tinta); }
-  .btn--navy { background: var(--navy); border-color: var(--navy); color: var(--areia); }
   .acoes { display: flex; flex-wrap: wrap; gap: 12px; }
 
-  /* ---------- revelação: sobe 50px e clareia, uma vez ---------- */
+  /* ---------- elementos da marca ---------- */
+  .tracos { width: 44px; height: 26px; color: var(--mar); }
+  .tracos path { fill: none; stroke: currentColor; stroke-width: 4; stroke-linecap: round; }
+  .arco { position: absolute; border-radius: 50%; border: 2px solid var(--mar); pointer-events: none; opacity: 0.55; z-index: 0; }
+  .rabisco { position: absolute; pointer-events: none; color: var(--onda); overflow: visible; z-index: 0; }
+  .rabisco path { fill: none; stroke: currentColor; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  .desenha path { stroke-dasharray: var(--L, 2000); stroke-dashoffset: var(--L, 2000); transition: stroke-dashoffset 2.2s var(--entra) 0.2s; }
+  [data-visivel].desenha path { stroke-dashoffset: 0; }
+
+  /* ícones da marca: silhueta cheia dentro do círculo, nas quatro combinações */
+  .icone { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .icone svg { width: 54%; height: 54%; fill: currentColor; }
+  .icone--mar { background: var(--mar); color: var(--areia); }
+  .icone--onda { background: var(--onda); color: var(--navy); }
+  .icone--navy { background: var(--navy); color: var(--areia); }
+  .icone--areia { background: var(--areia-clara); color: var(--navy); }
+
+  /* foto em selo postal (bordas picotadas) */
+  .selo-postal { --r: 7px; padding: calc(var(--r) * 2.4); background: var(--areia-clara);
+    -webkit-mask: radial-gradient(var(--r), #0000 97%, #000) round calc(-1.5 * var(--r)) calc(-1.5 * var(--r)) / calc(3 * var(--r)) calc(3 * var(--r)), linear-gradient(#000 0 0) no-repeat 50% / calc(100% - 3 * var(--r)) calc(100% - 3 * var(--r));
+            mask: radial-gradient(var(--r), #0000 97%, #000) round calc(-1.5 * var(--r)) calc(-1.5 * var(--r)) / calc(3 * var(--r)) calc(3 * var(--r)), linear-gradient(#000 0 0) no-repeat 50% / calc(100% - 3 * var(--r)) calc(100% - 3 * var(--r)); }
+  .selo-postal img { width: 100%; height: 100%; object-fit: cover; }
+  .sombra { filter: drop-shadow(0 18px 26px color-mix(in srgb, var(--navy) 28%, transparent)); }
+  .selo-legenda { display: inline-block; margin-top: 10px; padding: 6px 12px; border-radius: 100px; background: var(--navy); color: var(--areia); font-size: 14px; font-weight: 700; }
+
+  /* curva de areia das placas: a borda ondulada entre um chão e outro */
+  .curva { position: absolute; left: 0; right: 0; width: 100%; height: clamp(60px, 8vw, 120px); pointer-events: none; z-index: 1; }
+  .curva--topo { top: -1px; }
+  .curva--base { bottom: -1px; }
+  .curva .chao { fill: var(--papel); }
+  .curva .fio { fill: none; stroke: var(--onda); stroke-width: 6; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+
+  /* ---------- movimento ---------- */
   [data-revela] { opacity: 0; transform: translateY(50px); transition: opacity 0.9s var(--entra), transform 0.9s var(--entra); }
   [data-revela][data-visivel] { opacity: 1; transform: none; }
   .mascara { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.06em; margin-bottom: -0.06em; }
-  .mascara > span { display: inline-block; transform: translateY(105%); transition: transform 1s var(--entra); }
+  .mascara > span { display: inline-block; transform: translateY(105%); transition: transform 1.2s var(--entra); }
   [data-visivel] .mascara > span { transform: none; }
 
   /* =====================  BARRA  ===================== */
-  .barra { position: fixed; inset: 0 0 auto; z-index: 50; display: flex; align-items: center; gap: 24px; height: 76px; padding: 0 var(--lado); color: var(--areia); transition: background-color 0.4s var(--entra), color 0.4s var(--entra), box-shadow 0.4s var(--entra), transform 0.5s var(--entra); }
-  .barra[data-solida] { background: var(--areia); color: var(--navy); box-shadow: 0 1px 0 var(--linha); }
+  .barra { position: fixed; inset: 0 0 auto; z-index: 50; display: flex; align-items: center; gap: 18px; height: 76px; padding: 0 var(--lado); color: var(--areia); transition: background-color 0.4s var(--entra), color 0.4s var(--entra), box-shadow 0.4s var(--entra), transform 0.5s var(--entra); }
+  .barra[data-solida] { background: var(--papel); color: var(--navy); box-shadow: 0 1px 0 var(--linha); }
   .barra[data-escondida] { transform: translateY(-100%); }
   .barra__logo { display: block; flex: none; height: 32px; position: relative; }
   .barra__logo img { height: 32px; width: auto; max-width: none; transition: opacity 0.35s var(--entra); }
   .barra__logo .navy { position: absolute; inset: 0 auto auto 0; opacity: 0; }
   .barra[data-solida] .barra__logo .navy { opacity: 1; }
   .barra[data-solida] .barra__logo .branco { opacity: 0; }
-  .navegar { display: flex; gap: 4px; margin-left: auto; position: relative; }
-  .navegar a { text-decoration: none; font-size: 15.5px; font-weight: 600; padding: 10px 14px; border-radius: 100px; opacity: 0.86; transition: opacity 0.25s; }
+  .navegar { display: flex; gap: 2px; margin-left: auto; position: relative; }
+  .navegar a { text-decoration: none; font-size: 15px; font-weight: 600; padding: 10px 11px; border-radius: 100px; opacity: 0.86; transition: opacity 0.25s; white-space: nowrap; }
   .navegar a:hover, .navegar a[data-aqui] { opacity: 1; }
   .navegar__fio { position: absolute; left: 0; bottom: 2px; height: 3px; border-radius: 3px; background: var(--onda); width: 0; opacity: 0; transition: transform 0.55s var(--entra), width 0.55s var(--entra), opacity 0.3s; }
   .navegar__fio[data-visivel] { opacity: 1; }
-  .barra__acao { flex: none; min-height: 44px; padding: 0 22px; font-size: 15.5px; }
+  .barra__docs { display: flex; gap: 6px; flex: none; }
+  .doc-mini { display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 0 13px; border-radius: 100px; border: 1px solid color-mix(in srgb, currentColor 35%, transparent); font-size: 14.5px; font-weight: 700; text-decoration: none; transition: border-color 0.3s; white-space: nowrap; }
+  .doc-mini:hover { border-color: currentColor; }
+  .doc-mini svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .barra__acao { flex: none; min-height: 44px; padding: 0 20px; font-size: 15px; }
   .barra__menu { display: none; margin-left: auto; width: 48px; height: 48px; border: 0; background: none; border-radius: 50%; }
   .barra__menu span { display: block; width: 22px; height: 2px; margin: 5px auto; background: currentColor; border-radius: 2px; transition: transform 0.4s var(--entra), opacity 0.3s; }
-  @media (max-width: 1080px) {
-    .navegar, .barra__acao { display: none; }
+  @media (max-width: 1380px) { .navegar a { padding: 10px 8px; font-size: 14.5px; } .doc-mini { padding: 0 11px; } }
+  @media (max-width: 1240px) {
+    .navegar, .barra__acao, .barra__docs { display: none; }
     .barra__menu { display: block; }
   }
-  .gaveta { position: fixed; inset: 0; z-index: 49; background: var(--navy); color: var(--areia); display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 96px var(--lado) 40px; clip-path: circle(0 at calc(100% - 40px) 38px); transition: clip-path 0.7s var(--entra); visibility: hidden; }
-  .gaveta[data-aberta] { clip-path: circle(150% at calc(100% - 40px) 38px); visibility: visible; }
-  .gaveta a { font-size: clamp(30px, 8vw, 44px); font-weight: 800; letter-spacing: -0.03em; text-decoration: none; padding: 6px 0; }
-  .gaveta .btn { margin-top: 24px; align-self: flex-start; font-size: 18px; }
+  .gaveta { position: fixed; inset: 0; z-index: 49; background: var(--navy); color: var(--areia); display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 96px var(--lado) 40px; clip-path: circle(0 at calc(100% - 40px) 38px); transition: clip-path 0.7s var(--entra), visibility 0s 0.7s; visibility: hidden; overflow-y: auto; }
+  .gaveta[data-aberta] { clip-path: circle(150% at calc(100% - 40px) 38px); visibility: visible; transition: clip-path 0.7s var(--entra), visibility 0s; }
+  .gaveta > a:not(.btn) { font-size: clamp(28px, 7.4vw, 42px); font-weight: 800; letter-spacing: -0.03em; text-decoration: none; padding: 4px 0; }
+  .gaveta__docs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .gaveta .doc-mini { min-height: 48px; font-size: 16px; padding: 0 18px; }
+  .gaveta .btn { margin-top: 14px; align-self: flex-start; font-size: 18px; }
   body[data-gaveta] { overflow: hidden; }
   body[data-gaveta] .barra { color: var(--areia); background: transparent; box-shadow: none; }
   body[data-gaveta] .barra .navy { opacity: 0 !important; }
@@ -142,15 +189,14 @@
   /* =====================  CAPA  ===================== */
   .capa { min-height: 100svh; padding: 0; display: grid; align-items: end; color: var(--areia); overflow: hidden; background: var(--navy); }
   .capa__foto { position: absolute; inset: 0; }
-  .capa__foto img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; transform: scale(1.12); transition: transform 2.8s var(--entra); }
+  .capa__foto img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; transform: scale(1.12); transition: transform 2.8s var(--entra); }
   body[data-pronto] .capa__foto img { transform: scale(1); }
   .capa__foto::after { content: ''; position: absolute; inset: 0; background:
-      linear-gradient(to top, color-mix(in srgb, var(--navy) 92%, transparent) 0%, color-mix(in srgb, var(--navy) 55%, transparent) 38%, color-mix(in srgb, var(--navy) 5%, transparent) 70%, color-mix(in srgb, var(--navy) 45%, transparent) 100%); }
-  .capa__conteudo { position: relative; padding: 140px var(--lado) clamp(48px, 7vw, 96px); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 40px; }
+      linear-gradient(to top, color-mix(in srgb, var(--navy) 94%, transparent) 0%, color-mix(in srgb, var(--navy) 60%, transparent) 36%, color-mix(in srgb, var(--navy) 0%, transparent) 64%, color-mix(in srgb, var(--navy) 40%, transparent) 100%); }
+  .capa__conteudo { position: relative; z-index: 2; padding: 140px var(--lado) clamp(110px, 12vw, 170px); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 40px; }
   .capa__texto { display: grid; gap: clamp(22px, 2.4vw, 32px); }
   .capa h1 { max-width: 12.5ch; }
-  .capa h1 .mascara > span { transition-duration: 1.2s; }
-  .capa .lead { color: color-mix(in srgb, var(--areia) 88%, var(--navy)); max-width: 40ch; }
+  .capa .lead { color: color-mix(in srgb, var(--areia) 90%, var(--navy)); max-width: 40ch; }
   .capa .btn--linha { color: var(--areia); border-color: color-mix(in srgb, var(--areia) 45%, transparent); }
   .capa .btn--linha:hover { border-color: var(--areia); }
   .capa [data-capa] { opacity: 0; transform: translateY(30px); transition: opacity 1s var(--entra), transform 1s var(--entra); }
@@ -164,79 +210,107 @@
   .selo__meio span { font-size: 14px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--onda); margin-top: 4px; }
   .selo::before { content: ''; position: absolute; inset: 22%; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--areia) 35%, transparent); }
   @keyframes gira { to { transform: rotate(360deg); } }
-  .capa__rolar { position: absolute; left: 50%; bottom: 22px; translate: -50% 0; width: 26px; height: 42px; border-radius: 20px; border: 1.5px solid color-mix(in srgb, var(--areia) 55%, transparent); }
-  .capa__rolar::after { content: ''; position: absolute; left: 50%; top: 9px; width: 4px; height: 8px; margin-left: -2px; border-radius: 2px; background: var(--onda); animation: rola 2s var(--entra) infinite; }
-  @keyframes rola { 0% { transform: translateY(0); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(14px); opacity: 0; } }
   @media (max-width: 760px) {
-    .capa__conteudo { grid-template-columns: 1fr; padding-top: 120px; }
+    .capa__conteudo { grid-template-columns: 1fr; padding-top: 120px; padding-bottom: 96px; }
     .selo { order: -1; justify-self: end; width: 112px; margin-bottom: -12px; }
-    .selo__meio b { font-size: 36px; } .selo__meio span { font-size: 11px; }
-    .capa__rolar { display: none; }
+    .selo__meio b { font-size: 36px; } .selo__meio span { font-size: 12px; }
   }
 
   /* =====================  QUEM SOMOS  ===================== */
-  .quem__grade { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(40px, 7vw, 120px); align-items: start; }
-  .quem__grade h2 { margin-top: 24px; }
-  .quem__lado { display: grid; gap: 22px; padding-top: clamp(0px, 4vw, 64px); }
-  .quem__lado .corpo b { color: var(--tinta); font-weight: 700; }
-  @media (max-width: 860px) { .quem__grade { grid-template-columns: 1fr; } }
+  .quem { overflow: hidden; }
+  .quem__grade { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 96px); align-items: center; position: relative; z-index: 1; }
+  .quem__texto { display: grid; gap: 24px; }
+  .quem__texto .corpo b { color: var(--tinta); font-weight: 700; }
+  .quem__colagem { position: relative; min-height: clamp(480px, 48vw, 660px); }
+  .quem__colagem figure { position: absolute; margin: 0; }
+  .quem__colagem .c1 { width: 50%; left: 0; top: 6%; rotate: -4deg; z-index: 2; }
+  .quem__colagem .c2 { width: 46%; right: 0; top: 0; rotate: 3deg; z-index: 1; }
+  .quem__colagem .c3 { width: 56%; right: 6%; bottom: 0; rotate: -2deg; z-index: 3; }
+  .quem__colagem .c1 .selo-postal, .quem__colagem .c2 .selo-postal { aspect-ratio: 4 / 5; }
+  .quem__colagem .c3 .selo-postal { aspect-ratio: 16 / 10; }
+  .quem__colagem figcaption { position: absolute; left: 18px; bottom: -14px; z-index: 4; }
+  .quem__colagem .sol { position: absolute; width: 40%; aspect-ratio: 1; border-radius: 50%; background: var(--onda); left: 30%; top: 26%; z-index: 0; }
+  .quem .arco--1 { width: clamp(420px, 46vw, 660px); aspect-ratio: 1; right: -14vw; top: -6%; }
+  .quem .rabisco--1 { width: 44%; left: -8%; bottom: 4%; z-index: 0; }
+  @media (max-width: 900px) {
+    .quem__grade { grid-template-columns: 1fr; }
+    .quem__colagem { min-height: 128vw; }
+    .quem__colagem .c1 { width: 58%; } .quem__colagem .c2 { width: 50%; } .quem__colagem .c3 { width: 74%; right: 2%; }
+  }
 
-  .numeros { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: clamp(64px, 8vw, 120px); border-top: 1.5px solid var(--navy); }
-  .numero { padding: 28px 24px 8px 0; display: grid; gap: 6px; align-content: start; }
-  .numero + .numero { padding-left: 24px; border-left: 1px solid var(--linha); }
-  .numero b { font-size: clamp(54px, 6.6vw, 100px); font-weight: 900; line-height: 0.9; letter-spacing: -0.055em; font-variant-numeric: tabular-nums; }
-  .numero b small { font-size: 0.42em; letter-spacing: -0.02em; margin-left: 4px; }
-  .numero > span { font-size: 17px; font-weight: 600; color: var(--fraco); max-width: 18ch; line-height: 1.35; }
-  @media (max-width: 860px) { .numeros { grid-template-columns: 1fr 1fr; } .numero:nth-child(3) { padding-left: 0; border-left: 0; } .numero:nth-child(n+3) { border-top: 1px solid var(--linha); } }
-
-  .vitrine { margin-top: clamp(64px, 8vw, 120px); display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; align-items: end; }
-  .vitrine__grande { grid-column: 1 / span 8; position: relative; }
-  .vitrine__moldura { position: relative; isolation: isolate; }
-  .vitrine__moldura::before { content: ''; position: absolute; top: 18%; right: 14%; bottom: -22px; left: -22px; background: var(--mar); border-radius: var(--raio); z-index: -1; }
-  .vitrine__grande img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--raio); }
-  .vitrine__pequena { grid-column: 9 / span 4; display: grid; gap: 16px; }
-  .vitrine__pequena img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%; border-radius: var(--raio); }
-  .legenda { font-size: 15px; font-weight: 600; color: var(--fraco); line-height: 1.45; }
-  .vitrine .legenda { margin-top: 14px; }
-  .vitrine__grande .legenda { margin-top: 38px; }
-  @media (max-width: 760px) { .vitrine__grande, .vitrine__pequena { grid-column: 1 / -1; } .vitrine__moldura::before { left: -10px; bottom: -14px; } .vitrine__grande .legenda { margin-top: 28px; } }
+  .numeros { margin-top: clamp(80px, 9vw, 130px); display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; position: relative; z-index: 1; }
+  .numero { padding: 26px 24px 28px; border-radius: var(--raio); background: var(--areia-clara); display: grid; gap: 14px; align-content: start; }
+  .numero:nth-child(2) { background: var(--navy); color: var(--areia); --fraco: color-mix(in srgb, var(--areia) 82%, var(--navy)); }
+  .numero:nth-child(3) { background: var(--duna); }
+  .numero:nth-child(4) { background: var(--mar); color: var(--branco); --fraco: color-mix(in srgb, var(--branco) 88%, var(--mar)); }
+  .numero b { font-size: clamp(50px, 5.4vw, 84px); font-weight: 900; line-height: 0.9; letter-spacing: -0.055em; font-variant-numeric: tabular-nums; }
+  .numero b small { font-size: 0.4em; letter-spacing: -0.02em; margin-left: 4px; }
+  .numero > span:not(.icone) { font-size: 17px; font-weight: 600; color: var(--fraco); line-height: 1.35; }
+  .numero .icone { width: 56px; height: 56px; }
+  @media (max-width: 900px) { .numeros { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .numero { padding: 20px 18px 22px; } .numero .icone { width: 46px; height: 46px; } }
 
   /* =====================  A VOZ DO BAIRRO  ===================== */
-  .voz { overflow: hidden; }
-  .voz__onda { position: absolute; right: -10%; top: 40px; width: 70%; color: color-mix(in srgb, var(--mar) 55%, var(--navy)); opacity: 0.6; pointer-events: none; }
-  .papeis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border-top: 1px solid var(--linha); }
-  .papel { padding: clamp(28px, 3.4vw, 48px) clamp(0px, 3vw, 44px) clamp(28px, 3.4vw, 48px) 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 24px; border-bottom: 1px solid var(--linha); }
-  .papel:nth-child(even) { padding-left: clamp(24px, 3vw, 44px); border-left: 1px solid var(--linha); }
-  .papel__icone { width: 52px; height: 52px; grid-row: span 2; color: var(--onda); }
-  .papel__icone svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-  .papel h3 { font-size: clamp(22px, 1.9vw, 27px); font-weight: 750; letter-spacing: -0.02em; line-height: 1.2; }
-  .papel p { margin: 0; color: var(--fraco); }
-  @media (max-width: 860px) { .papeis { grid-template-columns: 1fr; } .papel:nth-child(even) { padding-left: 0; border-left: 0; } }
+  .voz { background: var(--duna); overflow: hidden; }
+  .voz .arco--1 { width: clamp(300px, 34vw, 480px); aspect-ratio: 1; right: -14vw; top: 22%; border-color: var(--onda); opacity: 0.8; }
+  .voz .caixa { z-index: 1; }
 
-  .citacao { margin: clamp(72px, 9vw, 128px) 0; display: grid; grid-template-columns: auto 1fr; gap: clamp(16px, 3vw, 40px); align-items: start; }
-  .citacao svg { width: clamp(48px, 6vw, 84px); color: var(--onda); }
-  .citacao blockquote { margin: 0; font-size: clamp(32px, 4.6vw, 68px); font-weight: 850; line-height: 1.04; letter-spacing: -0.04em; max-width: 20ch; }
-  .citacao figcaption { margin-top: 18px; font-size: 16px; font-weight: 600; color: var(--fraco); }
+  /* faixa de ondas: três linhas que correm, numa faixa só delas */
+  .ondas { position: relative; height: clamp(90px, 10vw, 140px); margin: 0 calc(var(--lado) * -1) clamp(40px, 5vw, 64px); }
+  .ondas__faixa { position: absolute; inset: 0; overflow: hidden; clip-path: inset(0 100% 0 0); transition: clip-path 2.4s var(--entra); }
+  .ondas[data-visivel] .ondas__faixa { clip-path: inset(0 0 0 0); }
+  .ondas svg { position: absolute; left: 0; top: 0; height: 100%; width: 200%; }
+  .ondas path { fill: none; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .ondas .o1 { stroke: var(--mar); stroke-width: 4; animation: corre 22s linear infinite; }
+  .ondas .o2 { stroke: var(--onda); stroke-width: 7; animation: corre 32s linear infinite; }
+  .ondas .o3 { stroke: var(--navy); stroke-width: 2; opacity: 0.45; animation: corre 44s linear infinite; }
+  @keyframes corre { to { transform: translateX(-50%); } }
 
-  .presenca { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
-  .presenca__fotos { display: grid; grid-template-columns: 1.2fr 1fr; gap: 14px; }
-  .presenca__fotos img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 16px; }
-  .presenca__fotos figure { margin: 0; }
-  .presenca__fotos figure:first-child { grid-row: span 2; }
-  .presenca__fotos figure:first-child img { aspect-ratio: 3 / 4; height: 100%; }
-  .presenca__fotos figcaption { font-size: 14.5px; color: var(--fraco); margin-top: 8px; font-weight: 600; }
+  .papeis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .papel { padding: clamp(24px, 2.4vw, 32px); border-radius: var(--raio); display: grid; gap: 14px; align-content: start; transition: transform 0.5s var(--entra); }
+  .papel:hover { transform: translateY(-6px) rotate(-0.6deg); }
+  .papel h3 { font-size: clamp(21px, 1.7vw, 25px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.18; }
+  .papel p { margin: 0; font-size: 16.5px; line-height: 1.55; }
+  .papel--navy { background: var(--navy); color: var(--areia); } .papel--navy p { color: color-mix(in srgb, var(--areia) 84%, var(--navy)); }
+  .papel--mar { background: var(--mar); color: var(--branco); } .papel--mar p { color: color-mix(in srgb, var(--branco) 90%, var(--mar)); }
+  .papel--onda { background: var(--onda); color: var(--navy); }
+  .papel--clara { background: var(--areia-clara); color: var(--navy); } .papel--clara p { color: var(--fraco); }
+  @media (max-width: 1000px) { .papeis { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .papeis { grid-template-columns: 1fr; } }
+
+  /* a citação no desenho das placas: navy, curva de areia embaixo, arco laranja */
+  .placa { position: relative; margin: clamp(64px, 8vw, 110px) 0; border-radius: calc(var(--raio) + 6px); background: var(--navy); color: var(--areia); overflow: hidden; padding: clamp(40px, 6vw, 88px) clamp(28px, 6vw, 88px) clamp(120px, 14vw, 190px); isolation: isolate; }
+  .placa__fundo { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 46%; z-index: -1; }
+  .placa__fundo .areia { fill: var(--areia); }
+  .placa__fundo .sol { fill: var(--onda); }
+  .placa > .tracos { position: absolute; right: clamp(24px, 4vw, 56px); top: clamp(24px, 4vw, 48px); width: 56px; height: 34px; }
+  .placa__circulo { position: absolute; width: clamp(160px, 22vw, 300px); aspect-ratio: 1; right: -6%; top: -18%; border-radius: 50%; border: 2px solid var(--mar); z-index: -1; }
+  .placa blockquote { margin: 0; font-size: clamp(32px, 4.6vw, 70px); font-weight: 900; line-height: 1.02; letter-spacing: -0.045em; max-width: 17ch; }
+  .placa blockquote em { font-style: normal; color: var(--onda); }
+  .placa figcaption { margin-top: 20px; font-size: 16px; font-weight: 600; color: color-mix(in srgb, var(--areia) 82%, var(--navy)); }
+
+  .presenca { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
   .chips { display: flex; flex-wrap: wrap; gap: 10px; margin: 26px 0 0; padding: 0; list-style: none; }
-  .chips li { padding: 10px 16px; border: 1px solid var(--linha-forte); border-radius: 100px; font-size: 15.5px; font-weight: 600; }
-  @media (max-width: 860px) { .presenca { grid-template-columns: 1fr; } }
+  .chips li { padding: 10px 16px; border-radius: 100px; background: var(--areia-clara); font-size: 15.5px; font-weight: 650; }
+  .presenca__fotos { position: relative; min-height: clamp(380px, 38vw, 480px); }
+  .presenca__fotos figure { position: absolute; margin: 0; }
+  .presenca__fotos .p1 { width: 64%; left: 0; top: 0; rotate: -3deg; z-index: 1; }
+  .presenca__fotos .p2 { width: 56%; right: 0; bottom: 0; rotate: 2.5deg; z-index: 2; }
+  .presenca__fotos .selo-postal { aspect-ratio: 4 / 3; }
+  .presenca__fotos figcaption { position: absolute; left: 16px; bottom: -14px; }
+  @media (max-width: 860px) { .presenca { grid-template-columns: 1fr; } .presenca__fotos { min-height: 86vw; } }
 
-  .territorio { margin-top: clamp(72px, 9vw, 128px); position: relative; border-radius: var(--raio); overflow: hidden; }
-  .territorio img { width: 100%; aspect-ratio: 21 / 9; object-fit: cover; object-position: 50% 45%; }
-  .territorio figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: clamp(20px, 3vw, 40px); background: linear-gradient(to top, color-mix(in srgb, var(--navy) 88%, transparent), transparent); display: grid; gap: 6px; max-width: 100%; }
-  .territorio figcaption b { font-size: clamp(20px, 2vw, 28px); font-weight: 800; letter-spacing: -0.02em; }
-  .territorio figcaption span { font-size: 16px; max-width: 64ch; color: color-mix(in srgb, var(--areia) 86%, var(--navy)); }
+  .territorio { margin: clamp(72px, 9vw, 120px) 0 0; position: relative; border-radius: calc(var(--raio) + 6px); overflow: hidden; }
+  .territorio img { width: 100%; aspect-ratio: 21 / 9; object-fit: cover; object-position: 50% 45%; scale: 1.08; }
+  .territorio figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: clamp(24px, 3.4vw, 48px); background: linear-gradient(to top, color-mix(in srgb, var(--navy) 90%, transparent), transparent); color: var(--areia); display: grid; gap: 8px; }
+  .territorio figcaption b { font-size: clamp(24px, 2.6vw, 38px); font-weight: 850; letter-spacing: -0.03em; line-height: 1.1; max-width: 22ch; }
+  .territorio figcaption span { font-size: 16.5px; max-width: 56ch; color: color-mix(in srgb, var(--areia) 88%, var(--navy)); }
   @media (max-width: 760px) { .territorio img { aspect-ratio: 4 / 5; } }
 
   /* =====================  ATUAÇÃO: mosaico  ===================== */
+  .atuacao { overflow: hidden; }
+  .atuacao .caixa { z-index: 1; }
+  .atuacao .rabisco--2 { width: clamp(200px, 24vw, 340px); right: -30px; top: 50px; }
   .mosaico { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
   .peca { position: relative; border-radius: var(--raio); overflow: hidden; display: flex; flex-direction: column; min-height: 100%; isolation: isolate; }
   .peca__foto { flex: 1; overflow: hidden; min-height: 220px; }
@@ -248,8 +322,8 @@
   .peca--navy { background: var(--navy); color: var(--areia); } .peca--navy small { color: var(--onda); } .peca--navy p { color: color-mix(in srgb, var(--areia) 84%, var(--navy)); }
   .peca--mar { background: var(--mar); color: var(--branco); } .peca--mar small { color: var(--areia); } .peca--mar p { color: color-mix(in srgb, var(--branco) 90%, var(--mar)); }
   .peca--onda { background: var(--onda); color: var(--navy); } .peca--onda small { color: var(--navy); }
-  .peca--areia { background: var(--areia-funda); color: var(--navy); } .peca--areia small { color: var(--mar); } .peca--areia p { color: var(--fraco); }
-  .peca--branca { background: var(--areia-clara); color: var(--navy); } .peca--branca small { color: var(--mar); } .peca--branca p { color: var(--fraco); }
+  .peca--duna { background: var(--duna); color: var(--navy); } .peca--duna small { color: var(--mar); } .peca--duna p { color: var(--fraco); }
+  .peca--clara { background: var(--areia-clara); color: var(--navy); } .peca--clara small { color: var(--mar); } .peca--clara p { color: var(--fraco); }
   .m1 { grid-column: 1 / span 7; grid-row: span 2; }
   .m2 { grid-column: 8 / span 5; }
   .m3 { grid-column: 8 / span 5; }
@@ -257,46 +331,42 @@
   .m5 { grid-column: 5 / span 4; }
   .m6 { grid-column: 9 / span 4; }
   .m1 .peca__foto { min-height: 420px; }
-  @media (max-width: 960px) { .m1, .m2, .m3 { grid-column: span 12; grid-row: auto; } .m4, .m5, .m6 { grid-column: span 6; } .m6 { grid-column: span 12; } .m1 .peca__foto { min-height: 300px; } }
+  @media (max-width: 960px) { .m1, .m2, .m3 { grid-column: span 12; grid-row: auto; } .m4, .m5 { grid-column: span 6; } .m6 { grid-column: span 12; } .m1 .peca__foto { min-height: 300px; } }
   @media (max-width: 600px) { .m4, .m5, .m6 { grid-column: span 12; } }
 
   /* =====================  O BAIRRO: mapa  ===================== */
   .bairro { padding: 0; background: var(--noite); color: var(--areia); }
-  .bairro__cabeca { padding: var(--respiro) var(--lado) clamp(36px, 4vw, 56px); }
+  .bairro__cabeca { padding: calc(var(--respiro) + 50px) var(--lado) clamp(36px, 4vw, 56px); position: relative; }
   .bairro__cabeca .cabeca { margin-bottom: 0; }
-  .bairro .lead { color: color-mix(in srgb, var(--areia) 82%, var(--navy)); }
-  .mapa { position: relative; height: min(88svh, 900px); min-height: 560px; margin: 0 var(--lado) var(--respiro); border-radius: calc(var(--raio) + 6px); overflow: hidden; background: var(--navy); isolation: isolate; }
+  .bairro .lead { color: color-mix(in srgb, var(--areia) 84%, var(--navy)); }
+  .bairro .rotulo { color: var(--onda); }
+  .mapa { position: relative; height: min(88svh, 900px); min-height: 560px; margin: 0 var(--lado); border-radius: calc(var(--raio) + 6px); overflow: hidden; background: var(--navy); isolation: isolate; }
+  .bairro__pe { height: calc(var(--respiro) + 70px); position: relative; }
   .mapa__palco { position: absolute; inset: 0; }
   .mapa__tela, .mapa__tela.maplibregl-map { position: absolute; inset: 0; width: 100%; height: 100%; }
   .mapa__tela .maplibregl-ctrl-attrib { font-size: 12px; background: color-mix(in srgb, var(--navy) 70%, transparent); color: var(--areia); }
   .mapa__tela .maplibregl-ctrl-attrib a { color: var(--areia); }
   .mapa::after { content: ''; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 160px 40px color-mix(in srgb, var(--noite) 85%, transparent); transition: box-shadow 0.8s var(--entra); z-index: 2; }
   .mapa[data-voando]::after { box-shadow: inset 0 0 240px 90px color-mix(in srgb, var(--noite) 92%, transparent); }
-
-  /* faixas de cinema durante os voos */
   .cinema { position: absolute; left: 0; right: 0; height: 0; background: var(--noite); z-index: 3; transition: height 0.7s var(--entra); pointer-events: none; }
   .cinema--cima { top: 0; } .cinema--baixo { bottom: 0; }
   .mapa[data-voando] .cinema { height: 7%; }
-
-  /* HUD de drone: cantos, bússola, altura, rumo, coordenadas */
   .hud { position: absolute; inset: 0; z-index: 4; pointer-events: none; opacity: 0; transition: opacity 0.8s var(--entra) 0.3s; }
   .mapa[data-ativo] .hud { opacity: 1; }
-  .hud__canto { position: absolute; width: 34px; height: 34px; border: 2px solid color-mix(in srgb, var(--areia) 70%, transparent); transition: inset 0.7s var(--entra); }
+  .hud__canto { position: absolute; width: 34px; height: 34px; border: 2px solid color-mix(in srgb, var(--areia) 70%, transparent); }
   .hud__canto:nth-child(1) { top: 20px; left: 20px; border-right: 0; border-bottom: 0; border-radius: 10px 0 0 0; }
   .hud__canto:nth-child(2) { top: 20px; right: 20px; border-left: 0; border-bottom: 0; border-radius: 0 10px 0 0; }
   .hud__canto:nth-child(3) { bottom: 20px; left: 20px; border-right: 0; border-top: 0; border-radius: 0 0 0 10px; }
   .hud__canto:nth-child(4) { bottom: 20px; right: 20px; border-left: 0; border-top: 0; border-radius: 0 0 10px 0; }
   .hud__leituras { position: absolute; top: 28px; left: 70px; display: flex; gap: 22px; font-size: 13.5px; font-weight: 700; letter-spacing: 0.08em; font-variant-numeric: tabular-nums; color: var(--areia); text-shadow: 0 1px 8px color-mix(in srgb, var(--noite) 80%, transparent); }
-  .hud__leituras span small { display: block; font-size: 12.5px; letter-spacing: 0.18em; color: var(--onda); }
+  .hud__leituras span small { display: block; font-size: 12.5px; letter-spacing: 0.16em; color: var(--onda); }
   .hud__bussola { position: absolute; top: 22px; right: 72px; width: 54px; height: 54px; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--areia) 55%, transparent); background: color-mix(in srgb, var(--noite) 55%, transparent); }
   .hud__bussola-agulha { position: absolute; inset: 6px; transition: transform 0.1s linear; }
-  .hud__bussola-agulha::before { content: 'N'; position: absolute; top: -1px; left: 50%; translate: -50% 0; font-size: 11px; font-weight: 800; color: var(--onda); }
+  .hud__bussola-agulha::before { content: 'N'; position: absolute; top: -1px; left: 50%; translate: -50% 0; font-size: 12px; font-weight: 800; color: var(--onda); }
   .hud__bussola-agulha::after { content: ''; position: absolute; left: 50%; top: 14px; bottom: 8px; width: 2px; margin-left: -1px; background: linear-gradient(var(--onda) 50%, var(--areia) 50%); border-radius: 2px; }
   .hud__coord { position: absolute; left: 70px; top: 76px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; color: color-mix(in srgb, var(--areia) 85%, transparent); font-variant-numeric: tabular-nums; }
   .hud__motor { position: absolute; right: 72px; bottom: 30px; font-size: 12.5px; color: color-mix(in srgb, var(--areia) 70%, transparent); }
   @media (max-width: 760px) { .hud__leituras { left: 24px; top: 26px; gap: 14px; font-size: 12.5px; } .hud__canto { display: none; } .hud__bussola { right: 18px; top: 18px; width: 46px; height: 46px; } .hud__coord { display: none; } .hud__motor { right: 16px; bottom: 8px; } }
-
-  /* mira e varredura no centro */
   .varredura, .mira { position: absolute; left: 50%; top: 50%; z-index: 3; pointer-events: none; }
   .varredura { width: 220px; height: 220px; border-radius: 50%; border: 2px solid var(--onda); box-shadow: 0 0 0 1px color-mix(in srgb, var(--onda) 30%, transparent), inset 0 0 40px color-mix(in srgb, var(--onda) 25%, transparent); }
   .mira { width: 120px; height: 120px; }
@@ -305,22 +375,18 @@
   .mira i:nth-child(2) { top: 0; right: 0; border-left: 0; border-bottom: 0; }
   .mira i:nth-child(3) { bottom: 0; left: 0; border-right: 0; border-top: 0; }
   .mira i:nth-child(4) { bottom: 0; right: 0; border-left: 0; border-top: 0; }
-
-  /* tela de abertura: o "aperte para começar" */
   .mapa__abertura { position: absolute; inset: 0; z-index: 6; display: grid; place-items: center; text-align: center; padding: 24px; background: radial-gradient(60% 60% at 50% 50%, color-mix(in srgb, var(--noite) 35%, transparent), color-mix(in srgb, var(--noite) 80%, transparent)); transition: opacity 0.9s var(--entra), visibility 0.9s; }
   .mapa[data-ativo] .mapa__abertura { opacity: 0; visibility: hidden; }
   .mapa__abertura > div { display: grid; justify-items: center; gap: 20px; }
-  .mapa__abertura p { margin: 0; max-width: 34ch; font-size: 18px; color: color-mix(in srgb, var(--areia) 88%, var(--navy)); }
-  .mapa__comecar { position: relative; display: inline-flex; align-items: center; gap: 14px; min-height: 64px; padding: 0 34px; border-radius: 100px; border: 0; background: var(--onda); color: var(--navy); font-size: 19px; font-weight: 800; letter-spacing: -0.01em; }
+  .mapa__abertura p { margin: 0; max-width: 34ch; font-size: 18px; color: color-mix(in srgb, var(--areia) 90%, var(--navy)); }
+  .mapa__comecar { position: relative; display: inline-flex; align-items: center; gap: 14px; min-height: 64px; padding: 0 34px; border-radius: 100px; border: 0; background: var(--onda); color: var(--navy); font-size: 19px; font-weight: 800; }
   .mapa__comecar::before, .mapa__comecar::after { content: ''; position: absolute; inset: -8px; border-radius: inherit; border: 2px solid var(--onda); opacity: 0; animation: pulso 2.4s var(--entra) infinite; }
   .mapa__comecar::after { animation-delay: 1.2s; }
   @keyframes pulso { 0% { transform: scale(0.92); opacity: 0.8; } 100% { transform: scale(1.35); opacity: 0; } }
   .mapa__comecar svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .mapa__dica { font-size: 14px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--areia); opacity: 0.8; }
+  .mapa__dica { font-size: 14px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--areia); opacity: 0.85; }
   .mapa__carregando { position: absolute; inset: auto 0 22px; text-align: center; font-size: 14px; font-weight: 600; color: var(--areia); opacity: 0.75; z-index: 6; }
   .mapa[data-carregado] .mapa__carregando { display: none; }
-
-  /* lista de áreas */
   .mapa__lista { position: absolute; z-index: 5; left: 50%; bottom: 26px; translate: -50% 0; display: flex; gap: 8px; padding: 6px; border-radius: 100px; background: color-mix(in srgb, var(--noite) 82%, transparent); border: 1px solid color-mix(in srgb, var(--areia) 18%, transparent); transition: opacity 0.5s var(--entra), translate 0.6s var(--entra); }
   .mapa__item { display: inline-flex; align-items: center; gap: 10px; min-height: 46px; padding: 0 18px; border: 0; border-radius: 100px; background: transparent; color: var(--areia); font-size: 15.5px; font-weight: 700; white-space: nowrap; transition: background-color 0.3s var(--entra), color 0.3s var(--entra); }
   .mapa__item:hover { background: color-mix(in srgb, var(--areia) 12%, transparent); }
@@ -332,25 +398,21 @@
     .mapa__lista { left: 12px; right: 12px; translate: none; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; bottom: 14px; }
     .mapa[data-painel] .mapa__lista { opacity: 0; pointer-events: none; translate: none; }
   }
-
-  /* pino do MapLibre */
   .pino { position: relative; width: 0; height: 0; border: 0; padding: 0; background: none; }
   .pino__nucleo { position: absolute; left: -11px; top: -46px; width: 22px; height: 22px; border-radius: 50%; background: var(--onda); border: 3px solid var(--navy); box-shadow: 0 0 0 3px var(--areia); }
   .pino__nucleo::after { content: ''; position: absolute; left: 50%; top: 100%; width: 2px; height: 22px; margin-left: -1px; background: linear-gradient(var(--areia), transparent); }
   .pino__onda { position: absolute; left: -26px; top: -61px; width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--onda); animation: pulso 2.2s var(--entra) infinite; }
   .pino__nome { position: absolute; left: 20px; top: -50px; white-space: nowrap; padding: 6px 12px; border-radius: 100px; background: var(--navy); color: var(--areia); font-size: 14px; font-weight: 700; transition: background-color 0.3s, color 0.3s; }
   .pino:hover .pino__nome, .pino:focus-visible .pino__nome { background: var(--onda); color: var(--navy); }
-
-  /* painel lateral */
-  .painel { position: absolute; z-index: 7; top: 16px; right: 16px; bottom: 16px; width: min(500px, 42%); overflow-y: auto; overscroll-behavior: contain; border-radius: 22px; background: var(--areia); color: var(--navy); --tinta: var(--navy); --fraco: color-mix(in srgb, var(--navy) 78%, var(--areia)); --linha: color-mix(in srgb, var(--navy) 16%, transparent); scrollbar-width: thin; }
+  .painel { position: absolute; z-index: 7; top: 16px; right: 16px; bottom: 16px; width: min(500px, 42%); overflow-y: auto; overscroll-behavior: contain; border-radius: 22px; background: var(--papel); color: var(--navy); --tinta: var(--navy); --fraco: color-mix(in srgb, var(--navy) 80%, var(--areia)); --linha: color-mix(in srgb, var(--navy) 16%, transparent); scrollbar-width: thin; }
   .painel[hidden] { display: none; }
   .painel__folha { padding: 22px clamp(20px, 2.4vw, 32px) 32px; display: grid; gap: 16px; align-content: start; }
   .painel__folha[hidden] { display: none; }
-  .painel__folha--materia { position: absolute; inset: 0 0 auto; min-height: 100%; background: var(--areia); }
+  .painel__folha--materia { position: absolute; inset: 0 0 auto; min-height: 100%; background: var(--papel); }
   .painel__topo { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .painel__n { font-size: 34px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
   .painel__n small { font-size: 16px; font-weight: 700; color: var(--fraco); margin-left: 2px; }
-  .painel__fechar { width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--linha-forte, rgba(31,42,68,.3)); background: transparent; display: grid; place-items: center; transition: background-color 0.3s, transform 0.3s var(--entra); flex: none; }
+  .painel__fechar { width: 46px; height: 46px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--navy) 30%, transparent); background: transparent; display: grid; place-items: center; transition: background-color 0.3s, transform 0.3s var(--entra); flex: none; }
   .painel__fechar:hover { background: var(--navy); color: var(--areia); transform: rotate(90deg); }
   .painel__fechar svg, .painel__voltar svg, .materia-cartao__seta { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .painel__voltar { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px 0 10px; border-radius: 100px; border: 1px solid color-mix(in srgb, var(--navy) 30%, transparent); background: transparent; font-size: 15.5px; font-weight: 700; }
@@ -370,7 +432,7 @@
   .painel__miniaturas button[data-aqui] { border-color: var(--navy); }
   .painel__miniaturas button:hover { transform: translateY(-3px); }
   .painel__miniaturas img { width: 100%; height: 100%; object-fit: cover; }
-  .painel__ficha { margin: 4px 0 0; display: grid; gap: 0; border-top: 1px solid var(--linha); }
+  .painel__ficha { margin: 4px 0 0; display: grid; border-top: 1px solid var(--linha); }
   .painel__ficha div { display: grid; grid-template-columns: 120px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--linha); }
   .painel__ficha dt { font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mar); }
   .painel__ficha dd { margin: 0; font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
@@ -378,19 +440,19 @@
   .painel__secao { display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
   .painel__secao span { font-size: 14px; font-weight: 700; color: var(--fraco); letter-spacing: 0.04em; }
   .painel__materias { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-  .materia-cartao { width: 100%; display: grid; grid-template-columns: 88px 1fr 22px; gap: 14px; align-items: center; padding: 10px; border: 1px solid var(--linha); border-radius: 16px; background: var(--areia-clara); text-align: left; transition: border-color 0.3s, transform 0.4s var(--entra), background-color 0.3s; }
+  .materia-cartao { width: 100%; display: grid; grid-template-columns: 88px 1fr 22px; gap: 14px; align-items: center; padding: 10px; border: 1px solid var(--linha); border-radius: 16px; background: var(--areia-clara); text-align: left; transition: border-color 0.3s, transform 0.4s var(--entra); }
   .materia-cartao:hover { border-color: var(--navy); transform: translateX(4px); }
   .materia-cartao__foto { width: 88px; height: 88px; border-radius: 12px; overflow: hidden; background: var(--areia-funda); display: grid; place-items: center; }
   .materia-cartao__foto img { width: 100%; height: 100%; object-fit: cover; }
   .materia-cartao__foto--vazia svg { width: 48px; fill: none; stroke: var(--onda); stroke-width: 3; stroke-linecap: round; }
   .materia-cartao__texto { display: grid; gap: 2px; }
   .materia-cartao__texto small { font-size: 13.5px; font-weight: 700; color: var(--mar); letter-spacing: 0.04em; }
-  .materia-cartao__texto b { font-size: 17px; font-weight: 750; line-height: 1.25; letter-spacing: -0.01em; }
+  .materia-cartao__texto b { font-size: 17px; font-weight: 750; line-height: 1.25; }
   .materia-cartao__texto span { font-size: 15px; color: var(--fraco); line-height: 1.4; }
   .materia__resumo { margin: 0; font-size: 19px; font-weight: 650; line-height: 1.45; }
   .materia__corpo { margin: 0; color: var(--fraco); font-size: 17px; }
   .materia__fotos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
-  .materia__fotos[data-n="1"], .materia__fotos[data-n="3"] figure:first-child { grid-column: 1 / -1; }
+  .materia__fotos[data-n="1"] figure, .materia__fotos[data-n="3"] figure:first-child { grid-column: 1 / -1; }
   .materia__fotos figure { margin: 0; }
   .materia__fotos span { display: block; border-radius: 14px; overflow: hidden; background: var(--areia-funda); aspect-ratio: 1; }
   .materia__fotos img { width: 100%; height: 100%; object-fit: contain; }
@@ -402,99 +464,124 @@
     .painel__ficha div { grid-template-columns: 1fr; gap: 2px; }
   }
 
-  /* =====================  LINHA DO TEMPO EM ONDAS  ===================== */
-  .tempo { padding: 0; }
-  .tempo__cabeca { padding: var(--respiro) var(--lado) 0; }
+  /* =====================  LINHA DO TEMPO EM ONDAS  =====================
+     Três faixas fixas: cartões de cima, a faixa da onda, cartões de baixo.
+     Os pontos moram só na faixa do meio, nunca em cima de um texto. */
+  .tempo { padding: 0; overflow: clip; }
+  .tempo__cabeca { padding: var(--respiro) var(--lado) 0; position: relative; z-index: 1; }
+  .tempo .arco--1 { width: clamp(280px, 30vw, 420px); aspect-ratio: 1; right: -8vw; top: 40px; border-color: var(--onda); }
   .tempo__pista { position: relative; }
-  .tempo__fixo { position: sticky; top: 0; height: 100svh; overflow: hidden; display: flex; align-items: center; }
-  .tempo__trilho { position: relative; display: flex; align-items: center; height: 100%; padding: 0 var(--lado); will-change: transform; }
-  .tempo__onda { position: absolute; left: 0; top: 50%; height: 220px; translate: 0 -50%; overflow: visible; pointer-events: none; }
+  .tempo__fixo { position: sticky; top: 0; height: 100svh; overflow: hidden; padding: 64px 0 52px; }
+  .tempo__trilho { --banda: 120px; --amp: 30px; position: relative; display: flex; height: 100%; padding: 0 var(--lado); will-change: transform; }
+  .tempo__onda { position: absolute; left: 0; top: 50%; height: var(--banda); translate: 0 -50%; overflow: visible; pointer-events: none; z-index: 0; }
   .tempo__onda .base { fill: none; stroke: var(--linha-forte); stroke-width: 2; stroke-dasharray: 2 10; stroke-linecap: round; }
   .tempo__onda .feita { fill: none; stroke: var(--onda); stroke-width: 5; stroke-linecap: round; }
-  .marco { position: relative; flex: none; width: clamp(280px, 26vw, 360px); margin-right: clamp(40px, 5vw, 90px); display: grid; gap: 14px; z-index: 1; }
-  .marco[data-lado="cima"] { align-self: flex-start; margin-top: max(96px, 9vh); }
-  .marco[data-lado="baixo"] { align-self: flex-end; margin-bottom: max(56px, 6vh); }
-  .marco__data { font-size: 15px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mar); }
-  .marco h3 { font-size: clamp(22px, 1.9vw, 27px); font-weight: 800; letter-spacing: -0.025em; line-height: 1.15; }
-  .marco p { margin: 0; font-size: 16.5px; color: var(--fraco); line-height: 1.5; }
-  .marco__foto { border-radius: 16px; overflow: hidden; background: var(--areia-funda); aspect-ratio: 4 / 3; }
+  .marco { position: relative; flex: none; width: clamp(280px, 24vw, 320px); margin-right: -40px; display: grid; grid-template-rows: 1fr var(--banda) 1fr; z-index: 1; }
+  .marco__cartao { display: grid; gap: 10px; padding-right: 60px; }
+  .marco[data-lado="cima"] .marco__cartao { grid-row: 1; align-self: end; align-content: end; padding-bottom: 6px; }
+  .marco[data-lado="baixo"] .marco__cartao { grid-row: 3; align-self: start; align-content: start; padding-top: 6px; }
+  .marco__data { font-size: 14.5px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mar); }
+  .marco h3 { font-size: clamp(20px, 1.7vw, 24px); font-weight: 800; letter-spacing: -0.025em; line-height: 1.15; }
+  .marco p { margin: 0; font-size: 16px; color: var(--fraco); line-height: 1.5; }
+  .marco__foto { border-radius: 16px; overflow: hidden; background: var(--areia-funda); aspect-ratio: 5 / 2; }
+  @media (min-height: 960px) { .marco__foto { aspect-ratio: 2 / 1; } }
+  @media (max-height: 820px) { .marco__foto { aspect-ratio: 3 / 1; } .marco--destaque .marco__cartao { padding: 18px 20px; } .contagem b { font-size: 30px; } .marco h3 { font-size: 20px; } }
   .marco__foto img { width: 100%; height: 100%; object-fit: cover; }
-  .marco__grafico { display: grid; place-items: center; color: var(--navy); }
-  .marco__grafico svg { width: 46%; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
-  .marco__ponto { position: absolute; left: 0; width: 18px; height: 18px; border-radius: 50%; background: var(--navy); border: 3px solid var(--areia); box-shadow: 0 0 0 2px var(--navy); }
-  .marco[data-lado="cima"] .marco__ponto { bottom: -40px; }
-  .marco[data-lado="baixo"] .marco__ponto { top: -40px; }
+  .marco__grafico svg { width: 100%; height: 100%; }
+  .marco__ponto { position: absolute; left: 6px; width: 18px; height: 18px; margin-top: -9px; border-radius: 50%; background: var(--navy); border: 3px solid var(--papel); box-shadow: 0 0 0 2px var(--navy); z-index: 2; }
+  .marco[data-lado="cima"] .marco__ponto { top: calc(50% - var(--amp)); }
+  .marco[data-lado="baixo"] .marco__ponto { top: calc(50% + var(--amp)); }
   .marco[data-futuro] .marco__ponto { background: var(--onda); box-shadow: 0 0 0 2px var(--onda); }
   .marco[data-futuro] .marco__ponto::after { content: ''; position: absolute; inset: -10px; border-radius: 50%; border: 2px solid var(--onda); animation: pulso 2.2s var(--entra) infinite; }
-  .marco--destaque { width: clamp(320px, 34vw, 470px); padding: clamp(24px, 2.6vw, 36px); border-radius: var(--raio); background: var(--navy); color: var(--areia); }
+  .marco--destaque { width: clamp(360px, 32vw, 440px); }
+  .marco--destaque .marco__cartao { padding: 22px 24px; gap: 8px; border-radius: var(--raio); background: var(--navy); color: var(--areia); margin-right: 50px; }
   .marco--destaque .marco__data { color: var(--onda); }
-  .marco--destaque h3 { font-size: clamp(28px, 2.7vw, 40px); font-weight: 900; line-height: 1.02; }
+  .marco--destaque h3 { font-size: clamp(24px, 2.2vw, 32px); font-weight: 900; line-height: 1.04; }
   .marco--destaque p { color: color-mix(in srgb, var(--areia) 84%, var(--navy)); }
-  .marco--destaque .marco__ponto { left: 32px; }
-  .marco--destaque .contagem { display: flex; gap: 16px; margin-top: 6px; }
+  .contagem { display: flex; gap: 16px; margin-top: 4px; }
   .contagem div { display: grid; }
-  .contagem b { font-size: clamp(34px, 3vw, 46px); font-weight: 900; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; color: var(--onda); }
-  .contagem span { font-size: 13.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
-  .hoje { position: absolute; top: 50%; z-index: 2; translate: -50% -50%; display: grid; justify-items: center; gap: 8px; pointer-events: none; }
-  .hoje b { padding: 6px 12px; border-radius: 100px; background: var(--onda); color: var(--navy); font-size: 13.5px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap; }
-  .hoje i { width: 3px; height: 120px; border-radius: 3px; background: linear-gradient(var(--onda), transparent); }
+  .contagem b { font-size: clamp(30px, 2.6vw, 40px); font-weight: 900; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; color: var(--onda); }
+  .contagem span { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .hoje { flex: none; width: 100px; margin-right: -10px; display: grid; grid-template-rows: 1fr var(--banda) 1fr; position: relative; z-index: 2; pointer-events: none; }
+  .hoje > div { grid-row: 2; display: grid; place-items: center; }
+  .hoje b { padding: 7px 14px; border-radius: 100px; background: var(--navy); color: var(--areia); font-size: 13.5px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 0 0 4px var(--papel); }
   .tempo__progresso { position: absolute; left: var(--lado); right: var(--lado); bottom: 28px; height: 3px; border-radius: 3px; background: var(--linha); z-index: 3; }
   .tempo__progresso span { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: inherit; background: var(--navy); }
-  /* telas estreitas e movimento reduzido: a linha vira vertical, sem trilho fixo */
-  @media (max-width: 899px), (prefers-reduced-motion: reduce) {
-    .tempo__fixo { position: relative; height: auto; overflow: visible; display: block; padding: 56px var(--lado) var(--respiro); }
+  /* telas estreitas, baixas e movimento reduzido: a linha vira vertical */
+  @media (max-width: 899px), (max-height: 700px), (prefers-reduced-motion: reduce) {
+    .tempo__fixo { position: relative; height: auto; overflow: visible; padding: 56px var(--lado) var(--respiro); }
     .tempo__trilho { display: grid; gap: 40px; padding: 0 0 0 40px; transform: none !important; height: auto; }
     .tempo__onda { display: none; }
     .tempo__trilho::before { content: ''; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: linear-gradient(var(--navy) var(--feito, 0%), var(--linha-forte) var(--feito, 0%)); }
-    .marco, .marco--destaque { width: auto; margin: 0 !important; align-self: auto !important; }
-    .marco__ponto, .marco[data-lado] .marco__ponto, .marco--destaque .marco__ponto { left: -40px; top: 4px; bottom: auto; }
-    .marco--destaque .marco__ponto { left: -40px; }
-    .hoje { position: relative; top: auto; translate: none; justify-items: start; }
-    .hoje i { display: none; }
+    .marco, .marco--destaque { width: auto; max-width: 560px; margin: 0; display: block; }
+    .marco__cartao, .marco[data-lado] .marco__cartao { padding: 0; }
+    .marco--destaque .marco__cartao { padding: 24px; margin: 0; }
+    .marco__ponto, .marco[data-lado] .marco__ponto { left: -40px; top: 4px; margin-top: 0; }
+    .hoje { width: auto; margin: 0; display: block; }
+    .hoje > div { justify-items: start; }
     .tempo__progresso { display: none; }
     .tempo__pista { height: auto !important; }
   }
+  /* o mesmo modo vertical quando os cartões não cabem na altura da tela */
+  .tempo[data-vertical] .tempo__fixo { position: relative; height: auto; overflow: visible; padding: 56px var(--lado) var(--respiro); }
+  .tempo[data-vertical] .tempo__trilho { display: grid; gap: 40px; padding: 0 0 0 40px; transform: none !important; height: auto; }
+  .tempo[data-vertical] .tempo__onda { display: none; }
+  .tempo[data-vertical] .tempo__trilho::before { content: ''; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: linear-gradient(var(--navy) var(--feito, 0%), var(--linha-forte) var(--feito, 0%)); }
+  .tempo[data-vertical] .marco, .tempo[data-vertical] .marco--destaque { width: auto; max-width: 560px; margin: 0; display: block; }
+  .tempo[data-vertical] .marco__cartao, .tempo[data-vertical] .marco[data-lado] .marco__cartao { padding: 0; }
+  .tempo[data-vertical] .marco--destaque .marco__cartao { padding: 24px; margin: 0; }
+  .tempo[data-vertical] .marco__ponto, .tempo[data-vertical] .marco[data-lado] .marco__ponto { left: -40px; top: 4px; margin-top: 0; }
+  .tempo[data-vertical] .hoje { width: auto; margin: 0; display: block; }
+  .tempo[data-vertical] .hoje > div { justify-items: start; }
+  .tempo[data-vertical] .tempo__progresso { display: none; }
+  .tempo[data-vertical] .tempo__pista { height: auto !important; }
 
   /* =====================  ORGANIZAÇÃO  ===================== */
+  .org { background: var(--duna); overflow: hidden; }
+  .org .caixa { z-index: 1; }
+  .org .arco--1 { width: clamp(340px, 36vw, 520px); aspect-ratio: 1; left: -16vw; bottom: -12%; }
+  .org .rabisco--3 { width: clamp(160px, 18vw, 240px); right: 3%; top: 70px; }
   .organograma { display: grid; grid-template-columns: repeat(2, 1fr); gap: 48px 18px; position: relative; }
-  .orgao { position: relative; z-index: 1; padding: clamp(24px, 2.6vw, 36px); border-radius: var(--raio); background: var(--areia-clara); border: 1px solid var(--linha); display: grid; gap: 10px; align-content: start; }
-  .orgao--topo { grid-column: 1 / -1; background: var(--navy); color: var(--areia); border: 0; }
-  .orgao--base { grid-column: 1 / -1; background: var(--mar); color: var(--branco); border: 0; }
+  .orgao { position: relative; z-index: 1; padding: clamp(24px, 2.6vw, 36px); border-radius: var(--raio); background: var(--areia-clara); display: grid; gap: 14px; align-content: start; }
+  .orgao__topo { display: flex; align-items: center; gap: 16px; }
+  .orgao__topo > div { display: grid; gap: 4px; }
+  .orgao--topo { grid-column: 1 / -1; background: var(--navy); color: var(--areia); }
+  .orgao--base { grid-column: 1 / -1; background: var(--mar); color: var(--branco); }
   .orgao small { font-size: 14px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mar); }
   .orgao--topo small { color: var(--onda); } .orgao--base small { color: var(--areia); }
   .orgao h3 { font-size: clamp(26px, 2.4vw, 34px); font-weight: 850; line-height: 1.05; }
   .orgao p { margin: 0; font-size: 17px; color: var(--fraco); }
   .orgao--topo p { color: color-mix(in srgb, var(--areia) 84%, var(--navy)); }
   .orgao--base p { color: color-mix(in srgb, var(--branco) 90%, var(--mar)); }
-  .orgao__dados { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 6px; }
+  .orgao__dados { display: flex; flex-wrap: wrap; gap: 8px 24px; }
   .orgao__dados span { font-size: 16px; font-weight: 700; }
   .orgao__dados b { font-size: clamp(30px, 2.6vw, 40px); font-weight: 900; letter-spacing: -0.04em; margin-right: 6px; }
   .ligacoes { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; overflow: visible; pointer-events: none; }
   .ligacoes path { fill: none; stroke: var(--navy); stroke-width: 2; stroke-dasharray: 5 7; stroke-linecap: round; }
   .ligacoes circle { fill: var(--onda); }
-  .aviso { margin-top: clamp(40px, 5vw, 64px); display: grid; grid-template-columns: auto 1fr; gap: 20px 28px; align-items: center; padding: clamp(24px, 3vw, 40px); border-radius: var(--raio); background: var(--onda); color: var(--navy); }
+  .aviso { margin-top: clamp(40px, 5vw, 64px); display: grid; grid-template-columns: auto 1fr; gap: 20px 28px; align-items: center; padding: clamp(24px, 3vw, 40px); border-radius: var(--raio); background: var(--onda); color: var(--navy); position: relative; overflow: hidden; }
   .aviso b { font-size: clamp(60px, 7vw, 104px); font-weight: 900; letter-spacing: -0.06em; line-height: 0.85; }
   .aviso p { margin: 0; font-size: clamp(20px, 1.8vw, 26px); font-weight: 750; line-height: 1.3; letter-spacing: -0.015em; max-width: 40ch; }
   .aviso p small { display: block; margin-top: 8px; font-size: 15px; font-weight: 700; letter-spacing: 0.04em; }
+  .aviso .tracos { position: absolute; right: 24px; top: 22px; color: var(--navy); }
   @media (max-width: 760px) { .organograma { grid-template-columns: 1fr; gap: 14px; } .ligacoes { display: none; } .aviso { grid-template-columns: 1fr; } }
   .documentos { margin-top: clamp(40px, 5vw, 64px); display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  .doc { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; padding: 22px 24px; border-radius: 18px; border: 1.5px solid var(--navy); text-decoration: none; transition: background-color 0.3s var(--entra), color 0.3s var(--entra); }
+  .doc { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; padding: 22px 24px; border-radius: 18px; background: var(--areia-clara); text-decoration: none; transition: background-color 0.3s var(--entra), color 0.3s var(--entra); }
   .doc:hover { background: var(--navy); color: var(--areia); }
   .doc svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-  .doc b { display: block; font-size: 19px; font-weight: 800; letter-spacing: -0.01em; }
-  .doc span { font-size: 15px; font-weight: 600; opacity: 0.8; }
+  .doc b { display: block; font-size: 19px; font-weight: 800; }
+  .doc span { font-size: 15px; font-weight: 600; opacity: 0.85; }
   @media (max-width: 760px) { .documentos { grid-template-columns: 1fr; } }
 
   /* =====================  FECHO  ===================== */
-  .fecho { padding: 0 var(--lado) var(--respiro); }
-  .fecho__cartao { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); border-radius: calc(var(--raio) + 6px); overflow: hidden; background: var(--navy); color: var(--areia); }
-  .fecho__foto { position: relative; min-height: 420px; }
-  .fecho__foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .fecho__texto { padding: clamp(32px, 5vw, 80px); display: grid; gap: 24px; align-content: center; }
-  .fecho__texto .lead { color: color-mix(in srgb, var(--areia) 84%, var(--navy)); }
+  .fecho .placa { margin: 0; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(32px, 5vw, 72px); align-items: center; padding-bottom: clamp(150px, 16vw, 230px); }
+  .fecho__texto { display: grid; gap: 22px; }
+  .fecho__texto .lead { color: color-mix(in srgb, var(--areia) 86%, var(--navy)); }
   .fecho .btn--linha { color: var(--areia); border-color: color-mix(in srgb, var(--areia) 40%, transparent); }
   .fecho .btn--linha:hover { border-color: var(--areia); }
-  @media (max-width: 860px) { .fecho__cartao { grid-template-columns: 1fr; } .fecho__foto { min-height: 280px; } }
+  .fecho__foto { margin: 0; rotate: 2.5deg; }
+  .fecho__foto .selo-postal { aspect-ratio: 5 / 4; }
+  @media (max-width: 860px) { .fecho .placa { grid-template-columns: 1fr; } }
 
   /* =====================  RODAPÉ  ===================== */
   .pe { background: var(--navy); color: var(--areia); padding: clamp(56px, 7vw, 96px) var(--lado) 32px; }
@@ -503,9 +590,9 @@
   .pe__grade { display: grid; grid-template-columns: 1.4fr 1fr 1.2fr 1fr; gap: 40px; }
   .pe__coluna { display: grid; gap: 10px; align-content: start; font-size: 16.5px; }
   .pe__coluna > small { font-size: 13.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--onda); margin-bottom: 4px; }
-  .pe__marca { height: 44px; width: auto; max-width: none; align-self: flex-start; justify-self: start; margin-bottom: 10px; }
-  .pe__endereco { color: color-mix(in srgb, var(--areia) 82%, var(--navy)); line-height: 1.55; }
-  .pe__fim { margin-top: 56px; padding-top: 24px; border-top: 1px solid color-mix(in srgb, var(--areia) 16%, transparent); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 15px; color: color-mix(in srgb, var(--areia) 78%, var(--navy)); }
+  .pe__marca { height: 44px; width: auto; max-width: none; justify-self: start; margin-bottom: 10px; }
+  .pe__endereco { color: color-mix(in srgb, var(--areia) 84%, var(--navy)); line-height: 1.55; }
+  .pe__fim { margin-top: 56px; padding-top: 24px; border-top: 1px solid color-mix(in srgb, var(--areia) 16%, transparent); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 15px; color: color-mix(in srgb, var(--areia) 80%, var(--navy)); }
   @media (max-width: 960px) { .pe__grade { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 560px) { .pe__grade { grid-template-columns: 1fr; } }
 
@@ -514,10 +601,27 @@
     [data-revela], .capa [data-capa] { opacity: 1 !important; transform: none !important; }
     .mascara > span { transform: none !important; }
     .capa__foto img { transform: none !important; }
+    .ondas__faixa { clip-path: none; }
+    .desenha path { stroke-dashoffset: 0 !important; }
   }
 </style>
 </head>
 <body>
+
+<!-- Desenhos da marca, reaproveitados pela página -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-folha" viewBox="0 0 24 24"><path d="M21 3C11 3 4.5 7.5 4.5 15c0 1.6.4 3 1.1 4.1L3 21.7 4.3 23l2.6-2.6c1.2.7 2.6 1.1 4.1 1.1C18 21.5 21.5 14 21 3zM9 17.5c1.5-4 4.5-7 8.5-9-3 2.8-5.3 5.8-7 9.6z"/></symbol>
+    <symbol id="i-coracao" viewBox="0 0 24 24"><path d="M12 21.3S2.5 15.4 2.5 8.9A5 5 0 0 1 12 6.3a5 5 0 0 1 9.5 2.6c0 6.5-9.5 12.4-9.5 12.4z"/></symbol>
+    <symbol id="i-veleiro" viewBox="0 0 24 24"><path d="M11 2v14H4zM13 5.5 20.5 16H13zM2.5 18h19l-2.6 3.6H5.1z"/></symbol>
+    <symbol id="i-escudo" viewBox="0 0 24 24"><path d="M12 1.8 3.5 5v6.4c0 5.3 3.6 9.6 8.5 10.8 4.9-1.2 8.5-5.5 8.5-10.8V5zM10.6 15.6 7 12l1.5-1.5 2.1 2.1 4.9-4.9L17 9.2z"/></symbol>
+    <symbol id="i-predio" viewBox="0 0 24 24"><path d="M12 2 2 7.5v2h20v-2zM4 11h3v8H4zM10.5 11h3v8h-3zM17 11h3v8h-3zM2 20.5h20V23H2z"/></symbol>
+    <symbol id="i-maos" viewBox="0 0 24 24"><path d="M8 6V4.5A1.5 1.5 0 0 1 9.5 3h5A1.5 1.5 0 0 1 16 4.5V6h4.5A1.5 1.5 0 0 1 22 7.5V12H2V7.5A1.5 1.5 0 0 1 3.5 6zm2 0h4V5h-4zM2 13.5h8V15h4v-1.5h8v5a1.5 1.5 0 0 1-1.5 1.5h-17A1.5 1.5 0 0 1 2 18.5z"/></symbol>
+    <symbol id="i-casas" viewBox="0 0 24 24"><path d="M1 11 7 6l6 5v11H1zM5 15v7h4v-7zM14 22V12.5l4.5-3.7L23 12.5V22z"/></symbol>
+    <symbol id="i-pessoas" viewBox="0 0 24 24"><circle cx="8" cy="6.5" r="3.5"/><circle cx="17" cy="7.5" r="3"/><path d="M1.5 21c0-4.4 2.9-7.5 6.5-7.5s6.5 3.1 6.5 7.5zM15.5 21c0-2.6-.8-4.8-2.2-6.3a5 5 0 0 1 3.7-1.7c3 0 5.5 2.7 5.5 6.6V21z"/></symbol>
+    <symbol id="tracos" viewBox="0 0 44 26"><path d="M3 4h38M3 13h38M3 22h38" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
 
 <a class="so-leitor" href="#conteudo">Pular para o conteúdo</a>
 
@@ -536,6 +640,10 @@
     <a href="#organizacao">Organização</a>
     <span class="navegar__fio" id="fioMenu" aria-hidden="true"></span>
   </nav>
+  <div class="barra__docs">
+    <a class="doc-mini" href="documentos/estatuto-ajin-2026.pdf" download title="Estatuto da AJIN, PDF de 6,4 MB"><svg viewBox="0 0 16 16"><path d="M8 2v8m0 0 3-3m-3 3L5 7"/><path d="M2.5 11.5v1a1.5 1.5 0 0 0 1.5 1.5h8a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg>Estatuto</a>
+    <a class="doc-mini" href="documentos/revista-ajin-2025-2026.pdf" download title="Relatório de gestão 2025/2026, PDF de 10,1 MB"><svg viewBox="0 0 16 16"><path d="M8 2v8m0 0 3-3m-3 3L5 7"/><path d="M2.5 11.5v1a1.5 1.5 0 0 0 1.5 1.5h8a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg>Relatório de gestão</a>
+  </div>
   <a class="btn barra__acao" href="cadastro/">Associe-se</a>
   <button class="barra__menu" id="abreMenu" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="gaveta"><span></span><span></span><span></span></button>
 </header>
@@ -547,6 +655,10 @@
   <a href="#bairro">O bairro</a>
   <a href="#linha-do-tempo">Linha do tempo</a>
   <a href="#organizacao">Organização</a>
+  <div class="gaveta__docs">
+    <a class="doc-mini" href="documentos/estatuto-ajin-2026.pdf" download><svg viewBox="0 0 16 16"><path d="M8 2v8m0 0 3-3m-3 3L5 7"/><path d="M2.5 11.5v1a1.5 1.5 0 0 0 1.5 1.5h8a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg>Estatuto</a>
+    <a class="doc-mini" href="documentos/revista-ajin-2025-2026.pdf" download><svg viewBox="0 0 16 16"><path d="M8 2v8m0 0 3-3m-3 3L5 7"/><path d="M2.5 11.5v1a1.5 1.5 0 0 0 1.5 1.5h8a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg>Relatório de gestão</a>
+  </div>
   <a class="btn" href="cadastro/">Associe-se</a>
 </nav>
 
@@ -554,7 +666,7 @@
 
 <!-- =====================  1. CAPA  ===================== -->
 <section id="topo" class="capa">
-  <div class="capa__foto"><img src="fotos/bairro-aereo.jpg" alt="Vista aérea de Jurerê Internacional ao entardecer, com a baía e os morros ao fundo" fetchpriority="high" /></div>
+  <div class="capa__foto"><img src="fotos/capa-bairro.jpg" srcset="fotos/capa-bairro-m.jpg 1600w, fotos/capa-bairro.jpg 3200w" sizes="100vw" alt="Jurerê Internacional visto do alto: as ruas do bairro entre as áreas verdes" fetchpriority="high" /></div>
   <div class="capa__conteudo caixa">
     <div class="capa__texto">
       <span class="rotulo" data-capa style="transition-delay:.1s">Associação Jurerê Internacional</span>
@@ -563,7 +675,7 @@
         <span class="mascara"><span>a voz de Jurerê</span></span>
         <span class="mascara"><span>Internacional.</span></span>
       </h1>
-      <p class="lead" data-capa style="transition-delay:.7s">Desde 1º de dezembro de 1986, a AJIN representa associados, proprietários, moradores e visitantes, e cuida da identidade do bairro.</p>
+      <p class="lead" data-capa style="transition-delay:.7s">Desde 1º de dezembro de 1986, a AJIN representa associados, proprietários e moradores, e cuida da identidade do bairro.</p>
       <div class="acoes" data-capa style="transition-delay:.85s">
         <a class="btn" href="#quem-somos">Conheça a AJIN <svg viewBox="0 0 20 20"><path d="M4 10h12m-5-5 5 5-5 5"/></svg></a>
         <a class="btn btn--linha" href="#bairro">Ver o bairro do alto</a>
@@ -577,46 +689,41 @@
       <div class="selo__meio" aria-hidden="true"><b>40</b><span>anos</span></div>
     </div>
   </div>
-  <a class="capa__rolar" href="#quem-somos" aria-label="Rolar para Quem somos"></a>
+  <svg class="curva curva--base" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path class="chao" d="M0 70 C 260 120, 520 120, 760 80 S 1180 10, 1440 60 V120 H0z"/><path class="fio" d="M-10 64 C 250 118, 520 116, 760 74 S 1180 4, 1450 54"/></svg>
 </section>
 
 <!-- =====================  2. QUEM SOMOS  ===================== -->
-<section id="quem-somos">
+<section id="quem-somos" class="quem textura">
+  <span class="arco arco--1" data-paralaxe="0.12" aria-hidden="true"></span>
   <div class="caixa">
     <div class="quem__grade">
-      <div data-revela>
-        <span class="rotulo">Quem somos</span>
-        <h2 class="t-secao">Jurerê Internacional é mais do que um endereço. É uma comunidade que escolheu preservar uma <span class="sublinha">forma de viver.</span></h2>
-      </div>
-      <div class="quem__lado">
+      <div class="quem__texto">
+        <span class="rotulo" data-revela>Quem somos</span>
+        <h2 class="t-secao" data-revela>Mais do que um endereço, uma comunidade que escolheu preservar uma <span class="sublinha">forma de viver.</span></h2>
         <p class="lead" data-revela>A AJIN é uma associação civil, sem fins econômicos, criada por quem vive o bairro para cuidar dele.</p>
-        <p class="corpo" data-revela>Representamos <b>associados, proprietários, moradores e visitantes</b> perante o poder público, as empresas e as instituições que atuam em Jurerê Internacional. E cuidamos, todos os dias, do que faz o bairro ser o que é: a segurança, os espaços públicos, a natureza e a convivência entre as pessoas.</p>
+        <p class="corpo" data-revela>Representamos <b>associados, proprietários e moradores</b> perante o poder público e as instituições, e cuidamos todos os dias do que faz o bairro ser o que é: segurança, espaços públicos, natureza e convivência.</p>
+      </div>
+      <div class="quem__colagem" aria-label="Fotos do trabalho da AJIN">
+        <span class="sol" data-paralaxe="-0.06" aria-hidden="true"></span>
+        <svg class="rabisco rabisco--1 desenha" viewBox="0 0 280 120" data-revela aria-hidden="true"><path d="M6 80 C 40 20, 80 20, 96 70 S 150 120, 170 60 S 230 0, 274 40"/></svg>
+        <figure class="c1 sombra" data-paralaxe="0.08"><div class="selo-postal"><img src="fotos/curumins-familia-m.jpg" alt="Mãe e filha no Parquinho dos Curumins, área adotada pela AJIN" loading="lazy" /></div><figcaption class="selo-legenda">Parquinho dos Curumins</figcaption></figure>
+        <figure class="c2 sombra" data-paralaxe="-0.05"><div class="selo-postal"><img src="fotos/seguranca-viatura.jpg" alt="Agente da segurança da AJIN ao lado da viatura" loading="lazy" style="object-position:50% 35%" /></div><figcaption class="selo-legenda">Segurança 24h</figcaption></figure>
+        <figure class="c3 sombra" data-paralaxe="0.16"><div class="selo-postal"><img src="fotos/horta-baldinho-grupo-m.jpg" alt="Famílias com a colheita na Horta Comunitária do Pé-de-Fruta" loading="lazy" /></div><figcaption class="selo-legenda">Horta Comunitária</figcaption></figure>
       </div>
     </div>
 
-    <div class="numeros" data-revela>
-      <div class="numero"><b data-conta="1986">1986</b><span>ano de fundação da AJIN</span></div>
-      <div class="numero"><b><span data-conta="40">40</span><small>anos</small></b><span>completos em 1º de dezembro de 2026</span></div>
-      <div class="numero"><b data-conta="3">3</b><span>áreas públicas adotadas e mantidas</span></div>
-      <div class="numero"><b>24<small>h</small></b><span>de segurança comunitária, todos os dias</span></div>
-    </div>
-
-    <div class="vitrine">
-      <figure class="vitrine__grande" data-revela style="margin:0">
-        <div class="vitrine__moldura"><img src="fotos/jurere-orla-m.jpg" alt="Orla de Jurerê Internacional vista do alto, com a faixa de restinga entre as casas e a praia" loading="lazy" /></div>
-        <figcaption class="legenda">A orla de Jurerê Internacional: casas, restinga e praia num mesmo desenho.</figcaption>
-      </figure>
-      <figure class="vitrine__pequena" data-revela style="margin:0">
-        <img src="fotos/capa-saraiva.jpg" alt="O associado Manoel Saraiva cercado de crianças na horta comunitária" loading="lazy" />
-        <figcaption class="legenda">O Sr. Manoel Saraiva, associado de 102 anos, com as crianças na horta que leva o seu nome.</figcaption>
-      </figure>
+    <div class="numeros">
+      <div class="numero" data-revela><span class="icone icone--onda"><svg><use href="#i-veleiro"/></svg></span><b data-conta="1986">1986</b><span>ano de fundação da AJIN</span></div>
+      <div class="numero" data-revela><span class="icone icone--onda"><svg><use href="#i-coracao"/></svg></span><b><span data-conta="40">40</span><small>anos</small></b><span>completos em 1º de dezembro de 2026</span></div>
+      <div class="numero" data-revela><span class="icone icone--navy"><svg><use href="#i-folha"/></svg></span><b data-conta="3">3</b><span>áreas públicas adotadas e mantidas</span></div>
+      <div class="numero" data-revela><span class="icone icone--areia"><svg><use href="#i-escudo"/></svg></span><b>24<small>h</small></b><span>de segurança comunitária, todos os dias</span></div>
     </div>
   </div>
 </section>
 
 <!-- =====================  3. A VOZ DO BAIRRO  ===================== -->
-<section id="voz" class="voz escuro">
-  <svg class="voz__onda" viewBox="0 0 800 260" fill="none" aria-hidden="true"><path d="M0 170 C 120 60, 230 60, 330 140 S 540 240, 640 150 S 760 60, 800 110" stroke="currentColor" stroke-width="2"/><path d="M0 200 C 120 90, 230 90, 330 170 S 540 270, 640 180 S 760 90, 800 140" stroke="currentColor" stroke-width="2" opacity=".6"/><path d="M0 230 C 120 120, 230 120, 330 200 S 540 300, 640 210 S 760 120, 800 170" stroke="currentColor" stroke-width="2" opacity=".35"/></svg>
+<section id="voz" class="voz textura">
+  <span class="arco arco--1" data-paralaxe="0.1" aria-hidden="true"></span>
   <div class="caixa">
     <div class="cabeca">
       <div data-revela>
@@ -626,41 +733,49 @@
       <p class="lead" data-revela>Representar é o que nos define desde a fundação. Está no estatuto: levar a palavra dos associados aonde as decisões sobre Jurerê Internacional são tomadas.</p>
     </div>
 
+    <div class="ondas" data-revela-faixa aria-hidden="true">
+      <div class="ondas__faixa"><svg viewBox="0 0 2400 140" preserveAspectRatio="none">
+        <path class="o3" d="M0 96 C 100 70, 200 70, 300 96 S 500 122, 600 96 S 800 70, 900 96 S 1100 122, 1200 96 S 1400 70, 1500 96 S 1700 122, 1800 96 S 2000 70, 2100 96 S 2300 122, 2400 96"/>
+        <path class="o1" d="M0 56 C 150 20, 300 20, 450 56 S 750 92, 900 56 S 1050 20, 1200 56 S 1500 92, 1650 56 S 1950 20, 2100 56 S 2250 92, 2400 56"/>
+        <path class="o2" d="M0 76 C 200 34, 400 34, 600 76 S 1000 118, 1200 76 S 1600 34, 1800 76 S 2200 118, 2400 76"/>
+      </svg></div>
+    </div>
+
     <div class="papeis">
-      <article class="papel" data-revela>
-        <span class="papel__icone"><svg viewBox="0 0 48 48"><path d="M6 20 24 9l18 11"/><path d="M10 20v18m9-18v18m10-18v18m9-18v18"/><path d="M5 41h38"/></svg></span>
+      <article class="papel papel--navy" data-revela>
+        <span class="icone icone--onda"><svg><use href="#i-predio"/></svg></span>
         <h3>Perante o poder público</h3>
         <p>Levamos as demandas dos associados aos órgãos municipais, estaduais e federais e às concessionárias de serviço público.</p>
       </article>
-      <article class="papel" data-revela>
-        <span class="papel__icone"><svg viewBox="0 0 48 48"><path d="M8 28c5-1 9 2 13 5 3 2 6 2 8 0l10-9c2-2 0-5-3-4l-8 4"/><path d="M28 24 20 16c-2-2-5-2-7 0L6 23"/><path d="M40 12 33 9l-8 5"/></svg></span>
+      <article class="papel papel--mar" data-revela>
+        <span class="icone icone--areia"><svg><use href="#i-maos"/></svg></span>
         <h3>Perante empresas e instituições</h3>
-        <p>Representamos os associados junto ao empreendedor do bairro e a qualquer pessoa ou empresa cuja atuação afete a comunidade.</p>
+        <p>Representamos os associados junto ao empreendedor do bairro e a quem atua em Jurerê Internacional.</p>
       </article>
-      <article class="papel" data-revela>
-        <span class="papel__icone"><svg viewBox="0 0 48 48"><path d="M6 40V18l10-6 10 6v22"/><path d="M26 40V24l8-5 8 5v16"/><path d="M4 40h40"/><path d="M13 26h6m-6 6h6"/></svg></span>
+      <article class="papel papel--onda" data-revela>
+        <span class="icone icone--navy"><svg><use href="#i-casas"/></svg></span>
         <h3>Na defesa do conceito do bairro</h3>
-        <p>Acompanhamos o uso do solo, os projetos de edificação e as mudanças urbanísticas, para que Jurerê Internacional siga fiel ao seu desenho original.</p>
+        <p>Acompanhamos o uso do solo e os projetos que mudam o bairro, para que ele siga fiel ao seu desenho original.</p>
       </article>
-      <article class="papel" data-revela>
-        <span class="papel__icone"><svg viewBox="0 0 48 48"><circle cx="16" cy="15" r="5"/><circle cx="32" cy="15" r="5"/><path d="M6 38c0-7 4-12 10-12s10 5 10 12"/><path d="M22 38c0-7 4-12 10-12s10 5 10 12"/></svg></span>
+      <article class="papel papel--clara" data-revela>
+        <span class="icone icone--mar"><svg><use href="#i-pessoas"/></svg></span>
         <h3>Na convivência</h3>
-        <p>Aproximamos os associados com atividades sociais, culturais, esportivas e de lazer, e incentivamos o voluntariado.</p>
+        <p>Aproximamos os associados com atividades sociais, culturais e de lazer, e incentivamos o voluntariado.</p>
       </article>
     </div>
 
-    <figure class="citacao" data-revela>
-      <svg viewBox="0 0 64 48" fill="currentColor" aria-hidden="true"><path d="M0 48V28C0 12 8 3 24 0l3 6c-9 3-13 8-13 16h12v26H0zm36 0V28c0-16 8-25 24-28l3 6c-9 3-13 8-13 16h12v26H36z"/></svg>
-      <div>
-        <blockquote>Cuidar do território é cuidar de quem vive nele.</blockquote>
-        <figcaption>Princípio que orienta o trabalho da AJIN</figcaption>
-      </div>
+    <figure class="placa" data-revela>
+      <span class="placa__circulo" data-paralaxe="0.08" aria-hidden="true"></span>
+      <svg class="tracos" aria-hidden="true"><use href="#tracos"/></svg>
+      <blockquote>Cuidar do território é cuidar de <em>quem vive nele.</em></blockquote>
+      <figcaption>Princípio que orienta o trabalho da AJIN</figcaption>
+      <svg class="placa__fundo" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><path class="sol" d="M0 150 C 300 60, 620 40, 900 120 S 1150 210, 1200 190 V300 H0z"/><path class="areia" d="M0 210 C 300 120, 640 110, 900 180 S 1150 260, 1200 240 V300 H0z"/></svg>
     </figure>
 
     <div class="presenca">
       <div data-revela>
         <h3 class="t-media">Presente onde o bairro é discutido.</h3>
-        <p class="corpo" style="margin-top:18px">Participamos dos espaços de diálogo com o poder público e com as forças de segurança, e mantemos interlocução permanente com quem decide sobre o bairro.</p>
+        <p class="corpo" style="margin-top:18px">Participamos dos espaços de diálogo com o poder público e as forças de segurança, e mantemos conversa permanente com quem decide sobre o bairro.</p>
         <ul class="chips">
           <li>Conselho Comunitário de Segurança (CONSEG)</li>
           <li>Conselho da Cidade (CONCIDADE)</li>
@@ -669,25 +784,25 @@
           <li>Polícias Civil e Militar e Guarda Municipal</li>
         </ul>
       </div>
-      <div class="presenca__fotos" data-revela>
-        <figure><img src="fotos/inst-conseg.jpg" alt="Representantes da AJIN com a Polícia Militar em reunião do conselho de segurança" loading="lazy" /><figcaption>Reunião com as forças de segurança</figcaption></figure>
-        <figure><img src="fotos/inst-conselho.jpg" alt="Plenária do Conselho da Cidade" loading="lazy" /><figcaption>Conselho da Cidade</figcaption></figure>
-        <figure><img src="fotos/inst-celesc.jpg" alt="Reunião institucional com a concessionária de energia" loading="lazy" /><figcaption>Reunião com a Celesc</figcaption></figure>
+      <div class="presenca__fotos">
+        <figure class="p1 sombra" data-paralaxe="0.06"><div class="selo-postal"><img src="fotos/inst-conseg.jpg" alt="Representantes da AJIN com a Polícia Militar em reunião do conselho de segurança" loading="lazy" /></div><figcaption class="selo-legenda">Reunião com as forças de segurança</figcaption></figure>
+        <figure class="p2 sombra" data-paralaxe="-0.06"><div class="selo-postal"><img src="fotos/inst-conselho.jpg" alt="Plenária do Conselho da Cidade" loading="lazy" /></div><figcaption class="selo-legenda">Conselho da Cidade</figcaption></figure>
       </div>
     </div>
 
     <figure class="territorio" data-revela>
-      <img src="fotos/jurere-bairro-mata.jpg" alt="Jurerê Internacional visto do alto, com as ruas do bairro, as áreas verdes e o mar ao fundo" loading="lazy" />
+      <img src="fotos/jurere-bairro-mata.jpg" alt="Jurerê Internacional visto do alto, com as ruas, as casas e as áreas verdes do bairro" loading="lazy" data-paralaxe="0.05" />
       <figcaption>
-        <b>O nosso território</b>
-        <span>A praia, as áreas de marinha, os lotes, as vias e as áreas públicas do Residencial Jurerê Internacional. É essa a área de atuação que o estatuto confia à AJIN.</span>
+        <b>O bairro que a AJIN representa desde 1986.</b>
+        <span>Ruas, praças, áreas verdes e as famílias que vivem nelas. É por esse lugar que a associação fala e trabalha.</span>
       </figcaption>
     </figure>
   </div>
 </section>
 
 <!-- =====================  4. ATUAÇÃO  ===================== -->
-<section id="atuacao">
+<section id="atuacao" class="atuacao textura">
+  <svg class="rabisco rabisco--2 desenha" viewBox="0 0 340 140" data-revela aria-hidden="true"><path d="M6 100 C 50 20, 110 20, 130 80 S 210 140, 240 70 S 300 10, 334 50"/></svg>
   <div class="caixa">
     <div class="cabeca">
       <div data-revela>
@@ -706,7 +821,7 @@
         <div class="peca__texto"><small>02 · Representatividade</small><h3 class="t-cartao">A comunidade com voz.</h3><p>Diálogo permanente com o poder público e as instituições, levando as demandas dos associados.</p></div>
         <div class="peca__foto" style="min-height:200px"><img src="fotos/inst-planodiretor.jpg" alt="Reunião de representantes da AJIN com o poder público" loading="lazy" /></div>
       </article>
-      <article class="peca peca--areia m3" data-revela>
+      <article class="peca peca--duna m3" data-revela>
         <div class="peca__foto" style="min-height:200px"><img src="fotos/morrinhos-morros-m.jpg" alt="Os morrinhos gramados da Praça dos Morrinhos" loading="lazy" /></div>
         <div class="peca__texto"><small>03 · Zeladoria</small><h3 class="t-cartao">As áreas adotadas.</h3><p>Pé-de-Fruta, Praça dos Morrinhos e Parquinho dos Curumins, mantidos pela AJIN.</p></div>
       </article>
@@ -714,12 +829,12 @@
         <div class="peca__foto"><img src="fotos/horta-inaug-maos.jpg" alt="Mãos de criança plantando uma muda na horta" loading="lazy" style="object-position:50% 60%" /></div>
         <div class="peca__texto"><small>04 · Meio ambiente</small><h3 class="t-cartao">Natureza perto de casa.</h3><p>Plantios, horta comunitária e educação ambiental.</p></div>
       </article>
-      <article class="peca peca--branca m5" data-revela>
+      <article class="peca peca--clara m5" data-revela>
         <div class="peca__foto"><img src="fotos/essencia-plateia.jpg" alt="Plateia reunida em evento cultural promovido pela AJIN" loading="lazy" /></div>
         <div class="peca__texto"><small>05 · Cultura e convivência</small><h3 class="t-cartao">Gente que se encontra.</h3><p>Encontros, rodas de conversa e eventos que aproximam as gerações.</p></div>
       </article>
       <article class="peca peca--navy m6" data-revela>
-        <div class="peca__foto"><img src="fotos/horta-baldinho-grupo-m.jpg" alt="Voluntários e famílias reunidos na horta com a colheita" loading="lazy" /></div>
+        <div class="peca__foto"><img src="fotos/horta-arte-totens-m.jpg" alt="Peças pintadas pelas famílias na horta comunitária" loading="lazy" /></div>
         <div class="peca__texto"><small>06 · Voluntariado</small><h3 class="t-cartao">Muitas mãos.</h3><p>Diretores, conselheiros, associados e moradores que doam tempo ao bairro.</p></div>
       </article>
     </div>
@@ -727,7 +842,8 @@
 </section>
 
 <!-- =====================  5. O BAIRRO  ===================== -->
-<section id="bairro" class="bairro escuro" aria-labelledby="tituloBairro">
+<section id="bairro" class="bairro" aria-labelledby="tituloBairro">
+  <svg class="curva curva--topo" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true" style="transform:scaleY(-1)"><path class="chao" d="M0 70 C 260 120, 520 120, 760 80 S 1180 10, 1440 60 V120 H0z"/><path class="fio" d="M-10 64 C 250 118, 520 116, 760 74 S 1180 4, 1450 54"/></svg>
   <div class="bairro__cabeca">
     <div class="caixa cabeca">
       <div data-revela>
@@ -761,10 +877,12 @@
     <div class="mapa__lista" role="group" aria-label="Áreas adotadas"></div>
     <aside class="painel" role="dialog" aria-modal="false" hidden></aside>
   </div>
+  <div class="bairro__pe"><svg class="curva curva--base" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path class="chao" d="M0 70 C 260 120, 520 120, 760 80 S 1180 10, 1440 60 V120 H0z"/><path class="fio" d="M-10 64 C 250 118, 520 116, 760 74 S 1180 4, 1450 54"/></svg></div>
 </section>
 
 <!-- =====================  6. LINHA DO TEMPO  ===================== -->
-<section id="linha-do-tempo" class="tempo" aria-labelledby="tituloTempo">
+<section id="linha-do-tempo" class="tempo textura" aria-labelledby="tituloTempo">
+  <span class="arco arco--1" data-paralaxe="0.1" aria-hidden="true"></span>
   <div class="tempo__cabeca">
     <div class="caixa cabeca" style="margin-bottom:0">
       <div data-revela>
@@ -785,7 +903,9 @@
 </section>
 
 <!-- =====================  7. ORGANIZAÇÃO  ===================== -->
-<section id="organizacao" class="risca" style="border-top:1px solid var(--linha)">
+<section id="organizacao" class="org textura">
+  <span class="arco arco--1" data-paralaxe="0.1" aria-hidden="true"></span>
+  <svg class="rabisco rabisco--3 desenha" viewBox="0 0 240 110" data-revela aria-hidden="true"><path d="M6 60 C 30 10, 70 10, 86 56 S 140 104, 160 52 S 210 6, 234 34"/></svg>
   <div class="caixa">
     <div class="cabeca">
       <div data-revela>
@@ -798,29 +918,26 @@
     <div class="organograma" id="organograma">
       <svg class="ligacoes" id="ligacoes" aria-hidden="true"></svg>
       <article class="orgao orgao--topo" data-revela data-no="ag">
-        <small>Órgão máximo</small>
-        <h3>Assembleia Geral</h3>
+        <div class="orgao__topo"><span class="icone icone--onda"><svg><use href="#i-pessoas"/></svg></span><div><small>Órgão máximo</small><h3>Assembleia Geral</h3></div></div>
         <p>Formada por todos os associados. Elege os conselhos e a diretoria e é a instância final de decisão.</p>
       </article>
       <article class="orgao" data-revela data-no="cd">
-        <small>Consultivo e normativo</small>
-        <h3>Conselho Deliberativo</h3>
+        <div class="orgao__topo"><span class="icone icone--navy"><svg><use href="#i-predio"/></svg></span><div><small>Consultivo e normativo</small><h3>Conselho Deliberativo</h3></div></div>
         <div class="orgao__dados"><span><b>30</b>membros</span><span><b>4</b>anos de mandato</span></div>
       </article>
       <article class="orgao" data-revela data-no="cf">
-        <small>Fiscalizador</small>
-        <h3>Conselho Fiscal</h3>
+        <div class="orgao__topo"><span class="icone icone--mar"><svg><use href="#i-escudo"/></svg></span><div><small>Fiscalizador</small><h3>Conselho Fiscal</h3></div></div>
         <div class="orgao__dados"><span><b>3</b>efetivos</span><span><b>3</b>suplentes</span><span><b>2</b>anos de mandato</span></div>
       </article>
       <article class="orgao orgao--base" data-revela data-no="de">
-        <small>Executivo</small>
-        <h3>Diretoria Executiva</h3>
+        <div class="orgao__topo"><span class="icone icone--onda"><svg><use href="#i-maos"/></svg></span><div><small>Executivo</small><h3>Diretoria Executiva</h3></div></div>
         <div class="orgao__dados"><span><b>10</b>membros</span><span><b>2</b>anos de mandato</span></div>
         <p>Presidente e vice podem ser reeleitos uma única vez seguida, para que a gestão se renove.</p>
       </article>
     </div>
 
     <div class="aviso" data-revela>
+      <svg class="tracos" aria-hidden="true"><use href="#tracos"/></svg>
       <b>Zero</b>
       <p>Nenhum cargo de associado na Diretoria, no Conselho Deliberativo ou no Conselho Fiscal é remunerado.<small>Estatuto da AJIN, artigo 37</small></p>
     </div>
@@ -841,17 +958,22 @@
 </section>
 
 <!-- =====================  8. FECHO  ===================== -->
-<section id="contato" class="fecho">
-  <div class="caixa fecho__cartao escuro" data-revela>
-    <div class="fecho__foto"><img src="fotos/jurere-baia-m.jpg" alt="A baía de Jurerê Internacional vista do alto, com o mar azul e as ilhas" loading="lazy" /></div>
-    <div class="fecho__texto">
-      <span class="rotulo">Faça parte</span>
-      <h2 class="t-secao">Jurerê é de quem cuida.</h2>
-      <p class="lead">Ser associado é participar das decisões, acompanhar o que acontece e ajudar a construir o futuro do bairro.</p>
-      <div class="acoes">
-        <a class="btn" href="cadastro/">Quero me associar <svg viewBox="0 0 20 20"><path d="M4 10h12m-5-5 5 5-5 5"/></svg></a>
-        <a class="btn btn--linha" href="https://wa.me/5548999497419">Falar no WhatsApp</a>
+<section id="contato" class="fecho textura">
+  <div class="caixa">
+    <div class="placa" data-revela>
+      <span class="placa__circulo" aria-hidden="true"></span>
+      <svg class="tracos" aria-hidden="true"><use href="#tracos"/></svg>
+      <div class="fecho__texto">
+        <span class="rotulo">Faça parte</span>
+        <h2 class="t-secao">Jurerê é de quem cuida.</h2>
+        <p class="lead">Ser associado é participar das decisões, acompanhar o que acontece e ajudar a construir o futuro do bairro.</p>
+        <div class="acoes">
+          <a class="btn" href="cadastro/">Quero me associar <svg viewBox="0 0 20 20"><path d="M4 10h12m-5-5 5 5-5 5"/></svg></a>
+          <a class="btn btn--linha" href="https://wa.me/5548999497419">Falar no WhatsApp</a>
+        </div>
       </div>
+      <figure class="fecho__foto sombra" data-paralaxe="-0.06"><div class="selo-postal"><img src="fotos/pedefruta-plantio.jpg" alt="Moradores e voluntários reunidos num plantio no Pé-de-Fruta" loading="lazy" /></div></figure>
+      <svg class="placa__fundo" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><path class="sol" d="M0 170 C 300 80, 620 60, 900 140 S 1150 230, 1200 210 V300 H0z"/><path class="areia" d="M0 230 C 300 140, 640 130, 900 200 S 1150 280, 1200 260 V300 H0z"/></svg>
     </div>
   </div>
 </section>
@@ -867,7 +989,7 @@
       </div>
       <div class="pe__coluna"><small>Navegar</small><a href="#quem-somos">Quem somos</a><a href="#voz">A voz do bairro</a><a href="#bairro">O bairro</a><a href="#linha-do-tempo">Linha do tempo</a><a href="#organizacao">Organização</a></div>
       <div class="pe__coluna"><small>Contato</small><a href="mailto:ajin@ajin.org.br">ajin@ajin.org.br</a><a href="tel:+554832821590">Escritório (48) 3282-1590</a><a href="tel:+554832664300">Segurança 24h (48) 3266-4300</a><a href="https://wa.me/5548999497419">WhatsApp (48) 99949-7419</a></div>
-      <div class="pe__coluna"><small>Acesso</small><a href="https://www.instagram.com/ajinjurere">Instagram @ajinjurere</a><a href="app/">Acessar o app</a><span style="font-size:15px;opacity:.75">restrito a membros e diretores</span></div>
+      <div class="pe__coluna"><small>Documentos e acesso</small><a href="documentos/estatuto-ajin-2026.pdf" download>Estatuto da AJIN</a><a href="documentos/revista-ajin-2025-2026.pdf" download>Relatório de gestão</a><a href="https://www.instagram.com/ajinjurere">Instagram @ajinjurere</a><a href="app/">Acessar o app</a></div>
     </div>
     <div class="pe__fim"><span>© 1986 a 2026 Associação Jurerê Internacional</span><a href="#topo">Voltar ao topo ↑</a></div>
   </div>
@@ -875,7 +997,6 @@
 
 <script>
   const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches
-  const ENTRA = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
   /* ---------- Abertura: a capa assenta quando a foto chega ---------- */
   {
@@ -885,15 +1006,18 @@
       if (feito) return
       feito = true
       document.body.setAttribute('data-pronto', '')
-      document.getElementById('tituloCapa').setAttribute('data-visivel', '')
       document.querySelectorAll('#tituloCapa .mascara > span').forEach((s, i) => { s.style.transitionDelay = 0.15 + i * 0.12 + 's' })
+      document.getElementById('tituloCapa').setAttribute('data-visivel', '')
     }, 30)
     if (foto.complete) pronto(); else { foto.addEventListener('load', pronto); setTimeout(pronto, 1800) }
   }
 
+  /* ---------- Rabiscos: o comprimento de cada traço, para desenhar ---------- */
+  document.querySelectorAll('.desenha path').forEach((p) => p.style.setProperty('--L', Math.ceil(p.getTotalLength()) + 1))
+
   /* ---------- Revelação: sobe e clareia, uma vez, 90 ms entre irmãos ---------- */
   {
-    const alvos = [...document.querySelectorAll('[data-revela]')]
+    const alvos = [...document.querySelectorAll('[data-revela], [data-revela-faixa]')]
     if (quieto) alvos.forEach((el) => el.setAttribute('data-visivel', ''))
     else {
       const obs = new IntersectionObserver((es) => {
@@ -926,6 +1050,20 @@
     document.querySelectorAll('[data-conta]').forEach((el) => obs.observe(el))
   }
 
+  /* ---------- Paralaxe: cada camada anda numa velocidade ---------- */
+  const paralaxe = (() => {
+    if (quieto) return () => {}
+    const camadas = [...document.querySelectorAll('[data-paralaxe]')].map((el) => ({ el, f: Number(el.dataset.paralaxe) }))
+    return () => {
+      const meio = innerHeight / 2
+      for (const c of camadas) {
+        const r = c.el.getBoundingClientRect()
+        if (r.bottom < -300 || r.top > innerHeight + 300) continue
+        c.el.style.translate = `0 ${(-(r.top + r.height / 2 - meio) * c.f).toFixed(1)}px`
+      }
+    }
+  })()
+
   /* ---------- Gaveta (menu no celular) ---------- */
   {
     const botao = document.getElementById('abreMenu'), gaveta = document.getElementById('gaveta')
@@ -939,24 +1077,26 @@
   }
 
   /* =====================  LINHA DO TEMPO  =====================
-     Datas com "inferida" vieram da data da câmera, corrigida pelo
-     deslocamento do relógio; confirmar com a diretoria. */
+     Datas com * foram inferidas da câmera (relógio corrigido);
+     confirmar com a diretoria. */
   const MARCOS = [
-    { quando: '2025-09-13', data: '13 de setembro de 2025', titulo: 'A Horta Comunitária ganha vida', texto: 'Inauguração da Horta Manoel Azeredo Saraiva, no Pé-de-Fruta, com 118 pessoas e mais de 100 mudas.', foto: 'fotos/horta-inauguracao.jpg', alt: 'O Sr. Saraiva na inauguração da horta' },
+    { quando: '2025-09-13', data: '13 de setembro de 2025', titulo: 'A Horta Comunitária ganha vida', texto: 'Inauguração da Horta Manoel Azeredo Saraiva, no Pé-de-Fruta, com 118 pessoas.', foto: 'fotos/horta-inaug-aerea.jpg', alt: 'A horta comunitária vista de cima, com os canteiros novos' },
     { quando: '2025-09-20', data: 'Setembro de 2025', titulo: 'Setembro Amarelo', texto: 'Caminhada pela valorização da vida reúne mais de 200 pessoas.', foto: 'fotos/setembro-caminhada.jpg', alt: 'Participantes de amarelo na caminhada' },
     { quando: '2025-11-29', data: 'Novembro de 2025', titulo: 'A primeira colheita', texto: 'As famílias colhem as primeiras verduras dos canteiros novos.', foto: 'fotos/horta-colheita-familia-m.jpg', alt: 'Família com verduras colhidas na horta', inferida: true },
-    { quando: '2025-12-06', data: '6 de dezembro de 2025', titulo: 'Manhã de família nos Curumins', texto: 'Encontro no parquinho revitalizado, com atividades para as crianças.', foto: 'fotos/curumins-familia-m.jpg', alt: 'Mãe e filha no Parquinho dos Curumins' },
+    { quando: '2025-12-06', data: '6 de dezembro de 2025', titulo: 'Manhã de família nos Curumins', texto: 'Encontro no parquinho revitalizado, com atividades para as crianças.', foto: 'fotos/curumins-geracoes-m.jpg', alt: 'Avós e netos no Parquinho dos Curumins' },
     { quando: '2026-02-03', data: 'Fevereiro de 2026', titulo: 'Praça dos Morrinhos em obra', texto: 'Começa a revitalização: brinquedos reformados, poda e iluminação.', foto: 'fotos/morrinhos-tunel-m.jpg', alt: 'Túnel de madeira da Praça dos Morrinhos durante as obras' },
     { quando: '2026-05-21', data: '21 de maio de 2026', titulo: 'Estatuto consolidado', texto: 'A Assembleia aprova o estatuto atualizado da AJIN.', grafico: 'estatuto' },
-    { quando: '2026-06-06', data: '6 de junho de 2026', titulo: 'Baldinho do Bem', texto: 'Crianças voltam à horta para colher o que plantaram.', foto: 'fotos/horta-baldinho-grupo-m.jpg', alt: 'Famílias com a colheita do Baldinho do Bem' },
-    { quando: '2026-07-15', data: 'Julho de 2026', titulo: 'Prestação de contas e nova marca', texto: 'O relatório de gestão 2025/2026 é publicado, já com a nova identidade da AJIN.', foto: 'fotos/marca-material.png', alt: 'Peças da nova identidade visual da AJIN' },
-    { quando: '2026-11-28', data: '28 de novembro de 2026', titulo: 'Livro dos 45 anos de Jurerê Internacional', texto: 'Lançamento do livro escrito por 45 autores do bairro, na mesma celebração dos 40 anos da AJIN. Local e horário em breve.', destaque: true },
+    { quando: '2026-06-06', data: '6 de junho de 2026', titulo: 'Baldinho do Bem', texto: 'Crianças voltam à horta para colher o que plantaram.', foto: 'fotos/horta-baldinho-canteiro-m.jpg', alt: 'Canteiro de alfaces da horta comunitária' },
+    { quando: '2026-07-15', data: 'Julho de 2026', titulo: 'Prestação de contas e nova marca', texto: 'O relatório de gestão 2025/2026 sai já com a nova identidade da AJIN.', foto: 'fotos/marca-material.png', alt: 'Peças da nova identidade visual da AJIN', conter: true },
+    { quando: '2026-11-28', data: '28 de novembro de 2026', titulo: 'Livro dos 45 anos de Jurerê Internacional', texto: 'Lançamento do livro de 45 autores do bairro, junto com os 40 anos da AJIN. Local e horário em breve.', destaque: true },
     { quando: '2026-12-01', data: '1º de dezembro de 2026', titulo: 'A AJIN completa 40 anos', texto: 'Quatro décadas de representação e cuidado com o bairro.', grafico: 'quarenta' },
-    { quando: '2026-12-15', data: 'Dezembro de 2026 a março de 2027', titulo: 'Temporada de verão', texto: 'A estação que mais movimenta o bairro. A programação da AJIN para o verão será publicada aqui.', foto: 'fotos/jurere-praia-m.jpg', alt: 'A praia de Jurerê Internacional vista do alto' },
+    { quando: '2026-12-15', data: 'Dezembro de 2026 a março de 2027', titulo: 'Temporada de verão', texto: 'A estação que mais movimenta o bairro. A programação da AJIN para o verão será publicada aqui.', grafico: 'verao' },
   ]
+  /* desenhos no traço das placas: céu navy, sol laranja, duna de areia */
   const GRAFICOS = {
-    estatuto: '<svg viewBox="0 0 64 64"><path d="M16 6h22l10 10v42H16z"/><path d="M38 6v10h10M23 28h18M23 35h18M23 42h12"/><circle cx="44" cy="48" r="7"/><path d="m41 48 2 2 4-4"/></svg>',
-    quarenta: '<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26"/><path d="M8 38c7-6 13-6 20 0s13 6 20 0 9-4 12-2"/><text x="32" y="28" text-anchor="middle" font-size="16" font-weight="900" fill="currentColor" stroke="none">40</text></svg>',
+    estatuto: '<svg viewBox="0 0 240 120" preserveAspectRatio="xMidYMid slice"><rect width="240" height="120" fill="#1f2a44"/><circle cx="196" cy="24" r="46" fill="none" stroke="#1f5bca" stroke-width="2"/><path d="M0 92 C 60 70 120 70 170 88 S 230 104 240 98 V120 H0z" fill="#e9e2d3"/><g fill="none" stroke="#e9e2d3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M96 14h34l14 14v50H96z"/><path d="M130 14v14h14M106 42h28M106 52h28M106 62h18"/></g><circle cx="146" cy="76" r="11" fill="#f28c38"/><path d="m141 76 3.5 3.5 6.5-7" fill="none" stroke="#1f2a44" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    quarenta: '<svg viewBox="0 0 240 120" preserveAspectRatio="xMidYMid slice"><rect width="240" height="120" fill="#f28c38"/><path d="M0 92 C 60 66 120 68 170 86 S 230 102 240 96 V120 H0z" fill="#1f2a44"/><text x="112" y="80" text-anchor="middle" font-family="Inter, sans-serif" font-size="66" font-weight="900" fill="#1f2a44" letter-spacing="-3">40</text><g stroke="#1f5bca" stroke-width="4" stroke-linecap="round"><path d="M196 16h28M196 25h28M196 34h28"/></g></svg>',
+    verao: '<svg viewBox="0 0 240 120" preserveAspectRatio="xMidYMid slice"><rect width="240" height="120" fill="#1f2a44"/><circle cx="120" cy="86" r="42" fill="#f28c38"/><path d="M0 88 C 60 72 120 74 170 86 S 230 100 240 96 V120 H0z" fill="#e9e2d3"/><g stroke="#1f5bca" stroke-width="4" stroke-linecap="round"><path d="M18 18h28M18 27h28M18 36h28"/></g><path d="M202 74V44M202 44c-8-6-16-4-20 2M202 44c8-6 16-4 20 2M202 44c-4-8-12-10-18-8M202 44c4-8 12-10 18-8" fill="none" stroke="#e9e2d3" stroke-width="3" stroke-linecap="round"/></svg>',
   }
 
   {
@@ -969,19 +1109,18 @@
 
     const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
     MARCOS.forEach((m, i) => {
-      if (i === hojeIndice) trilho.insertAdjacentHTML('beforeend', '<div class="hoje" id="marcoHoje"><b>Hoje</b><i></i></div>')
+      if (i === hojeIndice) trilho.insertAdjacentHTML('beforeend', '<div class="hoje" id="marcoHoje"><div><b>Hoje</b></div></div>')
       const futuro = i >= hojeIndice
       const lado = i % 2 ? 'baixo' : 'cima'
       const midia = m.destaque ? '' : m.foto
-        ? `<div class="marco__foto"><img src="${m.foto}" alt="${esc(m.alt)}" loading="lazy" ${m.foto.endsWith('.png') ? 'style="object-fit:contain"' : ''} /></div>`
-        : `<div class="marco__foto marco__grafico">${GRAFICOS[m.grafico] || ''}</div>`
-      const conteudo = `<span class="marco__data">${esc(m.data)}${m.inferida ? ' *' : ''}</span><h3>${esc(m.titulo)}</h3><p>${esc(m.texto)}</p>`
+        ? `<div class="marco__foto"><img src="${m.foto}" alt="${esc(m.alt)}" loading="lazy" ${m.conter ? 'style="object-fit:contain"' : ''} /></div>`
+        : `<div class="marco__foto marco__grafico" aria-hidden="true">${GRAFICOS[m.grafico] || ''}</div>`
+      const texto = `<span class="marco__data">${esc(m.data)}${m.inferida ? ' *' : ''}</span><h3>${esc(m.titulo)}</h3><p>${esc(m.texto)}</p>`
       const contagem = m.destaque ? '<div class="contagem" id="contagem"><div><b data-c="d">0</b><span>dias</span></div><div><b data-c="h">0</b><span>horas</span></div><div><b data-c="m">0</b><span>min</span></div></div>' : ''
-      const ordem = lado === 'cima' ? midia + conteudo : conteudo + midia
-      trilho.insertAdjacentHTML('beforeend', `<article class="marco${m.destaque ? ' marco--destaque' : ''}" data-lado="${lado}" ${futuro ? 'data-futuro' : ''}><span class="marco__ponto"></span>${ordem}${contagem}</article>`)
+      const cartao = lado === 'cima' ? midia + texto + contagem : texto + contagem + midia
+      trilho.insertAdjacentHTML('beforeend', `<article class="marco${m.destaque ? ' marco--destaque' : ''}" data-lado="${lado}" ${futuro ? 'data-futuro' : ''}><div class="marco__cartao">${cartao}</div><span class="marco__ponto"></span></article>`)
     })
 
-    /* contagem regressiva para o lançamento do livro */
     const alvo = new Date('2026-11-28T19:00:00-03:00')
     const contar = () => {
       const c = document.getElementById('contagem'); if (!c) return
@@ -992,35 +1131,35 @@
     }
     contar(); setInterval(contar, 30000)
 
-    const horizontal = () => matchMedia('(min-width: 900px)').matches && !quieto
-    let largura = 0, pontos = []
+    const secao = document.getElementById('linha-do-tempo')
+    const horizontal = () => matchMedia('(min-width: 900px) and (min-height: 701px)').matches && !quieto && !secao.hasAttribute('data-vertical')
+    /* algum cartão encostando num ponto? então a linha fica vertical nesta tela */
+    const encosta = () => [...trilho.querySelectorAll('.marco')].some((m) => {
+      const c = m.querySelector('.marco__cartao').getBoundingClientRect(), d = m.querySelector('.marco__ponto').getBoundingClientRect()
+      return m.dataset.lado === 'cima' ? d.top - c.bottom < 8 : c.top - d.bottom < 8
+    })
+    let largura = 0, hojeX = 0
 
-    /* A onda: uma senoide que passa pelos pontos dos marcos, alternando cima e baixo. */
+    /* A onda passa exatamente pelos pontos, que já estão na faixa do meio. */
     function medir() {
-      if (!horizontal()) { pista.style.height = ''; trilho.style.transform = ''; return }
+      secao.removeAttribute('data-vertical')
+      if (horizontal() && encosta()) secao.setAttribute('data-vertical', '')
+      if (!horizontal()) { pista.style.height = ''; trilho.style.transform = ''; rolar(); return }
+      trilho.style.transform = ''
       largura = trilho.scrollWidth
-      const alt = onda.getBoundingClientRect().height || 220
-      const meio = alt / 2, amp = alt * 0.32
-      const marcos = [...trilho.querySelectorAll('.marco')]
       const tr = trilho.getBoundingClientRect()
-      pontos = marcos.map((m) => { const p = m.querySelector('.marco__ponto').getBoundingClientRect(); return { x: p.left - tr.left + p.width / 2, y: m.dataset.lado === 'cima' ? meio - amp : meio + amp, el: m } })
+      const ob = onda.getBoundingClientRect()
+      const alt = ob.height || 150, meio = alt / 2
+      const pontos = [...trilho.querySelectorAll('.marco__ponto')].map((p) => { const r = p.getBoundingClientRect(); return { x: r.left - tr.left + r.width / 2, y: r.top - ob.top + r.height / 2 } })
       onda.setAttribute('width', largura); onda.setAttribute('viewBox', `0 0 ${largura} ${alt}`); onda.style.width = largura + 'px'
-      let d = `M 0 ${meio}`
-      let px = 0, py = meio
+      let d = `M 0 ${meio}`, px = 0, py = meio
       for (const p of pontos) { const cx = (px + p.x) / 2; d += ` C ${cx} ${py}, ${cx} ${p.y}, ${p.x} ${p.y}`; px = p.x; py = p.y }
       d += ` C ${(px + largura) / 2} ${py}, ${(px + largura) / 2} ${meio}, ${largura} ${meio}`
       base.setAttribute('d', d); feita.setAttribute('d', d)
       const L = feita.getTotalLength(); feita.style.strokeDasharray = L; feita.dataset.L = L
-      /* posiciona os pontos sobre a onda */
-      const ondaTopo = onda.getBoundingClientRect().top - tr.top
-      for (const p of pontos) {
-        const mr = p.el.getBoundingClientRect(), ponto = p.el.querySelector('.marco__ponto')
-        ponto.style.left = (p.x - (mr.left - tr.left)) - 9 + 'px'
-        ponto.style.top = (ondaTopo + p.y - (mr.top - tr.top)) - 9 + 'px'; ponto.style.bottom = 'auto'
-      }
       const h = document.getElementById('marcoHoje')
-      if (h) { const ant = pontos[hojeIndice - 1], prox = pontos[hojeIndice]; h.style.left = ((ant ? ant.x : 0) + (prox ? prox.x : largura)) / 2 + 'px' }
-      pista.style.height = largura - innerWidth + innerHeight + 'px'
+      hojeX = h ? h.getBoundingClientRect().left - tr.left + h.offsetWidth / 2 : largura
+      pista.style.height = Math.max(0, largura - innerWidth) + innerHeight + 'px'
       rolar()
     }
 
@@ -1031,32 +1170,28 @@
         return
       }
       const r = pista.getBoundingClientRect()
-      const total = pista.offsetHeight - innerHeight
+      const total = Math.max(1, pista.offsetHeight - innerHeight)
       const p = Math.min(1, Math.max(0, -r.top / total))
-      const desloca = p * (largura - innerWidth)
+      const desloca = p * Math.max(0, largura - innerWidth)
       trilho.style.transform = `translate3d(${-desloca}px,0,0)`
       barra.style.width = p * 100 + '%'
-      /* a onda se desenha até a linha que passa no centro da tela, mas nunca além de hoje */
       const L = Number(feita.dataset.L || 0)
-      const hojeX = hojeIndice > 0 ? (pontos[hojeIndice - 1]?.x || 0) + ((pontos[hojeIndice]?.x || largura) - (pontos[hojeIndice - 1]?.x || 0)) / 2 : 0
       const ate = Math.min(desloca + innerWidth * 0.62, hojeX)
       feita.style.strokeDashoffset = L * (1 - Math.min(1, ate / largura))
     }
 
-    let pedido = false
-    addEventListener('scroll', () => { if (!pedido) { pedido = true; requestAnimationFrame(() => { pedido = false; rolar() }) } }, { passive: true })
+    window.__tempo = { rolar }
     addEventListener('resize', medir)
     addEventListener('load', medir)
     document.fonts?.ready.then(medir)
     medir()
   }
 
-  /* ---------- Organograma: as ligações se desenham ---------- */
+  /* ---------- Organograma: as ligações seguem o layout ---------- */
   {
     const org = document.getElementById('organograma'), svg = document.getElementById('ligacoes')
     const no = (k) => org.querySelector(`[data-no=${k}]`)
     const desenhar = () => {
-      /* posição de layout (offset), que ignora o deslocamento da animação de entrada */
       const c = (el, lado) => ({ x: el.offsetLeft + el.offsetWidth / 2, y: lado === 'cima' ? el.offsetTop : el.offsetTop + el.offsetHeight })
       const ag = c(no('ag'), 'baixo'), de = c(no('de'), 'cima')
       const ligs = [[ag, c(no('cd'), 'cima')], [ag, c(no('cf'), 'cima')], [c(no('cd'), 'baixo'), de], [c(no('cf'), 'baixo'), de]]
@@ -1065,29 +1200,34 @@
     addEventListener('resize', desenhar); addEventListener('load', desenhar); desenhar()
   }
 
-  /* ---------- Barra: transparente sobre a capa, sólida no resto; fio do menu ---------- */
+  /* ---------- Um laço de rolagem: barra, fio do menu, paralaxe, linha do tempo ---------- */
   {
     const barra = document.getElementById('barra'), fio = document.getElementById('fioMenu')
     const links = [...document.querySelectorAll('.navegar a')]
     const secoes = links.map((a) => document.querySelector(a.getAttribute('href')))
-    const capa = document.getElementById('topo'), bairro = document.getElementById('bairro')
+    const capa = document.getElementById('topo'), mapa = document.getElementById('mapa'), pista = document.getElementById('tempoPista'), secaoTempo = document.getElementById('linha-do-tempo')
     let ultimoY = scrollY, pedido = false
     const medir = () => {
       pedido = false
       const y = scrollY, alt = innerHeight
       barra.toggleAttribute('data-solida', y > capa.offsetHeight - 90)
-      /* dentro do mapa a barra sai do caminho */
-      const rb = bairro.getBoundingClientRect()
-      const noMapa = rb.top < 0 && rb.bottom > alt * 0.5
-      barra.toggleAttribute('data-escondida', noMapa || (y > ultimoY + 4 && y > alt))
-      if (y < ultimoY - 4) barra.toggleAttribute('data-escondida', noMapa)
+      const rm = mapa.getBoundingClientRect(), rt = pista.getBoundingClientRect()
+      const noTempo = !secaoTempo.hasAttribute('data-vertical') && innerWidth >= 900 && rt.top < 1 && rt.bottom > alt
+      const noMapa = (rm.top < 60 && rm.bottom > alt * 0.5) || noTempo
+      if (noMapa) barra.setAttribute('data-escondida', '')
+      else if (y > ultimoY + 4 && y > alt) barra.setAttribute('data-escondida', '')
+      else if (y < ultimoY - 4) barra.removeAttribute('data-escondida')
       ultimoY = y
       let aqui = -1
       secoes.forEach((s, i) => { if (!s) return; const r = s.getBoundingClientRect(); if (r.top <= alt * 0.4 && r.bottom > alt * 0.4) aqui = i })
       links.forEach((a, i) => a.toggleAttribute('data-aqui', i === aqui))
-      if (aqui < 0) { fio.removeAttribute('data-visivel'); return }
-      const a = links[aqui], m = a.parentElement.getBoundingClientRect(), r = a.getBoundingClientRect()
-      fio.style.width = r.width - 28 + 'px'; fio.style.transform = `translateX(${r.left - m.left + 14}px)`; fio.setAttribute('data-visivel', '')
+      if (aqui < 0) fio.removeAttribute('data-visivel')
+      else {
+        const a = links[aqui], m = a.parentElement.getBoundingClientRect(), r = a.getBoundingClientRect()
+        fio.style.width = r.width - 20 + 'px'; fio.style.transform = `translateX(${r.left - m.left + 10}px)`; fio.setAttribute('data-visivel', '')
+      }
+      paralaxe()
+      window.__tempo?.rolar()
     }
     addEventListener('scroll', () => { if (!pedido) { pedido = true; requestAnimationFrame(medir) } }, { passive: true })
     addEventListener('resize', medir); medir()
