@@ -471,32 +471,29 @@
   .tempo__cabeca { padding: var(--respiro) var(--lado) 0; position: relative; z-index: 1; }
   .tempo .arco--1 { width: clamp(280px, 30vw, 420px); aspect-ratio: 1; right: -8vw; top: 40px; border-color: var(--onda); }
   .tempo__pista { position: relative; }
-  .tempo__fixo { position: sticky; top: 0; height: 100svh; overflow: hidden; padding: 64px 0 52px; }
-  .tempo__trilho { --banda: 120px; --amp: 30px; position: relative; display: flex; height: 100%; padding: 0 var(--lado); will-change: transform; }
+  .tempo__fixo { position: sticky; top: 0; height: 100svh; overflow: hidden; padding: 44px 0 46px; }
+  .tempo__trilho { --banda: 90px; --amp: 22px; --foto: 270px; position: relative; display: flex; height: 100%; padding: 0 var(--lado); will-change: transform; }
   .tempo__onda { position: absolute; left: 0; top: 50%; height: var(--banda); translate: 0 -50%; overflow: visible; pointer-events: none; z-index: 0; }
   .tempo__onda .base { fill: none; stroke: var(--linha-forte); stroke-width: 2; stroke-dasharray: 2 10; stroke-linecap: round; }
   .tempo__onda .feita { fill: none; stroke: var(--onda); stroke-width: 5; stroke-linecap: round; }
-  .marco { position: relative; flex: none; width: clamp(280px, 24vw, 320px); margin-right: -40px; display: grid; grid-template-rows: 1fr var(--banda) 1fr; z-index: 1; }
-  .marco__cartao { display: grid; gap: 10px; padding-right: 60px; }
+  .marco { position: relative; flex: none; width: clamp(340px, 28vw, 400px); margin-right: -40px; display: grid; grid-template-rows: 1fr var(--banda) 1fr; z-index: 1; }
+  .marco__cartao { display: grid; gap: 10px; padding-right: 50px; }
   .marco[data-lado="cima"] .marco__cartao { grid-row: 1; align-self: end; align-content: end; padding-bottom: 6px; }
   .marco[data-lado="baixo"] .marco__cartao { grid-row: 3; align-self: start; align-content: start; padding-top: 6px; }
   .marco__data { font-size: 14.5px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mar); }
   .marco h3 { font-size: clamp(20px, 1.7vw, 24px); font-weight: 800; letter-spacing: -0.025em; line-height: 1.15; }
   .marco p { margin: 0; font-size: 16px; color: var(--fraco); line-height: 1.5; }
-  .marco__foto { border-radius: 16px; overflow: hidden; background: var(--areia-funda); aspect-ratio: 5 / 2; }
-  @media (min-height: 960px) { .marco__foto { aspect-ratio: 2 / 1; } }
-  @media (max-height: 820px) { .marco__foto { aspect-ratio: 3 / 1; } .marco--destaque .marco__cartao { padding: 18px 20px; } .contagem b { font-size: 30px; } .marco h3 { font-size: 20px; } }
-  /* telas baixas: os cartões encolhem aos poucos até nenhum ponto encostar em texto */
-  .tempo:is([data-compacto="1"], [data-compacto="2"], [data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .marco__foto { aspect-ratio: 4 / 1; }
-  .tempo:is([data-compacto="2"], [data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .marco { width: 360px; }
-  .tempo:is([data-compacto="2"], [data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .marco--destaque { width: 470px; }
-  .tempo:is([data-compacto="2"], [data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .marco__foto { aspect-ratio: 5 / 1; }
-  .tempo:is([data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .tempo__fixo { padding: 48px 0 40px; }
-  .tempo:is([data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .tempo__trilho { --banda: 96px; --amp: 22px; }
-  .tempo:is([data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .marco p { font-size: 15px; line-height: 1.4; }
-  .tempo:is([data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .marco__cartao { gap: 6px; }
-  .tempo:is([data-compacto="4"], [data-compacto="5"]) .marco__foto { display: none; }
-  .tempo[data-compacto="5"] .marco p { display: none; }
+  /* foto sempre 4:3; em tela baixa ela só diminui de tamanho, nunca de formato */
+  .marco__foto { width: min(100%, var(--foto)); border-radius: 16px; overflow: hidden; background: var(--areia-funda); aspect-ratio: 4 / 3; }
+  .marco__grafico { aspect-ratio: 4 / 3; }
+  .tempo[data-compacto="1"] .tempo__trilho { --foto: 235px; }
+  .tempo[data-compacto="2"] .tempo__trilho { --foto: 200px; }
+  .tempo:is([data-compacto="2"], [data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .marco__cartao { gap: 8px; }
+  .tempo:is([data-compacto="2"], [data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .marco h3 { font-size: 20px; }
+  .tempo[data-compacto="3"] .tempo__trilho { --foto: 170px; }
+  .tempo[data-compacto="4"] .tempo__trilho { --foto: 170px; }
+  .tempo:is([data-compacto="4"], [data-compacto="5"]) .marco p { display: none; }
+  .tempo[data-compacto="5"] .tempo__trilho { --foto: 120px; }
   .marco__foto img { width: 100%; height: 100%; object-fit: cover; }
   .marco__grafico svg { width: 100%; height: 100%; }
   .marco__ponto { position: absolute; left: 6px; width: 18px; height: 18px; margin-top: -9px; border-radius: 50%; background: var(--navy); border: 3px solid var(--papel); box-shadow: 0 0 0 2px var(--navy); z-index: 2; }
@@ -526,6 +523,7 @@
     .tempo__trilho::before { content: ''; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: linear-gradient(var(--navy) var(--feito, 0%), var(--linha-forte) var(--feito, 0%)); }
     .marco, .marco--destaque { width: auto; max-width: 560px; margin: 0; display: block; }
     .marco__cartao, .marco[data-lado] .marco__cartao { padding: 0; }
+    .marco__foto { width: 100%; }
     .marco--destaque .marco__cartao { padding: 24px; margin: 0; }
     .marco__ponto, .marco[data-lado] .marco__ponto { left: -40px; top: 4px; margin-top: 0; }
     .hoje { width: auto; margin: 0; display: block; }
@@ -1133,7 +1131,7 @@
     /* algum cartão encostando num ponto? */
     const encosta = () => [...trilho.querySelectorAll('.marco')].some((m) => {
       const c = m.querySelector('.marco__cartao').getBoundingClientRect(), d = m.querySelector('.marco__ponto').getBoundingClientRect()
-      return m.dataset.lado === 'cima' ? d.top - c.bottom < 8 : c.top - d.bottom < 8
+      return m.dataset.lado === 'cima' ? d.top - c.bottom < 12 : c.top - d.bottom < 12
     })
     let largura = 0, hojeX = 0
 
