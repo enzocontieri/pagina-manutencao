@@ -486,6 +486,17 @@
   .marco__foto { border-radius: 16px; overflow: hidden; background: var(--areia-funda); aspect-ratio: 5 / 2; }
   @media (min-height: 960px) { .marco__foto { aspect-ratio: 2 / 1; } }
   @media (max-height: 820px) { .marco__foto { aspect-ratio: 3 / 1; } .marco--destaque .marco__cartao { padding: 18px 20px; } .contagem b { font-size: 30px; } .marco h3 { font-size: 20px; } }
+  /* telas baixas: os cartões encolhem aos poucos até nenhum ponto encostar em texto */
+  .tempo:is([data-compacto="1"], [data-compacto="2"], [data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .marco__foto { aspect-ratio: 4 / 1; }
+  .tempo:is([data-compacto="2"], [data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .marco { width: 360px; }
+  .tempo:is([data-compacto="2"], [data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .marco--destaque { width: 470px; }
+  .tempo:is([data-compacto="2"], [data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .marco__foto { aspect-ratio: 5 / 1; }
+  .tempo:is([data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .tempo__fixo { padding: 48px 0 40px; }
+  .tempo:is([data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .tempo__trilho { --banda: 96px; --amp: 22px; }
+  .tempo:is([data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .marco p { font-size: 15px; line-height: 1.4; }
+  .tempo:is([data-compacto="3"], [data-compacto="4"], [data-compacto="5"]) .marco__cartao { gap: 6px; }
+  .tempo:is([data-compacto="4"], [data-compacto="5"]) .marco__foto { display: none; }
+  .tempo[data-compacto="5"] .marco p { display: none; }
   .marco__foto img { width: 100%; height: 100%; object-fit: cover; }
   .marco__grafico svg { width: 100%; height: 100%; }
   .marco__ponto { position: absolute; left: 6px; width: 18px; height: 18px; margin-top: -9px; border-radius: 50%; background: var(--navy); border: 3px solid var(--papel); box-shadow: 0 0 0 2px var(--navy); z-index: 2; }
@@ -508,7 +519,7 @@
   .tempo__progresso { position: absolute; left: var(--lado); right: var(--lado); bottom: 28px; height: 3px; border-radius: 3px; background: var(--linha); z-index: 3; }
   .tempo__progresso span { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: inherit; background: var(--navy); }
   /* telas estreitas, baixas e movimento reduzido: a linha vira vertical */
-  @media (max-width: 899px), (max-height: 700px), (prefers-reduced-motion: reduce) {
+  @media (max-width: 899px), (prefers-reduced-motion: reduce) {
     .tempo__fixo { position: relative; height: auto; overflow: visible; padding: 56px var(--lado) var(--respiro); }
     .tempo__trilho { display: grid; gap: 40px; padding: 0 0 0 40px; transform: none !important; height: auto; }
     .tempo__onda { display: none; }
@@ -522,20 +533,6 @@
     .tempo__progresso { display: none; }
     .tempo__pista { height: auto !important; }
   }
-  /* o mesmo modo vertical quando os cartões não cabem na altura da tela */
-  .tempo[data-vertical] .tempo__fixo { position: relative; height: auto; overflow: visible; padding: 56px var(--lado) var(--respiro); }
-  .tempo[data-vertical] .tempo__trilho { display: grid; gap: 40px; padding: 0 0 0 40px; transform: none !important; height: auto; }
-  .tempo[data-vertical] .tempo__onda { display: none; }
-  .tempo[data-vertical] .tempo__trilho::before { content: ''; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: linear-gradient(var(--navy) var(--feito, 0%), var(--linha-forte) var(--feito, 0%)); }
-  .tempo[data-vertical] .marco, .tempo[data-vertical] .marco--destaque { width: auto; max-width: 560px; margin: 0; display: block; }
-  .tempo[data-vertical] .marco__cartao, .tempo[data-vertical] .marco[data-lado] .marco__cartao { padding: 0; }
-  .tempo[data-vertical] .marco--destaque .marco__cartao { padding: 24px; margin: 0; }
-  .tempo[data-vertical] .marco__ponto, .tempo[data-vertical] .marco[data-lado] .marco__ponto { left: -40px; top: 4px; margin-top: 0; }
-  .tempo[data-vertical] .hoje { width: auto; margin: 0; display: block; }
-  .tempo[data-vertical] .hoje > div { justify-items: start; }
-  .tempo[data-vertical] .tempo__progresso { display: none; }
-  .tempo[data-vertical] .tempo__pista { height: auto !important; }
-
   /* =====================  ORGANIZAÇÃO  ===================== */
   .org { background: var(--duna); overflow: hidden; }
   .org .caixa { z-index: 1; }
@@ -1132,8 +1129,8 @@
     contar(); setInterval(contar, 30000)
 
     const secao = document.getElementById('linha-do-tempo')
-    const horizontal = () => matchMedia('(min-width: 900px) and (min-height: 701px)').matches && !quieto && !secao.hasAttribute('data-vertical')
-    /* algum cartão encostando num ponto? então a linha fica vertical nesta tela */
+    const horizontal = () => matchMedia('(min-width: 900px)').matches && !quieto
+    /* algum cartão encostando num ponto? */
     const encosta = () => [...trilho.querySelectorAll('.marco')].some((m) => {
       const c = m.querySelector('.marco__cartao').getBoundingClientRect(), d = m.querySelector('.marco__ponto').getBoundingClientRect()
       return m.dataset.lado === 'cima' ? d.top - c.bottom < 8 : c.top - d.bottom < 8
@@ -1142,9 +1139,10 @@
 
     /* A onda passa exatamente pelos pontos, que já estão na faixa do meio. */
     function medir() {
-      secao.removeAttribute('data-vertical')
-      if (horizontal() && encosta()) secao.setAttribute('data-vertical', '')
-      if (!horizontal()) { pista.style.height = ''; trilho.style.transform = ''; rolar(); return }
+      if (!horizontal()) { secao.removeAttribute('data-compacto'); pista.style.height = ''; trilho.style.transform = ''; rolar(); return }
+      /* encolhe os cartões só o necessário para os pontos ficarem livres */
+      trilho.style.transform = ''
+      for (let n = 0; n <= 5; n++) { secao.setAttribute('data-compacto', n); if (!encosta()) break }
       trilho.style.transform = ''
       largura = trilho.scrollWidth
       const tr = trilho.getBoundingClientRect()
@@ -1212,7 +1210,7 @@
       const y = scrollY, alt = innerHeight
       barra.toggleAttribute('data-solida', y > capa.offsetHeight - 90)
       const rm = mapa.getBoundingClientRect(), rt = pista.getBoundingClientRect()
-      const noTempo = !secaoTempo.hasAttribute('data-vertical') && innerWidth >= 900 && rt.top < 1 && rt.bottom > alt
+      const noTempo = innerWidth >= 900 && rt.top < 1 && rt.bottom > alt
       const noMapa = (rm.top < 60 && rm.bottom > alt * 0.5) || noTempo
       if (noMapa) barra.setAttribute('data-escondida', '')
       else if (y > ultimoY + 4 && y > alt) barra.setAttribute('data-escondida', '')
