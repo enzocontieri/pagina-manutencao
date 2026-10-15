@@ -124,7 +124,7 @@ const flyerWhatsapp = {
         <div class="fl__texto"><h1 class="p-titulo">${marca(p.titulo)}</h1>${p.subtitulo ? `<p>${marca(p.subtitulo)}</p>` : ''}${info ? `<div class="fl__info">${info}</div>` : ''}</div>
         <div class="fl__pe">${apoio(ctx.parceiros)}${cta ? `<span class="fl__cta">${cta}</span>` : ''}${contatosFixos('fl__contatos')}</div>
       </div>
-      <svg class="fl__onda" viewBox="0 0 760 130" preserveAspectRatio="none"><path fill="#f28c38" d="M40 130 C 250 80, 460 10, 600 10 C 680 10, 730 40, 760 70 V130 Z"/><path fill="#1f5bca" d="M420 130 C 540 116, 660 110, 760 114 V130 Z"/></svg>${grao}
+      <svg class="fl__transicao" viewBox="0 0 1080 120" preserveAspectRatio="none"><path fill="#f28c38" d="M0 64 C 220 8, 420 8, 600 52 S 900 110, 1080 40 V120 H0z"/><path fill="#1f2a44" d="M0 92 C 220 36, 430 40, 610 80 S 910 132, 1080 70 V120 H0z"/></svg>${grao}
     </div>` }]
   },
   legenda: (p) => p.legenda || '',
