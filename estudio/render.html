@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Render | Estúdio AJIN</title>
+<link rel="stylesheet" href="css/pecas.css" />
+<style>
+  /* Página de renderização: o servidor do agente abre esta página, entrega
+     a peça e fotografa cada página no tamanho final (PNG) ou imprime (PDF). */
+  html, body { margin: 0; background: #fff; }
+  #paginas { display: flex; flex-direction: column; align-items: flex-start; }
+  #paginas > .peca { position: relative; break-after: page; }
+  #paginas > .peca:last-child { break-after: auto; }
+</style>
+</head>
+<body>
+<div id="paginas"></div>
+<script type="module">
+  import { MODELOS } from './js/modelos.js'
+  const alvo = document.getElementById('paginas')
+  /* window.renderizar({ modelo, peca, parceiros }) devolve as medidas de cada página */
+  window.renderizar = async ({ modelo, peca, parceiros = [] }) => {
+    const m = MODELOS[modelo]
+    if (!m) throw new Error('Modelo desconhecido: ' + modelo)
+    const pc = peca || m.exemplo
+    const pgs = m.paginas(pc, { parceiros })
+    alvo.innerHTML = pgs.map((p) => p.html).join('')
+    const pecas = [...alvo.children]
+    await Promise.all([...alvo.querySelectorAll('img')].map((img) => img.complete ? null : new Promise((ok) => { img.onload = img.onerror = ok })))
+    await document.fonts.ready
+    const medidas = pecas.map((el, i) => ({ w: pgs[i].w, h: pgs[i].h || el.offsetHeight }))
+    const estilo = document.createElement('style')
+    estilo.textContent = `@page { size: ${medidas[0].w}px ${medidas[0].h}px; margin: 0 }`
+    document.head.appendChild(estilo)
+    return {
+      medidas,
+      legenda: m.legenda ? m.legenda(pc) : '',
+      email: m.email ? m.email(pc, { parceiros }) : '',
+    }
+  }
+  /* aberto direto no navegador: mostra o exemplo do modelo pedido */
+  const q = new URLSearchParams(location.search)
+  if (q.get('modelo')) window.renderizar({ modelo: q.get('modelo') }).then(() => document.body.dataset.pronto = '1')
+  else document.body.dataset.pronto = '1'
+</script>
+</body>
+</html>

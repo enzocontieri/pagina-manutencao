@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Estúdio de comunicação | AJIN</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Estúdio de comunicação da AJIN: flyers, carrosséis, e-mails, boletins, apresentações e documentos na identidade da associação." />
+<!-- endereço do servidor do agente; vazio = estúdio funciona sozinho, sem conversa nem publicação -->
+<meta name="ajin-agente" content="" />
+<link rel="icon" type="image/png" sizes="32x32" href="../marca/icone-32.png" />
+<link rel="apple-touch-icon" href="../marca/icone-180.png" />
+<link rel="stylesheet" href="css/pecas.css" />
+<link rel="stylesheet" href="css/estudio.css" />
+</head>
+<body>
+  <header class="topo">
+    <a class="topo__marca" href="../"><img src="../marca/ajin-branco.png" alt="AJIN" width="81" height="32" /></a>
+    <span class="topo__nome">Estúdio de comunicação</span>
+    <nav class="topo__abas" role="tablist">
+      <button role="tab" data-aba="criar" aria-selected="true">Criar</button>
+      <button role="tab" data-aba="fila">Aprovação</button>
+      <button role="tab" data-aba="parceiros">Parceiros</button>
+      <button role="tab" data-aba="licoes">Aprendizado</button>
+    </nav>
+    <span class="topo__estado" id="estado-agente">Agente desligado</span>
+  </header>
+
+  <main class="aba" data-painel="criar">
+    <aside class="lado">
+      <section class="bloco">
+        <h2 class="bloco__titulo"><small>01</small>O que vamos criar</h2>
+        <div class="modelos" id="modelos"></div>
+      </section>
+
+      <section class="bloco bloco--conversa" id="conversa">
+        <h2 class="bloco__titulo"><small>02</small>Conversa com o agente</h2>
+        <div class="conversa" id="conversa-lista" aria-live="polite"></div>
+        <form class="conversa__form" id="conversa-form">
+          <textarea id="conversa-texto" rows="3" placeholder="Conte a demanda: o que aconteceu, para quem é, quando sai. O agente pergunta o que faltar."></textarea>
+          <div class="conversa__acoes">
+            <label class="botao botao--linha botao--pequeno"><input type="file" id="conversa-anexo" accept="image/*,.pdf,.txt,.zip" multiple hidden />Anexar</label>
+            <button class="botao botao--pequeno" type="submit">Enviar</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="bloco">
+        <h2 class="bloco__titulo"><small>03</small>Conteúdo da peça</h2>
+        <div id="formulario"></div>
+      </section>
+    </aside>
+
+    <section class="palco">
+      <div class="palco__barra">
+        <div class="palco__info"><b id="peca-nome"></b><span id="peca-canal"></span></div>
+        <div class="palco__acoes" id="acoes"></div>
+      </div>
+      <div class="avisos" id="avisos"></div>
+      <div class="paginas" id="paginas"></div>
+      <div class="legenda" id="legenda" hidden>
+        <div class="legenda__topo"><b>Texto para colar</b><button class="botao botao--linha botao--pequeno" id="copiar-legenda">Copiar</button></div>
+        <pre id="legenda-texto"></pre>
+      </div>
+      <div class="retorno" id="retorno">
+        <b>Como ficou?</b>
+        <div class="retorno__notas" id="retorno-notas"></div>
+        <textarea id="retorno-texto" rows="2" placeholder="O que mudar ou o que acertou em cheio. O agente aprende com isso."></textarea>
+        <button class="botao botao--linha botao--pequeno" id="retorno-enviar">Registrar</button>
+      </div>
+    </section>
+  </main>
+
+  <main class="aba" data-painel="fila" hidden>
+    <section class="lista-painel">
+      <h2>Peças em aprovação</h2>
+      <p class="lista-painel__ajuda">Nada sai sem aprovação da diretoria. Aqui ficam as peças enviadas, quem aprovou e onde foram publicadas.</p>
+      <div id="fila"></div>
+    </section>
+  </main>
+
+  <main class="aba" data-painel="parceiros" hidden>
+    <section class="lista-painel">
+      <h2>Parceiros</h2>
+      <p class="lista-painel__ajuda">Parceiro ativo entra na faixa “Apoio” das peças. Sem parceiro ativo, a faixa não aparece.</p>
+      <div id="parceiros"></div>
+    </section>
+  </main>
+
+  <main class="aba" data-painel="licoes" hidden>
+    <section class="lista-painel">
+      <h2>O que o agente aprendeu</h2>
+      <p class="lista-painel__ajuda">Cada retorno vira uma proposta de lição. Só entra no agente o que for aprovado aqui.</p>
+      <div id="licoes"></div>
+    </section>
+  </main>
+
+  <div class="toque" id="toque" role="status" aria-live="polite"></div>
+  <div id="impressao" aria-hidden="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

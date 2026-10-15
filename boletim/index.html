@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Boletim semanal | AJIN</title>
+<meta name="description" content="O boletim semanal da AJIN para os associados de Jurerê Internacional, em PDF, para ler e guardar." />
+<meta name="theme-color" content="#1f2a44" />
+<link rel="canonical" href="https://www.ajin.org.br/boletim/" />
+<link rel="icon" type="image/png" sizes="32x32" href="../marca/icone-32.png" />
+<link rel="apple-touch-icon" href="../marca/icone-180.png" />
+<link rel="preload" href="../fontes/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+<style>
+  /* Boletim semanal: a edição mais recente em destaque, na placa navy da
+     marca, e as anteriores em lista. Os dados vêm da tabela "boletins",
+     que só mostra o que a diretoria aprovou e o agente publicou. */
+  @font-face { font-family: 'Inter'; font-weight: 400 900; font-display: swap; src: url('../fontes/inter-latin.woff2') format('woff2'); }
+  :root {
+    --navy: #1f2a44; --mar: #1f5bca; --onda: #f28c38; --areia: #e9e2d3;
+    --papel: color-mix(in srgb, var(--areia) 90%, var(--onda));
+    --areia-clara: color-mix(in srgb, var(--areia) 55%, #fff);
+    --fraco: color-mix(in srgb, var(--navy) 80%, var(--areia));
+    --linha: color-mix(in srgb, var(--navy) 16%, transparent);
+    --textura: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .16 0 0 0 0 .27 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--papel); color: var(--navy); font-family: 'Inter', system-ui, sans-serif; font-size: 17px; line-height: 1.55; }
+  body::before { content: ''; position: fixed; inset: 0; background: var(--textura); opacity: 0.09; pointer-events: none; mix-blend-mode: multiply; }
+  a { color: inherit; }
+  .topo { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px clamp(16px, 4.4vw, 64px); background: var(--navy); }
+  .topo img { display: block; height: 32px; width: auto; }
+  .topo a.voltar { color: var(--areia); font-weight: 700; font-size: 15px; text-decoration: none; }
+  main { max-width: 1080px; margin: 0 auto; padding: clamp(40px, 7vw, 90px) clamp(16px, 4.4vw, 64px) 100px; position: relative; }
+  .rotulo { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mar); }
+  .rotulo::before { content: ''; width: 26px; height: 3px; border-radius: 3px; background: var(--onda); }
+  h1 { margin: 14px 0 0; font-size: clamp(40px, 7vw, 76px); font-weight: 900; line-height: 0.98; letter-spacing: -0.045em; }
+  .intro { margin: 18px 0 0; max-width: 52ch; font-size: 19px; color: var(--fraco); }
+
+  .placa { position: relative; margin-top: 44px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 0; border-radius: 28px; overflow: hidden; background: var(--navy); color: var(--areia); isolation: isolate; }
+  .placa__foto { position: relative; min-height: 340px; background: var(--mar); }
+  .placa__foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .placa__vol { position: absolute; left: 22px; top: 22px; padding: 10px 16px; border-radius: 14px; background: var(--onda); color: var(--navy); font-weight: 900; font-size: 15px; letter-spacing: 0.06em; }
+  .placa__texto { position: relative; padding: clamp(28px, 4vw, 52px) clamp(24px, 4vw, 52px) clamp(110px, 12vw, 150px); }
+  .placa__texto small { display: block; font-size: 14px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--onda); }
+  .placa__texto h2 { margin: 14px 0 0; font-size: clamp(28px, 3.6vw, 42px); font-weight: 900; line-height: 1.05; letter-spacing: -0.035em; }
+  .placa__texto p { margin: 14px 0 0; color: color-mix(in srgb, var(--areia) 86%, var(--navy)); }
+  .botao { display: inline-flex; align-items: center; gap: 10px; min-height: 54px; margin-top: 26px; padding: 0 26px; border-radius: 100px; background: var(--onda); color: var(--navy); font-weight: 800; font-size: 17px; text-decoration: none; }
+  .placa__curva { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 90px; z-index: -1; }
+
+  h3 { margin: 64px 0 18px; font-size: 26px; font-weight: 900; letter-spacing: -0.03em; }
+  .lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+  .edicao { display: grid; gap: 4px; padding: 18px 20px; border-radius: 18px; background: var(--areia-clara); border: 1.5px solid var(--linha); text-decoration: none; }
+  .edicao b { font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mar); }
+  .edicao span { font-weight: 700; line-height: 1.3; }
+  .edicao em { font-style: normal; font-size: 15px; color: var(--fraco); }
+  .edicao:hover { border-color: var(--navy); }
+  .vazio { margin-top: 40px; padding: 30px; border-radius: 22px; border: 1.5px dashed var(--linha); color: var(--fraco); max-width: 640px; }
+  .vazio a { font-weight: 700; }
+  @media (max-width: 760px) { .placa { grid-template-columns: 1fr; } .placa__foto { min-height: 240px; } }
+</style>
+</head>
+<body>
+  <header class="topo">
+    <a href="../"><img src="../marca/ajin-branco.png" alt="AJIN, página inicial" width="81" height="32" /></a>
+    <a class="voltar" href="../">Voltar ao site</a>
+  </header>
+  <main>
+    <span class="rotulo">Aos associados</span>
+    <h1>Boletim semanal</h1>
+    <p class="intro">Toda semana, o que a AJIN fez, o que vem pela frente e o que pede a sua atenção em Jurerê Internacional. Em PDF, para ler e guardar.</p>
+    <div id="boletins" aria-live="polite"></div>
+  </main>
+<script>
+  {
+    const URL_BANCO = 'https://akqiejrzzajvqrzvqoay.supabase.co/rest/v1/boletins?select=volume,data,titulo,chamada,capa,pdf&publicado=eq.true&order=volume.desc&limit=60'
+    const CHAVE = 'sb_publishable_gwr-TU9yBMO0vz7DKnY20Q_iDjsqkO2'
+    const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+    const quando = (iso) => { const d = new Date(iso + 'T12:00:00'); return isNaN(d) ? '' : `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}` }
+    const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+    const alvo = document.getElementById('boletins')
+    const vazio = () => { alvo.innerHTML = '<div class="vazio">As edições publicadas aparecem aqui. Enquanto isso, o boletim chega toda semana pelo grupo de WhatsApp dos associados. Para entrar no grupo, <a href="https://wa.me/5548999497419">fale com a AJIN</a>.</div>' }
+    fetch(URL_BANCO, { headers: { apikey: CHAVE, Authorization: `Bearer ${CHAVE}` } })
+      .then((r) => r.ok ? r.json() : [])
+      .then((lista) => {
+        if (!lista.length) return vazio()
+        const [ultimo, ...antes] = lista
+        alvo.innerHTML = `
+          <article class="placa">
+            <div class="placa__foto">${ultimo.capa ? `<img src="${esc(ultimo.capa)}" alt="Capa do boletim vol. ${esc(ultimo.volume)}" />` : ''}<span class="placa__vol">VOL. ${esc(ultimo.volume)}</span></div>
+            <div class="placa__texto">
+              <small>Edição de ${esc(quando(ultimo.data))}</small>
+              <h2>${esc(ultimo.titulo)}</h2>
+              ${ultimo.chamada ? `<p>${esc(ultimo.chamada)}</p>` : ''}
+              <a class="botao" href="${esc(ultimo.pdf)}" target="_blank" rel="noopener">Ler o boletim em PDF</a>
+              <svg class="placa__curva" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><path fill="#f28c38" d="M0 170 C 300 80, 620 60, 900 140 S 1150 230, 1200 210 V300 H0z"/><path fill="#e9e2d3" d="M0 230 C 300 140, 640 130, 900 200 S 1150 280, 1200 260 V300 H0z"/></svg>
+            </div>
+          </article>
+          ${antes.length ? `<h3>Edições anteriores</h3><div class="lista">${antes.map((b) => `<a class="edicao" href="${esc(b.pdf)}" target="_blank" rel="noopener"><b>Vol. ${esc(b.volume)}</b><span>${esc(b.titulo)}</span><em>${esc(quando(b.data))}</em></a>`).join('')}</div>` : ''}`
+      })
+      .catch(vazio)
+  }
+</script>
+</body>
+</html>
