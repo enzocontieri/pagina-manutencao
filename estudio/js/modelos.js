@@ -91,6 +91,7 @@ const flyerWhatsapp = {
   campos: [
     { id: 'formato', rotulo: 'Formato', tipo: 'escolha', opcoes: [['feed', 'Quadro 1080 × 1350'], ['story', 'Tela cheia 1080 × 1920']] },
     { id: 'imagem', rotulo: 'Foto principal', tipo: 'imagem', ajuda: 'Foto real, nítida, do lugar ou do evento.' },
+    { id: 'enquadramento', rotulo: 'Enquadramento da foto', tipo: 'escolha', opcoes: [['cobrir', 'Preenche o quadro (pode cortar as bordas)'], ['inteira', 'Foto inteira, sem corte']], ajuda: 'Inteira quando a equipe pedir para não cortar ou para a foto aparecer toda.' },
     { id: 'rotulo', rotulo: 'Etiqueta', tipo: 'texto', limite: [4, 22], ajuda: 'Ex.: Convite, Atenção, Meio ambiente.' },
     { id: 'titulo', rotulo: 'Título', tipo: 'texto', limite: [12, 48] },
     { id: 'subtitulo', rotulo: 'Frase de apoio', tipo: 'area', limite: [40, 120] },
@@ -115,7 +116,7 @@ const flyerWhatsapp = {
     const story = p.formato === 'story', h = story ? 1920 : 1350
     const info = (p.info || []).filter((i) => i.texto).map((i) => `<span class="fl__item">${ICONES[i.icone] || ICONES.data}${marca(i.texto)}</span>`).join('')
     const cta = p.cta ? marca(p.cta) : ''
-    return [{ w: 1080, h, html: `<div class="peca fl ${story ? 'fl--story' : ''}" style="width:1080px;height:${h}px">
+    return [{ w: 1080, h, html: `<div class="peca fl ${story ? 'fl--story' : ''} ${p.enquadramento === 'inteira' ? 'fl--inteira' : ''}" style="width:1080px;height:${h}px">
       <div class="fl__foto">${foto(p.imagem, p.titulo)}</div>
       <img class="fl__logo" src="${LOGO_BRANCO}" alt="AJIN" />
       ${p.rotulo ? `<span class="fl__tag">${esc(p.rotulo)}</span>` : ''}
@@ -252,6 +253,7 @@ const storyInstagram = {
   descricao: 'Tela cheia vertical: foto que domina, uma manchete, informação essencial e o caminho (link na bio ou site).',
   campos: [
     { id: 'imagem', rotulo: 'Foto', tipo: 'imagem' },
+    { id: 'enquadramento', rotulo: 'Enquadramento da foto', tipo: 'escolha', opcoes: [['cobrir', 'Preenche a tela (pode cortar as bordas)'], ['inteira', 'Foto inteira no alto, sem corte']], ajuda: 'Inteira quando a equipe pedir para não cortar ou para a foto aparecer toda.' },
     { id: 'tag', rotulo: 'Etiqueta no alto', tipo: 'texto', limite: [3, 24], ajuda: 'Ex.: Boletim vol. 54, Convite, Novidade.' },
     { id: 'rotulo', rotulo: 'Tema', tipo: 'texto', limite: [4, 28] },
     { id: 'titulo', rotulo: 'Manchete', tipo: 'texto', limite: [15, 60] },
@@ -271,7 +273,7 @@ const storyInstagram = {
   },
   paginas(p) {
     const info = (p.info || []).filter((i) => i.texto).map((i) => `<div class="fw__linha">${icone(i.icone, 'onda')}<span>${marca(i.texto)}</span></div>`).join('')
-    return [{ w: 1080, h: 1920, html: `<div class="peca st" style="width:1080px;height:1920px">${foto(p.imagem, p.titulo)}<div class="st__veu"></div><img class="st__logo" src="${LOGO_BRANCO}" alt="AJIN" />${p.tag ? `<span class="st__tag">${esc(p.tag)}</span>` : ''}<div class="st__texto">${p.rotulo ? `<span class="p-rotulo">${esc(p.rotulo)}</span>` : ''}<h1 class="p-titulo">${marca(p.titulo)}</h1>${p.texto ? `<p>${marca(p.texto)}</p>` : ''}${info ? `<div class="st__info">${info}</div>` : ''}</div>${p.link ? `<div class="st__link"><b>${esc(p.link)}</b><span>${esc(p.linkNota || 'Link na bio')}</span></div>` : ''}${contatosFixos('st__contatos')}<svg class="st__onda" viewBox="0 0 1080 190" preserveAspectRatio="none"><path fill="#f28c38" d="M0 190 C 260 120, 600 20, 820 22 C 940 24, 1020 60, 1080 90 V190 Z"/><path fill="#1f5bca" d="M500 190 C 700 168, 900 158, 1080 164 V190 Z"/></svg>${grao}</div>` }]
+    return [{ w: 1080, h: 1920, html: `<div class="peca st ${p.enquadramento === 'inteira' ? 'st--inteira' : ''}" style="width:1080px;height:1920px">${foto(p.imagem, p.titulo)}<div class="st__veu"></div><img class="st__logo" src="${LOGO_BRANCO}" alt="AJIN" />${p.tag ? `<span class="st__tag">${esc(p.tag)}</span>` : ''}<div class="st__texto">${p.rotulo ? `<span class="p-rotulo">${esc(p.rotulo)}</span>` : ''}<h1 class="p-titulo">${marca(p.titulo)}</h1>${p.texto ? `<p>${marca(p.texto)}</p>` : ''}${info ? `<div class="st__info">${info}</div>` : ''}</div>${p.link ? `<div class="st__link"><b>${esc(p.link)}</b><span>${esc(p.linkNota || 'Link na bio')}</span></div>` : ''}${contatosFixos('st__contatos')}<svg class="st__onda" viewBox="0 0 1080 190" preserveAspectRatio="none"><path fill="#f28c38" d="M0 190 C 260 120, 600 20, 820 22 C 940 24, 1020 60, 1080 90 V190 Z"/><path fill="#1f5bca" d="M500 190 C 700 168, 900 158, 1080 164 V190 Z"/></svg>${grao}</div>` }]
   },
 }
 

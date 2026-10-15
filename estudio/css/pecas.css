@@ -195,6 +195,8 @@
 .fl__contatos, .ig__news-contatos { flex-wrap: nowrap; gap: 24px; font-size: 20px; }
 .fl__contatos svg, .ig__news-contatos svg { width: 22px; height: 22px; }
 .fl--story .fl__foto { height: 1080px; }
+/* foto inteira: nada cortado; as sobras ficam no navy do fundo */
+.fl--inteira .fl__foto .p-foto { object-fit: contain; }
 .fl--story .fl__logo { top: 150px; }
 .fl--story .fl__tag { top: 1012px; }
 .fl--story .fl__painel { top: 1120px; bottom: 150px; }
@@ -224,6 +226,8 @@
    ===================================================================== */
 .st { width: 1080px; height: 1920px; padding: 0; background: var(--navy); color: var(--areia); }
 .st .p-foto { position: absolute; inset: 0; }
+.st--inteira .p-foto { height: 1150px; object-fit: contain; object-position: center 55%; }
+.st--inteira .st__veu { background: linear-gradient(to bottom, rgba(31,42,68,0.55), rgba(31,42,68,0) 16%, rgba(31,42,68,0) 48%, rgba(31,42,68,0.97) 64%); }
 .st__veu { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(31,42,68,0.6), rgba(31,42,68,0.05) 22%, rgba(31,42,68,0.55) 42%, rgba(31,42,68,0.95) 70%); }
 .st__logo { position: absolute; left: 90px; top: 146px; height: 88px; z-index: 3; }
 .st__tag { position: absolute; right: 90px; top: 160px; z-index: 3; padding: 14px 26px; border-radius: 100px; background: var(--onda); color: var(--navy); font-size: 26px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
