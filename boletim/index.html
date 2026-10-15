@@ -12,8 +12,8 @@
 <link rel="preload" href="../fontes/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
 <style>
   /* Boletim semanal: a edição mais recente em destaque, na placa navy da
-     marca, e as anteriores em lista. Os dados vêm da tabela "boletins",
-     que só mostra o que a diretoria aprovou e o agente publicou. */
+     marca, e as anteriores em lista. Os dados vêm da lista pública
+     boletins.json, que o agente grava quando a diretoria aprova a edição. */
   @font-face { font-family: 'Inter'; font-weight: 400 900; font-display: swap; src: url('../fontes/inter-latin.woff2') format('woff2'); }
   :root {
     --navy: #1f2a44; --mar: #1f5bca; --onda: #f28c38; --areia: #e9e2d3;
@@ -72,14 +72,14 @@
   </main>
 <script>
   {
-    const URL_BANCO = 'https://akqiejrzzajvqrzvqoay.supabase.co/rest/v1/boletins?select=volume,data,titulo,chamada,capa,pdf&publicado=eq.true&order=volume.desc&limit=60'
-    const CHAVE = 'sb_publishable_gwr-TU9yBMO0vz7DKnY20Q_iDjsqkO2'
+    /* lista pública gravada pelo agente quando a diretoria aprova cada edição */
+    const URL_LISTA = 'https://akqiejrzzajvqrzvqoay.supabase.co/storage/v1/object/public/pecas-publicas/boletins.json'
     const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
     const quando = (iso) => { const d = new Date(iso + 'T12:00:00'); return isNaN(d) ? '' : `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}` }
     const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
     const alvo = document.getElementById('boletins')
     const vazio = () => { alvo.innerHTML = '<div class="vazio">As edições publicadas aparecem aqui. Enquanto isso, o boletim chega toda semana pelo grupo de WhatsApp dos associados. Para entrar no grupo, <a href="https://wa.me/5548999497419">fale com a AJIN</a>.</div>' }
-    fetch(URL_BANCO, { headers: { apikey: CHAVE, Authorization: `Bearer ${CHAVE}` } })
+    fetch(URL_LISTA, { cache: 'no-cache' })
       .then((r) => r.ok ? r.json() : [])
       .then((lista) => {
         if (!lista.length) return vazio()

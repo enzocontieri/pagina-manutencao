@@ -1,11 +1,10 @@
 /* =====================================================================
    Estúdio de comunicação da AJIN
    Escolhe o modelo, monta o formulário pelo esquema, desenha a prévia
-   em escala, exporta e conversa com o agente quando ele está ligado.
+   em escala e exporta. A conversa com o agente acontece no grupo de WhatsApp.
    ===================================================================== */
 import { MODELOS, ORDEM, TIPOS_CARD, FALTAM_NO_SITE, pendencias, volumeDoBoletim, esc } from './modelos.js'
 import * as exportar from './exportar.js'
-import * as agente from './agente.js'
 
 const $ = (s, el = document) => el.querySelector(s)
 const el = (tag, attrs = {}, ...filhos) => {
@@ -251,169 +250,18 @@ function montarAcoes() {
     b.push(botao('Baixar HTML', () => exportar.baixar(new Blob([m.email(p, ctx)], { type: 'text/html' }), `${nomeArquivo()}.html`)))
   }
   if (m.derivar) b.push(botao('Gerar carrossel do boletim', () => { const d = m.derivar(p); trocarModelo(d.modelo, d.peca); avisar('Carrossel do boletim pronto para revisar.') }))
-  const pend = pendencias(p).length
-  b.push(botao('Enviar para aprovação', enviarAprovacao, 'botao botao--pequeno', {
-    disabled: !agenteLigado || pend > 0,
-    title: !agenteLigado ? 'Ligue o servidor do agente para enviar à diretoria.' : pend ? 'Resolva o que falta confirmar antes de enviar.' : 'A diretoria aprova e o agente publica no canal.',
-  }))
   $('#acoes').replaceChildren(...b)
-}
-
-async function enviarAprovacao() {
-  try {
-    const r = await agente.enviarParaAprovacao({ modelo: estado.modelo, peca: peca(), legenda: modelo().legenda?.(peca()) || '' })
-    avisar(`Enviado à diretoria. Código ${r.codigo}.`)
-  } catch (e) { avisar(e.message === 'sem-login' ? 'Entre com seu e-mail da equipe primeiro.' : 'Não foi possível enviar agora.') }
 }
 
 $('#copiar-legenda').addEventListener('click', async () => avisar(await exportar.copiar($('#legenda-texto').textContent) ? 'Texto copiado.' : 'Não deu para copiar.'))
 
-/* retorno: nota e comentário, que viram lição depois de aprovados */
-let nota = 0
-$('#retorno-notas').replaceChildren(...[1, 2, 3, 4, 5].map((n) => el('button', { type: 'button', 'aria-pressed': 'false', 'aria-label': `Nota ${n}`, onclick: (e) => {
-  nota = n; [...$('#retorno-notas').children].forEach((x, k) => x.setAttribute('aria-pressed', String(k + 1 === n)))
-} }, String(n))))
-$('#retorno-enviar').addEventListener('click', async () => {
-  const texto = $('#retorno-texto').value.trim()
-  if (!nota && !texto) return avisar('Dê uma nota ou escreva o que mudar.')
-  const dados = { modelo: estado.modelo, nota, texto, peca: peca() }
-  try { if (!agenteLigado) throw new Error('local'); await agente.retorno(dados); avisar('Retorno registrado. Vira proposta de lição.') }
-  catch { estado.retornos = [...(estado.retornos || []), { ...dados, peca: undefined, quando: new Date().toISOString() }].slice(-50); salvar(); avisar('Retorno guardado neste navegador.') }
-  $('#retorno-texto').value = ''
-})
-
-/* ---------------------------------------------------------------------
-   Conversa com o agente
-   --------------------------------------------------------------------- */
-let agenteLigado = false
-const historico = []
-function msg(quem, texto) { const n = el('div', { class: `msg msg--${quem}` }, texto); $('#conversa-lista').append(n); n.scrollIntoView({ block: 'nearest' }); return n }
-
-async function iniciarAgente() {
-  const estadoEl = $('#estado-agente')
-  if (!agente.configurado()) {
-    msg('sistema', 'O agente ainda não está ligado a este estúdio. Os modelos, a prévia e a exportação já funcionam: escolha a peça e preencha o conteúdo.')
-    return
-  }
-  const s = await agente.sessao().catch(() => null)
-  if (!s) { pedirLogin(); return }
-  try {
-    const eu = await agente.quemSou()
-    agenteLigado = true
-    estadoEl.textContent = `Agente ligado · ${eu.nome || eu.email}`
-    estadoEl.classList.add('topo__estado--ligado')
-    msg('agente', `Olá, ${eu.nome || ''}. O que vamos comunicar hoje? Pode contar do jeito que vier: eu pergunto o que faltar e monto a peça.`)
-    ctx.parceiros = await agente.parceirosAtivos()
-    desenhar()
-  } catch (e) { msg('sistema', e.message === 'Falha 403' ? 'Este e-mail não está na equipe do estúdio. Peça acesso à diretoria.' : 'O servidor do agente não respondeu. O estúdio segue funcionando sem ele.') }
-}
-
-function pedirLogin() {
-  const email = el('input', { type: 'email', placeholder: 'seu e-mail da equipe', required: true, style: 'width:100%;padding:10px 12px;border:1.5px solid var(--linha);border-radius:10px;margin:8px 0' })
-  const form = el('form', { onsubmit: async (e) => {
-    e.preventDefault()
-    try { await agente.entrar(email.value.trim()); form.replaceWith(el('div', { class: 'msg msg--sistema' }, 'Enviamos um link de acesso para o seu e-mail. Abra por ele para entrar.')) }
-    catch { avisar('Este e-mail não tem acesso ao estúdio.') }
-  } }, el('div', { class: 'msg msg--sistema' }, 'Entre com o e-mail da equipe para conversar com o agente e enviar peças à diretoria.'), email, el('button', { class: 'botao botao--pequeno' }, 'Receber link de acesso'))
-  $('#conversa-lista').append(form)
-}
-
-const anexos = []
-$('#conversa-anexo').addEventListener('change', async (e) => {
-  for (const f of e.target.files) {
-    if (f.type.startsWith('image/')) anexos.push({ nome: f.name, tipo: 'imagem', dados: await exportar.lerImagem(f, 1800) })
-    else anexos.push({ nome: f.name, tipo: f.type || 'arquivo', dados: await new Promise((ok) => { const r = new FileReader(); r.onload = () => ok(r.result); r.readAsDataURL(f) }) })
-  }
-  msg('sistema', `${anexos.length} anexo(s) prontos para ir com a próxima mensagem.`)
-  e.target.value = ''
-})
-
-$('#conversa-form').addEventListener('submit', async (e) => {
-  e.preventDefault()
-  const texto = $('#conversa-texto').value.trim()
-  if (!texto && !anexos.length) return
-  msg('eu', texto || `${anexos.length} anexo(s)`)
-  $('#conversa-texto').value = ''
-  if (!agenteLigado) { msg('sistema', 'Sem o servidor do agente, a conversa não é respondida. Preencha o conteúdo abaixo e a prévia aparece ao lado.'); return }
-  historico.push({ papel: 'usuario', texto })
-  const espera = msg('agente', 'Pensando…')
-  try {
-    const r = await agente.conversar({ historico, anexos: anexos.splice(0), modelo: estado.modelo, peca: peca() })
-    espera.textContent = r.resposta
-    historico.push({ papel: 'agente', texto: r.resposta })
-    if (r.modelo && r.peca) { trocarModelo(r.modelo, r.peca); avisar('Peça atualizada pelo agente.') }
-  } catch { espera.textContent = 'Não consegui responder agora. Tente de novo em instantes.' }
-})
-$('#conversa-texto').addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) $('#conversa-form').requestSubmit() })
-
-/* ---------------------------------------------------------------------
-   Abas de gestão: aprovação, parceiros, aprendizado
-   --------------------------------------------------------------------- */
-const semAgente = () => el('div', { class: 'vazio' }, 'Esta parte depende do servidor do agente. Quando ele estiver ligado, aparece aqui.')
-const ETIQUETA = { aguardando: ['Aguardando', 'espera'], aprovada: ['Aprovada', 'ok'], publicada: ['Publicada', 'ok'], recusada: ['Recusada', 'nao'], ajustar: ['Pediram ajuste', 'espera'] }
-
-async function abrirFila() {
-  const alvo = $('#fila')
-  if (!agenteLigado) return alvo.replaceChildren(semAgente())
-  const itens = await agente.fila().catch(() => [])
-  if (!itens.length) return alvo.replaceChildren(el('div', { class: 'vazio' }, 'Nenhuma peça na fila.'))
-  alvo.replaceChildren(...itens.map((it) => {
-    const [rot, cls] = ETIQUETA[it.estado] || [it.estado, '']
-    return el('div', { class: 'item' }, el('span', { class: 'item__mini', style: it.miniatura ? `background-image:url("${it.miniatura}")` : '' }),
-      el('div', {}, el('b', {}, it.titulo || MODELOS[it.modelo]?.nome), el('span', {}, el('span', { class: `etiqueta etiqueta--${cls}` }, rot), `${MODELOS[it.modelo]?.nome || it.modelo} · código ${it.codigo} · ${new Date(it.criado_em).toLocaleString('pt-BR')}`)),
-      el('div', { class: 'item__acoes' },
-        it.pdf || it.arquivos?.[0] ? el('a', { class: 'botao botao--linha botao--pequeno', href: it.pdf || it.arquivos[0], target: '_blank', rel: 'noopener' }, 'Ver') : null,
-        el('button', { type: 'button', class: 'botao botao--linha botao--pequeno', onclick: () => { trocarModelo(it.modelo, it.peca); trocarAba('criar') } }, 'Abrir'),
-        it.estado === 'aguardando' && it.posso_aprovar ? [
-          el('button', { type: 'button', class: 'botao botao--pequeno', onclick: async () => { await agente.decidir(it.id, 'aprovada'); avisar('Aprovada. O agente publica no canal.'); abrirFila() } }, 'Aprovar'),
-          el('button', { type: 'button', class: 'botao botao--linha botao--pequeno', onclick: async () => { const n = prompt('O que ajustar?'); if (n) { await agente.decidir(it.id, 'ajustar', n); abrirFila() } } }, 'Pedir ajuste'),
-        ] : null))
-  }))
-}
-
-async function abrirParceiros() {
-  const alvo = $('#parceiros')
-  if (!agenteLigado) return alvo.replaceChildren(semAgente())
-  const lista = await agente.parceiros().catch(() => [])
-  const nome = el('input', { type: 'text', placeholder: 'Nome do parceiro', required: true })
-  const site = el('input', { type: 'text', placeholder: 'Site ou Instagram' })
-  let logo = ''
-  const form = el('form', { class: 'item', onsubmit: async (e) => {
-    e.preventDefault(); await agente.salvarParceiro({ nome: nome.value.trim(), site: site.value.trim(), logo, ativo: false }); avisar('Parceiro cadastrado. Ative quando a parceria for aprovada.'); abrirParceiros()
-  } }, el('label', { class: 'item__mini', style: 'cursor:pointer;display:grid;place-items:center;font-size:13px', title: 'Logo' }, 'Logo', el('input', { type: 'file', accept: 'image/*', hidden: true, onchange: async (e) => { logo = await exportar.lerImagem(e.target.files[0], 800); e.target.parentElement.style.backgroundImage = `url("${logo}")` } })),
-  el('div', { class: 'campo', style: 'margin:0;display:grid;gap:8px' }, nome, site), el('div', { class: 'item__acoes' }, el('button', { class: 'botao botao--pequeno' }, 'Cadastrar')))
-  alvo.replaceChildren(form, ...(lista.length ? lista.map((p) => el('div', { class: 'item' }, el('span', { class: 'item__mini', style: p.logo ? `background-image:url("${p.logo}");background-size:contain;background-color:#fff` : '' }),
-    el('div', {}, el('b', {}, p.nome), el('span', {}, el('span', { class: `etiqueta etiqueta--${p.ativo ? 'ok' : 'espera'}` }, p.ativo ? 'Ativo nas peças' : 'Inativo'), p.site || '')),
-    el('div', { class: 'item__acoes' }, el('button', { type: 'button', class: 'botao botao--linha botao--pequeno', onclick: async () => { await agente.salvarParceiro({ ...p, ativo: !p.ativo }); ctx.parceiros = await agente.parceirosAtivos(); abrirParceiros(); desenhar() } }, p.ativo ? 'Desativar' : 'Ativar'))))
-    : [el('div', { class: 'vazio' }, 'Ainda não há parceiros. As peças saem sem a faixa de apoio.')]))
-}
-
-async function abrirLicoes() {
-  const alvo = $('#licoes')
-  if (!agenteLigado) {
-    const locais = estado.retornos || []
-    return alvo.replaceChildren(semAgente(), ...locais.map((r) => el('div', { class: 'item' }, el('span', { class: 'item__mini', style: 'display:grid;place-items:center;font-weight:900;font-size:28px' }, String(r.nota || '·')), el('div', {}, el('b', {}, MODELOS[r.modelo]?.nome), el('span', {}, r.texto || 'Sem comentário')))))
-  }
-  const lista = await agente.licoes().catch(() => [])
-  if (!lista.length) return alvo.replaceChildren(el('div', { class: 'vazio' }, 'Nenhuma lição ainda. Dê retorno nas peças e elas aparecem aqui.'))
-  alvo.replaceChildren(...lista.map((l) => el('div', { class: 'item' }, el('span', { class: 'item__mini', style: 'display:grid;place-items:center;font-weight:900;font-size:13px;text-align:center;padding:6px' }, MODELOS[l.modelo]?.nome || 'Geral'),
-    el('div', {}, el('b', {}, l.texto), el('span', {}, el('span', { class: `etiqueta etiqueta--${l.aprovada === true ? 'ok' : l.aprovada === false ? 'nao' : 'espera'}` }, l.aprovada === true ? 'Em uso' : l.aprovada === false ? 'Descartada' : 'Proposta'), l.origem || '')),
-    el('div', { class: 'item__acoes' }, l.aprovada !== true ? el('button', { type: 'button', class: 'botao botao--pequeno', onclick: async () => { await agente.decidirLicao(l.id, true); abrirLicoes() } }, 'Aprovar') : null,
-      l.aprovada !== false ? el('button', { type: 'button', class: 'botao botao--linha botao--pequeno', onclick: async () => { await agente.decidirLicao(l.id, false); abrirLicoes() } }, 'Descartar') : null))))
-}
-
-function trocarAba(nome) {
-  document.querySelectorAll('[role=tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.aba === nome)))
-  document.querySelectorAll('.aba').forEach((a) => { a.hidden = a.dataset.painel !== nome })
-  if (nome === 'fila') abrirFila()
-  if (nome === 'parceiros') abrirParceiros()
-  if (nome === 'licoes') abrirLicoes()
-}
-document.querySelectorAll('[role=tab]').forEach((b) => b.addEventListener('click', () => trocarAba(b.dataset.aba)))
+/* parceiros ativos: lista pública que o agente grava quando a diretoria ativa um parceiro */
+fetch('https://akqiejrzzajvqrzvqoay.supabase.co/storage/v1/object/public/pecas-publicas/parceiros.json', { cache: 'no-cache' })
+  .then((r) => r.ok ? r.json() : []).then((l) => { if (Array.isArray(l) && l.length) { ctx.parceiros = l; desenhar() } }).catch(() => {})
 
 /* começa */
 const pedido = new URLSearchParams(location.search).get('modelo')
 if (pedido && MODELOS[pedido]) estado.modelo = pedido
-montarModelos(); montarFormulario(); desenhar(); iniciarAgente()
+montarModelos(); montarFormulario(); desenhar()
 let largura = innerWidth
 addEventListener('resize', () => { if (Math.abs(innerWidth - largura) > 40) { largura = innerWidth; desenhar() } })

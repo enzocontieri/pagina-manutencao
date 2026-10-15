@@ -259,6 +259,78 @@
 .bo--fecho .p-apoio { position: absolute; left: 64px; right: 64px; bottom: 300px; color: var(--areia); }
 .bo--fecho .p-apoio small { font-size: 11px; } .bo--fecho .p-apoio img { height: 30px; }
 
+/* ---------- boletim com o repertório do deck: calor, textura e contraste ---------- */
+.bo { background: #efe2cc url('../marca/fundo-papel.jpg') center/cover; background-blend-mode: multiply; }
+.bo__onda { position: absolute; right: 0; bottom: 0; width: 560px; height: 92px; z-index: 1; }
+.bo__icones { position: absolute; left: 64px; bottom: 30px; height: 12px; z-index: 2; }
+.bo__rodape { left: 206px; right: 64px; bottom: 26px; z-index: 2; }
+.bo__rodape span:last-child { position: relative; z-index: 3; padding: 4px 10px; border-radius: 100px; background: var(--navy); color: var(--areia); }
+.bo__sublinhado { display: block; width: 190px; height: auto; margin-top: 8px; }
+
+.bo__editoria { display: inline-flex; align-items: center; gap: 8px; padding: 6px 13px; border-radius: 100px; font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+.bo__editoria--navy { background: var(--navy); color: var(--areia); }
+.bo__editoria--mar { background: var(--mar); color: #fff; }
+.bo__editoria--onda { background: var(--onda); color: var(--navy); }
+.bo__editoria img { width: 14px; height: 14px; }
+
+/* capa */
+.bo--capa .p-veu { background: linear-gradient(to top, rgba(31,42,68,0.92) 8%, rgba(31,42,68,0.35) 48%, rgba(31,42,68,0.25) 70%, rgba(31,42,68,0.55)); }
+.bo--capa .bo__capa { bottom: 230px; }
+.bo--capa .bo__sublinhado { width: 300px; margin-top: 10px; }
+.bo--capa .bo__data { bottom: 130px; }
+.bo--capa .bo__assina { bottom: 150px; }
+.bo--capa .bo__onda { width: 100%; height: 120px; }
+.bo--capa .bo__brilho { position: absolute; right: 110px; top: 150px; width: 34px; z-index: 3; }
+
+/* índice */
+.bo__lista div { grid-template-columns: 58px 1fr; background: rgba(255,255,255,0.55); border: 1px solid rgba(31,42,68,0.08); box-shadow: 0 6px 14px rgba(31,42,68,0.06); }
+.bo__lista b { background: none; color: var(--onda); font-size: 30px; letter-spacing: -0.04em; height: auto; }
+.bo--indice .bo__placa { bottom: 110px; background: var(--mar) url('../marca/fundo-azul.jpg') center/cover; padding: 26px 200px 30px 28px; }
+.bo--indice .bo__placa .bo__selo { position: absolute; right: 26px; top: 50%; translate: 0 -50%; width: 130px; }
+.bo--indice .bo__placa p { color: #e6ecf8; }
+
+/* matéria */
+.bo__fotos { gap: 14px; padding: 6px 4px 4px; }
+.bo__fotos figure { border-radius: 2px; overflow: visible; background: #fff; padding: 7px; box-shadow: 0 12px 24px rgba(31,42,68,0.16), 0 2px 6px rgba(31,42,68,0.1); }
+.bo__fotos figure > img { border-radius: 1px; }
+.bo__fotos figure:nth-child(1) { rotate: -0.8deg; } .bo__fotos figure:nth-child(2) { rotate: 1deg; } .bo__fotos figure:nth-child(3) { rotate: -0.6deg; } .bo__fotos figure:nth-child(4) { rotate: 0.7deg; }
+.bo__fotos .fita { position: absolute; left: 50%; top: -16px; width: 120px; height: auto; translate: -50% 0; rotate: -3deg; z-index: 2; object-fit: contain; }
+.bo__destaque { position: relative; margin-top: 22px; display: grid; grid-template-columns: 34px 1fr; gap: 14px; padding: 26px 22px 18px; border-radius: 0; background: url('../marca/papel-nota.webp') center/100% 100% no-repeat; filter: drop-shadow(0 10px 14px rgba(31,42,68,0.14)); }
+.bo__destaque::before { display: none; }
+.bo__destaque > img.icone { width: 30px; height: 30px; }
+.bo__destaque .fita { position: absolute; left: 50%; top: -14px; width: 110px; translate: -50% 0; }
+.bo__destaque small { color: var(--onda); }
+
+/* ocorrências: navy com meio-tom */
+.bo--ocorrencias { background: var(--navy) url('../marca/fundo-navy.jpg') center/cover; color: var(--areia); }
+.bo--ocorrencias::before { content: ''; position: absolute; right: 0; top: 0; width: 520px; height: 420px; background: url('../marca/meio-tom.webp') right top/contain no-repeat; opacity: 0.8; }
+.bo--ocorrencias h2 { color: #ece4d6; position: relative; }
+.bo--ocorrencias .p-rotulo { color: var(--onda); }
+.bo--ocorrencias .bo__cabeca span:not(.bo__num) { color: #cfd0d6; }
+.bo--ocorrencias .bo__oc { background: rgba(233,226,211,0.07); border: 1px solid rgba(233,226,211,0.12); position: relative; }
+.bo--ocorrencias .bo__oc b { color: var(--onda); }
+.bo--ocorrencias .bo__oc b small { color: #cfd0d6; }
+.bo--ocorrencias .bo__oc span { color: #dcd6cb; }
+.bo--ocorrencias .bo__oc span strong { color: #ece4d6; }
+.bo--ocorrencias .bo__rodape { color: #cfd0d6; }
+
+/* informações: azul-mar */
+.bo--info { background: var(--mar) url('../marca/fundo-azul.jpg') center/cover; color: var(--areia); }
+.bo--info h2 { color: #ece4d6; }
+.bo--info .p-rotulo { color: #ece4d6; }
+.bo--info .bo__cabeca span:not(.bo__num) { color: #dfe6f6; }
+.bo--info .bo__card--mar { background: rgba(255,255,255,0.12); }
+.bo--info .bo__card--clara { background: url('../marca/papel-nota.webp') center/100% 100%; }
+.bo--info .bo__contatos div { background: rgba(31,42,68,0.55); }
+.bo--info .bo__rodape { color: #dfe6f6; }
+
+/* fecho: navy, pessoas e selo */
+.bo--fecho { background: var(--navy) url('../marca/fundo-navy.jpg') center/cover; }
+.bo--fecho .bo__fecho { top: 150px; }
+.bo--fecho h2 { color: var(--onda); }
+.bo--fecho .bo__pessoas { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; z-index: 0; opacity: 0.95; }
+.bo--fecho .bo__selo { position: absolute; right: 56px; top: 56px; width: 120px; }
+
 /* =====================================================================
    E-MAIL (prévia; o HTML enviado é gerado em tabelas, à parte)
    ===================================================================== */
@@ -267,35 +339,100 @@
 
 /* =====================================================================
    APRESENTAÇÃO · 1920 × 1080
+   No padrão do deck "Programa de Parcerias" (out/2026): logo no alto à
+   esquerda, "Jurerê Internacional" com as ondas no alto à direita, os
+   quatro ícones no pé, a onda laranja subindo no canto com o filete azul.
+   Fundos: azul-mar com textura, navy com meio-tom, papel claro pontilhado.
+   Elementos à mão (sublinhado, elipse, brilho), fotos como impressos com
+   fita, notas de papel, o selo circular e a ilustração das pessoas.
    ===================================================================== */
-.ap { padding: 120px 140px; }
-.ap__rodape { position: absolute; left: 140px; right: 140px; bottom: 54px; display: flex; justify-content: space-between; align-items: center; font-size: 22px; font-weight: 700; color: var(--fraco); }
-.ap__rodape img { height: 40px; }
-.ap.escuro .ap__rodape { color: #cfcbc4; }
-.ap--capa { padding: 0; background: var(--navy); color: var(--areia); }
-.ap--capa .ap__capa { position: absolute; left: 140px; top: 260px; right: 700px; }
-.ap--capa h1 { font-size: 128px; color: var(--branco); margin-top: 30px; }
-.ap--capa p { margin-top: 30px; font-size: 38px; line-height: 1.4; color: #d7d3cb; }
-.ap--capa .ap__foto { position: absolute; right: 140px; top: 170px; width: 520px; height: 640px; rotate: 3deg; }
-.ap--secao { background: var(--mar); color: var(--branco); display: grid; align-content: center; }
-.ap--secao b { font-size: 200px; font-weight: 900; letter-spacing: -0.06em; line-height: 0.9; color: var(--onda); }
-.ap--secao h2 { margin-top: 30px; font-size: 110px; color: var(--branco); }
-.ap--texto { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 100px; align-items: center; }
-.ap--texto h2 { margin-top: 26px; font-size: 84px; }
-.ap--texto p { margin-top: 30px; font-size: 34px; line-height: 1.5; color: var(--fraco); }
-.ap--texto .ap__foto { height: 720px; border-radius: 40px; overflow: hidden; position: relative; }
-.ap--numeros h2 { margin-top: 26px; font-size: 80px; }
-.ap__nums { margin-top: 70px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-.ap__num { padding: 44px; border-radius: 36px; display: grid; gap: 10px; }
-.ap__num b { font-size: 110px; font-weight: 900; letter-spacing: -0.05em; line-height: 0.9; }
-.ap__num span { font-size: 30px; font-weight: 650; line-height: 1.3; }
-.ap__num:nth-child(1) { background: var(--navy); color: var(--areia); } .ap__num:nth-child(1) b { color: var(--onda); }
-.ap__num:nth-child(2) { background: var(--mar); color: var(--branco); }
-.ap__num:nth-child(3) { background: var(--onda); color: var(--navy); }
-.ap--citacao { background: var(--navy); color: var(--areia); display: grid; align-content: center; }
-.ap--citacao blockquote { margin: 0; font-size: 104px; font-weight: 900; line-height: 1.02; letter-spacing: -0.045em; color: var(--branco); max-width: 16ch; }
+.ap { --m: 120px; padding: 0; background: #f7f5f0 url('../marca/fundo-papel.jpg') center/cover; color: var(--navy); }
+.ap--azul { background: var(--mar) url('../marca/fundo-azul.jpg') center/cover; color: var(--areia); }
+.ap--navy { background: var(--navy) url('../marca/fundo-navy.jpg') center/cover; color: var(--areia); }
+.ap--navy::before { content: ''; position: absolute; right: 0; top: 0; width: 1100px; height: 860px; background: url('../marca/meio-tom.webp') right top/contain no-repeat; opacity: 0.85; pointer-events: none; }
+.ap__logo { position: absolute; left: var(--m); top: 104px; height: 66px; z-index: 5; }
+.ap__bairro { position: absolute; right: var(--m); top: 116px; text-align: right; font-size: 17px; font-weight: 800; letter-spacing: 0.12em; line-height: 1.3; text-transform: uppercase; z-index: 5; }
+.ap__bairro img { display: block; margin: 16px 0 0 auto; width: 24px; }
+.ap__icones { position: absolute; left: var(--m); bottom: 104px; height: 20px; z-index: 5; }
+.ap__onda { position: absolute; right: 0; bottom: 0; width: 1340px; height: 200px; z-index: 1; }
+.ap__miolo { position: absolute; left: var(--m); right: var(--m); top: 250px; z-index: 3; }
+.ap__eyebrow { display: block; font-size: 20px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--onda); }
+.ap__titulo { margin-top: 14px; font-size: 68px; font-weight: 800; line-height: 1.04; letter-spacing: -0.035em; text-wrap: balance; }
+.ap--azul .ap__titulo, .ap--navy .ap__titulo { color: #ece4d6; }
+.ap__texto { margin-top: 30px; font-size: 27px; line-height: 1.5; font-weight: 500; color: #3a4258; text-wrap: pretty; }
+.ap__texto p + p { margin-top: 14px; }
+.ap--azul .ap__texto, .ap--navy .ap__texto { color: #dcd6cb; }
+
+/* capa */
+.ap--capa .ap__miolo { top: 320px; right: 900px; }
+.ap--capa .ap__titulo { font-size: 132px; line-height: 0.98; letter-spacing: -0.045em; }
+.ap--capa .ap__eyebrow { color: #ece4d6; }
+.ap__sublinhado { display: block; width: 620px; height: auto; margin-top: 18px; }
+.ap--capa .ap__texto { margin-top: 40px; font-size: 32px; max-width: 24ch; color: #ece4d6; }
+.ap__assina { position: absolute; left: var(--m); bottom: 190px; font-size: 21px; font-weight: 500; color: #cfd6ea; z-index: 5; }
+.ap__assina b { color: #ece4d6; font-weight: 700; }
+.ap__aj { position: absolute; right: 120px; top: 230px; width: 900px; z-index: 2; }
+.ap__brilho { position: absolute; width: 44px; z-index: 2; }
+.ap--capa::before { content: ''; position: absolute; right: 0; top: 0; width: 1100px; height: 1080px; background: url('../marca/meio-tom.webp') right top/cover no-repeat; opacity: 0.35; mix-blend-mode: multiply; }
+
+/* texto com itens numerados */
+.ap--itens .ap__miolo { display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 110px; }
+.ap__itens { display: grid; grid-template-columns: 1fr 1fr; gap: 56px 54px; padding-top: 30px; }
+.ap__item { border-top: 2px solid currentColor; padding-top: 28px; }
+.ap__item small { display: block; font-size: 22px; font-weight: 800; color: var(--onda); }
+.ap__item b { display: block; margin-top: 10px; font-size: 29px; font-weight: 800; letter-spacing: -0.01em; }
+.ap__item span { display: block; margin-top: 12px; font-size: 22px; line-height: 1.5; color: #3a4258; }
+.ap--azul .ap__item span, .ap--navy .ap__item span { color: #cfd0d6; }
+
+/* números */
+.ap__destaque { margin-top: 40px; display: grid; grid-template-columns: auto 1fr; gap: 60px; align-items: center; }
+.ap__grande { position: relative; padding: 30px 60px; font-size: 168px; font-weight: 800; letter-spacing: -0.05em; line-height: 1; color: #ece4d6; }
+.ap__grande img { position: absolute; left: -26px; top: -10px; width: calc(100% + 40px); height: calc(100% + 20px); }
+.ap__destaque p { font-size: 34px; font-weight: 700; line-height: 1.35; color: #ece4d6; max-width: 20ch; }
+.ap__nums { margin-top: 56px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 54px; }
+.ap__num { border-top: 2px solid rgba(233, 226, 211, 0.4); padding-top: 26px; }
+.ap:not(.ap--navy):not(.ap--azul) .ap__num { border-top-color: rgba(31, 42, 68, 0.35); }
+.ap__num b { display: block; font-size: 66px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+.ap__num span { display: block; margin-top: 14px; font-size: 22px; line-height: 1.4; color: #b8bccb; }
+.ap:not(.ap--navy):not(.ap--azul) .ap__num span { color: #4b5266; }
+
+/* foto como impresso com fita */
+.ap--foto .ap__miolo { right: 1160px; }
+.ap__impresso { position: absolute; z-index: 2; background: #fff; padding: 12px; box-shadow: 0 30px 60px rgba(31, 42, 68, 0.22), 0 4px 10px rgba(31, 42, 68, 0.12); }
+.ap__impresso > div { position: relative; width: 100%; height: 100%; overflow: hidden; }
+.ap__impresso .fita { position: absolute; width: 220px; z-index: 3; }
+.ap__etiqueta { position: absolute; left: 34px; top: 34px; z-index: 4; display: inline-flex; align-items: center; gap: 12px; padding: 12px 22px; border-radius: 100px; background: #fff; font-size: 20px; font-weight: 700; color: var(--navy); box-shadow: 0 6px 16px rgba(0,0,0,.15); }
+.ap__etiqueta::before { content: ''; width: 14px; height: 14px; border-radius: 50%; background: var(--mar); }
+
+/* notas de papel */
+.ap__notas { margin-top: 50px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px; }
+.ap__nota { position: relative; min-height: 430px; padding: 64px 36px 36px; background: url('../marca/papel-nota.webp') center/100% 100% no-repeat; filter: drop-shadow(0 18px 24px rgba(31, 42, 68, 0.16)); }
+.ap__nota:nth-child(2n) { rotate: 0.6deg; } .ap__nota:nth-child(3n) { rotate: -0.5deg; }
+.ap__nota .fita { position: absolute; left: 50%; top: -26px; width: 160px; translate: -50% 0; }
+.ap__nota .icone { width: 46px; height: 46px; }
+.ap__nota small { display: block; margin-top: 30px; font-size: 17px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--onda); }
+.ap__nota b { display: block; margin-top: 10px; font-size: 32px; font-weight: 800; line-height: 1.12; letter-spacing: -0.02em; }
+.ap__nota span { display: block; margin-top: 16px; font-size: 21px; line-height: 1.5; color: #3a4258; }
+
+/* destaque azul com a ilustração das pessoas */
+.ap--pessoas .ap__miolo { right: 1060px; top: 300px; }
+.ap__pessoas { position: absolute; right: 0; bottom: 0; width: 1060px; z-index: 2; }
+
+/* fechamento */
+.ap--fecho .ap__titulo { font-size: 110px; color: var(--onda) !important; letter-spacing: -0.045em; }
+.ap__passos { margin-top: 56px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 54px; }
+.ap__passos .ap__item { border-top-color: rgba(233, 226, 211, 0.4); }
+.ap__contato { position: absolute; left: var(--m); bottom: 230px; z-index: 4; font-size: 22px; line-height: 1.55; color: #dcd6cb; }
+.ap__contato small { display: block; margin-bottom: 12px; font-size: 19px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--onda); }
+.ap__contato b { color: #ece4d6; font-size: 25px; }
+.ap__frase { position: absolute; left: 1040px; right: 380px; bottom: 300px; z-index: 4; font-size: 30px; font-weight: 700; line-height: 1.35; color: #ece4d6; }
+.ap__selo { position: absolute; right: 140px; bottom: 270px; width: 210px; z-index: 4; }
+
+/* citação */
+.ap--citacao .ap__miolo { top: 330px; right: 400px; }
+.ap--citacao blockquote { margin: 0; font-size: 92px; font-weight: 800; line-height: 1.06; letter-spacing: -0.04em; color: #ece4d6; }
 .ap--citacao blockquote em { font-style: normal; color: var(--onda); }
-.ap--citacao p { margin-top: 40px; font-size: 32px; color: #cfcbc4; }
+.ap--citacao .ap__texto { margin-top: 36px; }
 
 /* =====================================================================
    DOCUMENTO AJIN · papel timbrado do brandbook (pág. 25)

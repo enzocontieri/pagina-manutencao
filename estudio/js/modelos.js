@@ -238,15 +238,21 @@ function paginasBoletim(p, ctx = {}) {
   const materias = (p.materias || []).filter((m) => m.titulo)
   const paginas = []
   const cab = (n) => `<div class="bo__cabeca"><img src="${LOGO_NAVY}" alt="AJIN" /><span>Vol. ${esc(vol)} · ${esc(dataPorExtenso(data))}</span>${n ? `<span class="bo__num">${String(n).padStart(2, '0')}</span>` : '<span></span>'}</div>`
-  const pagina = (cls, miolo) => paginas.push({ w: 794, h: 1123, html: (num) => `<div class="peca bo ${cls}" style="width:794px;height:1123px">${miolo}<div class="bo__rodape"><span>${CONTATOS.site} · ${CONTATOS.instagram}</span><span>${String(num).padStart(2, '0')} / {{TOTAL}}</span></div>${grao}</div>` })
+  const MB = BASE + 'estudio/marca/'
+  const escura = (cls) => /ocorrencias|info|fecho/.test(cls)
+  const pe = (cls) => `<svg class="bo__onda" viewBox="0 0 560 92" preserveAspectRatio="none"><path fill="#f28c38" d="M20 92 C 160 52, 300 6, 410 6 C 480 6, 530 26, 560 46 V92 Z"/><path fill="#1f5bca" d="M340 92 C 420 82, 500 78, 560 81 V92 Z"/></svg><img class="bo__icones" src="${MB}${escura(cls) ? 'icones-claro' : 'icones-escuro'}.png" alt="" />`
+  const sublinhado = `<img class="bo__sublinhado" src="${MB}sublinhado.png" alt="" />`
+  const COR_EDITORIA = (e) => /segur|alerta|pesar|protocolo/i.test(e) ? 'navy' : /ambiente|pé-de-fruta|manuten|saúde/i.test(e) ? 'mar' : 'onda'
+  const ICONE_EDITORIA = (e) => /segur|alerta|protocolo/i.test(e) ? 'icone-sol' : /ambiente|pé-de-fruta|manuten/i.test(e) ? 'icone-folha' : /saúde|pesar|associad/i.test(e) ? 'icone-coracao' : 'icone-barco'
+  const pagina = (cls, miolo) => paginas.push({ w: 794, h: 1123, html: (num) => `<div class="peca bo ${cls}" style="width:794px;height:1123px">${miolo}${pe(cls)}<div class="bo__rodape"><span>${CONTATOS.site} · ${CONTATOS.instagram}</span><span>${String(num).padStart(2, '0')} / {{TOTAL}}</span></div>${grao}</div>` })
 
   /* capa */
-  paginas.push({ w: 794, h: 1123, html: () => `<div class="peca bo bo--capa escuro" style="width:794px;height:1123px">${foto(p.capa, 'Foto da semana em Jurerê Internacional', 'p-foto', p.capaPosicao)}<div class="p-veu"></div><img class="bo__logo" src="${LOGO_BRANCO}" alt="AJIN" /><span class="bo__vol">VOL. ${esc(vol)}</span><div class="bo__capa"><span class="p-rotulo">Boletim semanal · associados AJIN</span><h1 class="p-titulo">Jurerê Internacional esta semana</h1>${p.chamada ? `<p class="bo__chamada">${marca(p.chamada)}</p>` : ''}</div><div class="bo__data"><span class="bo__dia"><b>${isNaN(d) ? '' : d.getDate()}</b><small>${isNaN(d) ? '' : MESES[d.getMonth()].slice(0, 3).toUpperCase()}</small></span><span>Edição semanal<br>${isNaN(d) ? '' : d.getFullYear()}</span></div><span class="bo__assina">Sua voz em Jurerê Internacional</span>${grao}</div>` })
+  paginas.push({ w: 794, h: 1123, html: () => `<div class="peca bo bo--capa escuro" style="width:794px;height:1123px">${foto(p.capa, 'Foto da semana em Jurerê Internacional', 'p-foto', p.capaPosicao)}<div class="p-veu"></div><img class="bo__logo" src="${LOGO_BRANCO}" alt="AJIN" /><span class="bo__vol">VOL. ${esc(vol)}</span><img class="bo__brilho" src="${MB}brilho.png" alt="" /><div class="bo__capa"><span class="p-rotulo">Boletim semanal · associados AJIN</span><h1 class="p-titulo">Jurerê Internacional esta semana</h1>${sublinhado}${p.chamada ? `<p class="bo__chamada">${marca(p.chamada)}</p>` : ''}</div><div class="bo__data"><span class="bo__dia"><b>${isNaN(d) ? '' : d.getDate()}</b><small>${isNaN(d) ? '' : MESES[d.getMonth()].slice(0, 3).toUpperCase()}</small></span><span>Edição semanal<br>${isNaN(d) ? '' : d.getFullYear()}</span></div><span class="bo__assina">Sua voz em Jurerê Internacional</span><svg class="bo__onda" viewBox="0 0 794 120" preserveAspectRatio="none"><path fill="#f28c38" d="M0 120 C 180 70, 420 10, 600 14 C 690 16, 750 38, 794 60 V120 Z"/><path fill="#1f5bca" d="M380 120 C 520 104, 680 98, 794 104 V120 Z"/></svg>${grao}</div>` })
 
   /* índice */
   const itensIndice = materias.map((m, i) => `<div><b>${String(i + 1).padStart(2, '0')}</b><span>${marca(m.titulo)}${m.fina ? `<em>${marca(m.fina)}</em>` : ''}</span></div>`)
   if ((p.ocorrencias || []).length) itensIndice.push(`<div><b>${String(materias.length + 1).padStart(2, '0')}</b><span>Ocorrências de segurança da semana</span></div>`)
-  pagina('bo--indice', `${cab()}<span class="p-rotulo">Nesta edição</span><h2 class="p-titulo">O que você vai ler hoje</h2><div class="bo__lista">${itensIndice.join('')}</div><div class="bo__placa"><b>Jurerê é de quem cuida.</b><p>Este boletim chega toda semana aos associados com o que a AJIN fez, o que vem pela frente e o que pede a sua atenção.</p>${curvaPlaca(70)}</div>`)
+  pagina('bo--indice', `${cab()}<span class="p-rotulo">Nesta edição</span><h2 class="p-titulo">O que você vai ler hoje</h2>${sublinhado}<div class="bo__lista">${itensIndice.join('')}</div><div class="bo__placa"><b>Jurerê é de quem cuida.</b><p>Este boletim chega toda semana aos associados com o que a AJIN fez, o que vem pela frente e o que pede a sua atenção.</p><img class="bo__selo" src="${MB}selo.png" alt="" /></div>`)
 
   /* matérias: corpo dividido pelo espaço de cada página */
   materias.forEach((m, i) => {
@@ -262,9 +268,9 @@ function paginasBoletim(p, ctx = {}) {
     blocos.forEach((bl, k) => {
       const corpo = bl.map((x) => `<p>${marca(x)}</p>`).join('')
       const ultimo = k === blocos.length - 1
-      const destaque = ultimo && m.destaque && m.destaque.texto ? `<div class="bo__destaque"><div><small>${esc(m.destaque.rotulo || 'Importante')}</small><b>${marca(m.destaque.texto)}</b></div></div>` : ''
-      const fotosHtml = k === 0 && fotos.length ? `<div class="bo__fotos" data-n="${fotos.length}" style="height:${altFotos}px">${fotos.map((f) => `<figure>${foto(f, m.titulo, '')}</figure>`).join('')}</div>` : ''
-      pagina('bo--materia', `${cab(i + 1)}<div class="bo__chapeu"><span class="p-rotulo">${esc(m.editoria || 'Acontece em Jurerê')}</span></div><h2 class="p-titulo">${marca(m.titulo)}</h2>${k === 0 ? (m.fina ? `<p class="bo__fina">${marca(m.fina)}</p>` : '') : '<p class="bo__cont">Continuação</p>'}${fotosHtml}<div class="bo__corpo">${corpo}</div>${destaque}`)
+      const destaque = ultimo && m.destaque && m.destaque.texto ? `<div class="bo__destaque"><img class="fita" src="${MB}fita-2.png" alt="" /><img class="icone" src="${MB}${ICONE_EDITORIA(m.editoria || '')}.png" alt="" /><div><small>${esc(m.destaque.rotulo || 'Importante')}</small><b>${marca(m.destaque.texto)}</b></div></div>` : ''
+      const fotosHtml = k === 0 && fotos.length ? `<div class="bo__fotos" data-n="${fotos.length}" style="height:${altFotos}px">${fotos.map((f, j) => `<figure>${j === 0 ? `<img class="fita" src="${MB}fita-1.png" alt="" />` : ''}${foto(f, m.titulo, '')}</figure>`).join('')}</div>` : ''
+      pagina('bo--materia', `${cab(i + 1)}<div class="bo__chapeu"><span class="bo__editoria bo__editoria--${COR_EDITORIA(m.editoria || '')}">${esc(m.editoria || 'Acontece em Jurerê')}</span></div><h2 class="p-titulo">${marca(m.titulo)}</h2>${k === 0 ? sublinhado : ''}${k === 0 ? (m.fina ? `<p class="bo__fina">${marca(m.fina)}</p>` : '') : '<p class="bo__cont">Continuação</p>'}${fotosHtml}<div class="bo__corpo">${corpo}</div>${destaque}`)
     })
   })
 
@@ -282,7 +288,7 @@ function paginasBoletim(p, ctx = {}) {
   }
 
   /* fecho */
-  paginas.push({ w: 794, h: 1123, html: (num) => `<div class="peca bo bo--fecho" style="width:794px;height:1123px">${circulo('width:420px;height:420px;right:-140px;top:-140px')}${tracos('right:64px;top:70px')}<div class="bo__fecho"><img src="${LOGO_BRANCO}" alt="AJIN" style="height:52px" /><h2 class="p-titulo" style="margin-top:40px">Obrigado por ler até aqui.</h2><p>Tem uma sugestão de pauta, uma foto do bairro ou uma dúvida? Responda no grupo ou fale com a gente.</p><div class="bo__contatos" style="margin-top:28px"><div><small>Site</small><b>${CONTATOS.site}</b></div><div><small>Instagram</small><b>${CONTATOS.instagram}</b></div><div><small>WhatsApp</small><b>${CONTATOS.whatsapp}</b></div><div><small>Segurança 24h</small><b>${CONTATOS.seguranca}</b></div></div></div>${apoio(ctx.parceiros)}${curvaPlaca(240)}<div class="bo__rodape" style="color:#1f2a44"><span>${CONTATOS.site} · ${CONTATOS.instagram}</span><span>${String(num).padStart(2, '0')} / {{TOTAL}}</span></div></div>` })
+  paginas.push({ w: 794, h: 1123, html: (num) => `<div class="peca bo bo--fecho" style="width:794px;height:1123px"><img class="bo__pessoas" src="${MB}pessoas-2.webp" alt="" /><img class="bo__selo" src="${MB}selo.png" alt="" /><div class="bo__fecho"><img src="${LOGO_BRANCO}" alt="AJIN" style="height:52px" /><h2 class="p-titulo" style="margin-top:40px">Obrigado por ler até aqui.</h2><p>Tem uma sugestão de pauta, uma foto do bairro ou uma dúvida? Responda no grupo ou fale com a gente.</p><div class="bo__contatos" style="margin-top:28px"><div><small>Site</small><b>${CONTATOS.site}</b></div><div><small>Instagram</small><b>${CONTATOS.instagram}</b></div><div><small>WhatsApp</small><b>${CONTATOS.whatsapp}</b></div><div><small>Segurança 24h</small><b>${CONTATOS.seguranca}</b></div></div></div>${apoio(ctx.parceiros)}<div class="bo__rodape" style="color:#dcd6cb"><span>${CONTATOS.site} · ${CONTATOS.instagram}</span><span>${String(num).padStart(2, '0')} / {{TOTAL}}</span></div></div>` })
 
   const total = paginas.length
   return paginas.map((pg, i) => ({ w: pg.w, h: pg.h, html: pg.html(i + 1).replace('{{TOTAL}}', String(total).padStart(2, '0')) }))
@@ -413,49 +419,127 @@ function emailHtml(p, ctx = {}) {
 
 /* =====================================================================
    5. APRESENTAÇÃO / PDF 16:9
+   No padrão do deck "Programa de Parcerias" (out/2026).
    ===================================================================== */
+const M = BASE + 'estudio/marca/'
+const ICONE_NOTA = { sol: 'icone-sol.png', coracao: 'icone-coracao.png', folha: 'icone-folha.png', barco: 'icone-barco.png' }
+const ondaSlide = '<svg class="ap__onda" viewBox="0 0 1340 200" preserveAspectRatio="none"><path fill="#f28c38" d="M70 200 C 400 130, 700 14, 980 14 C 1150 14, 1270 64, 1340 112 V200 Z"/><path fill="#1f5bca" d="M840 200 C 1010 182, 1200 172, 1340 180 V200 Z"/></svg>'
+const fita = (n, estilo) => `<img class="fita" src="${M}fita-${n}.png" alt="" style="${estilo}" />`
+
+function moldura(fundo, miolo, extra = '') {
+  const escuro = fundo === 'azul' || fundo === 'navy'
+  return `<div class="peca ap ${fundo === 'azul' ? 'ap--azul' : fundo === 'navy' ? 'ap--navy' : ''} ${extra}" style="width:1920px;height:1080px">
+    <img class="ap__logo" src="${escuro ? LOGO_BRANCO : LOGO_NAVY}" alt="AJIN" />
+    <span class="ap__bairro" style="color:${escuro ? '#ece4d6' : '#1f2a44'}">Jurerê<br>Internacional<img src="${M}ondas.png" alt="" /></span>
+    ${miolo}
+    <img class="ap__icones" src="${M}${escuro ? 'icones-claro' : 'icones-escuro'}.png" alt="" />
+    ${ondaSlide}
+  </div>`
+}
+const cabecalho = (s) => `${s.eyebrow ? `<span class="ap__eyebrow">${esc(s.eyebrow)}</span>` : ''}${s.titulo ? `<h2 class="ap__titulo">${marca(s.titulo)}</h2>` : ''}`
+const impresso = (src, alt, estilo, rot, n = 1) => `<div class="ap__impresso" style="${estilo};rotate:${rot}deg">${fita(n, 'left:50%;top:-34px;translate:-50% 0;rotate:-3deg')}<div>${foto(src, alt)}</div></div>`
+
+const TIPOS_SLIDE = [['itens', 'Texto com itens numerados'], ['numeros', 'Números'], ['foto', 'Texto com foto'], ['notas', 'Notas de papel'], ['pessoas', 'Destaque com as pessoas'], ['citacao', 'Citação'], ['fecho', 'Fechamento']]
+
+function slide(s, p) {
+  const fundo = s.fundo || ({ numeros: 'navy', pessoas: 'azul', citacao: 'navy', fecho: 'navy' }[s.tipo] || 'papel')
+  const itens = (s.itens || []).filter((i) => i.titulo || i.texto)
+  switch (s.tipo) {
+    case 'itens':
+      return moldura(fundo, `<div class="ap__miolo"><div>${cabecalho(s)}${s.texto ? `<div class="ap__texto">${ps(s.texto)}</div>` : ''}</div><div class="ap__itens">${itens.slice(0, 4).map((it, k) => `<div class="ap__item"><small>${String(k + 1).padStart(2, '0')}</small><b>${marca(it.titulo)}</b><span>${marca(it.texto)}</span></div>`).join('')}</div></div>`, 'ap--itens')
+    case 'numeros': {
+      const nums = (s.numeros || []).filter((n) => n.valor).slice(0, 4)
+      const d = s.destaque && s.destaque.valor ? `<div class="ap__destaque"><div class="ap__grande"><img src="${M}elipse.webp" alt="" />${marca(s.destaque.valor)}</div><p>${marca(s.destaque.texto)}</p></div>` : ''
+      return moldura(fundo, `<div class="ap__miolo">${cabecalho(s)}${d}<div class="ap__nums" style="grid-template-columns:repeat(${Math.max(nums.length, 2)},1fr)">${nums.map((n) => `<div class="ap__num"><b>${marca(n.valor)}</b><span>${marca(n.legenda)}</span></div>`).join('')}</div></div>`, 'ap--numeros')
+    }
+    case 'foto':
+      return moldura(fundo, `<div class="ap__miolo">${cabecalho(s)}${s.texto ? `<div class="ap__texto">${ps(s.texto)}</div>` : ''}</div>
+        ${impresso(s.imagem, s.titulo, 'left:820px;top:210px;width:980px;height:640px', 1.2, 1)}
+        ${s.etiqueta ? `<span class="ap__etiqueta" style="left:860px;top:250px;position:absolute">${esc(s.etiqueta)}</span>` : ''}
+        ${s.imagem2 ? impresso(s.imagem2, '', 'left:560px;top:640px;width:400px;height:300px', -3, 2) : ''}`, 'ap--foto')
+    case 'notas':
+      return moldura(fundo, `<div class="ap__miolo">${cabecalho(s)}<div class="ap__notas" style="grid-template-columns:repeat(${Math.max(itens.length, 3)},1fr)">${itens.slice(0, 4).map((it, k) => `<div class="ap__nota">${fita(k % 3 + 1, '')}<img class="icone" src="${M}${ICONE_NOTA[it.icone] || ICONE_NOTA[['sol', 'coracao', 'folha', 'barco'][k % 4]]}" alt="" />${it.rotulo ? `<small>${esc(it.rotulo)}</small>` : ''}<b>${marca(it.titulo)}</b><span>${marca(it.texto)}</span></div>`).join('')}</div></div>`, 'ap--notas')
+    case 'pessoas':
+      return moldura('azul', `<div class="ap__miolo">${cabecalho(s)}${s.texto ? `<div class="ap__texto">${ps(s.texto)}</div>` : ''}</div><img class="ap__pessoas" src="${M}pessoas.webp" alt="" />`, 'ap--pessoas')
+    case 'citacao':
+      return moldura(fundo, `<div class="ap__miolo">${s.eyebrow ? `<span class="ap__eyebrow">${esc(s.eyebrow)}</span>` : ''}<blockquote>${marca(s.titulo).replace(/\*(.+?)\*/g, '<em>$1</em>')}</blockquote>${s.texto ? `<div class="ap__texto">${ps(s.texto)}</div>` : ''}</div><img class="ap__brilho" src="${M}brilho.png" alt="" style="right:300px;top:260px" />`, 'ap--citacao')
+    case 'fecho':
+      return moldura('navy', `<div class="ap__miolo">${cabecalho({ eyebrow: s.eyebrow || 'Próximos passos', titulo: s.titulo || 'Vamos conversar' })}<div class="ap__passos">${itens.slice(0, 4).map((it, k) => `<div class="ap__item"><small>${String(k + 1).padStart(2, '0')}</small><b>${marca(it.titulo)}</b><span>${marca(it.texto)}</span></div>`).join('')}</div></div>
+        <div class="ap__contato"><small>Contato</small><b>AJIN · Associação Jurerê Internacional</b><br>${CONTATOS.email} · +55 48 99949-7419<br>${CONTATOS.site} · ${CONTATOS.instagram}</div>
+        ${s.texto ? `<p class="ap__frase">${marca(s.texto)}</p>` : ''}<img class="ap__selo" src="${M}selo.png" alt="" />`, 'ap--fecho')
+  }
+  return moldura(fundo, `<div class="ap__miolo">${cabecalho(s)}</div>`)
+}
+
 const apresentacao = {
   id: 'apresentacao',
   nome: 'PDF e apresentação',
   canal: 'PDF',
-  descricao: 'Slides 16:9 para reuniões, assembleias e parceiros: placa de capa, seções, texto com foto, números, citação.',
+  descricao: 'Slides 16:9 no padrão do deck do Programa de Parcerias: capa azul com o AJ, itens numerados, números com destaque à mão, fotos como impressos com fita, notas de papel, destaque com as pessoas, citação e fechamento.',
   campos: [
-    { id: 'titulo', rotulo: 'Título', tipo: 'texto', limite: [10, 60] },
-    { id: 'subtitulo', rotulo: 'Subtítulo', tipo: 'area', limite: [20, 140] },
-    { id: 'imagem', rotulo: 'Foto da capa', tipo: 'imagem' },
+    { id: 'eyebrow', rotulo: 'Sobretítulo da capa', tipo: 'texto', limite: [6, 40] },
+    { id: 'titulo', rotulo: 'Título da capa', tipo: 'texto', limite: [8, 40] },
+    { id: 'subtitulo', rotulo: 'Frase da capa', tipo: 'area', limite: [30, 110] },
+    { id: 'capaFundo', rotulo: 'Fundo da capa', tipo: 'escolha', opcoes: [['azul', 'Azul-mar'], ['navy', 'Navy']] },
     { id: 'slides', rotulo: 'Slides', tipo: 'lista', max: 30, itens: [
-      { id: 'tipo', rotulo: 'Tipo', tipo: 'escolha', opcoes: [['secao', 'Seção'], ['texto', 'Texto com foto'], ['numeros', 'Números'], ['citacao', 'Citação']] },
-      { id: 'rotulo', rotulo: 'Etiqueta', tipo: 'texto' },
-      { id: 'titulo', rotulo: 'Título', tipo: 'texto' },
+      { id: 'tipo', rotulo: 'Tipo', tipo: 'escolha', opcoes: TIPOS_SLIDE },
+      { id: 'fundo', rotulo: 'Fundo', tipo: 'escolha', opcoes: [['', 'Do tipo'], ['papel', 'Papel claro'], ['azul', 'Azul-mar'], ['navy', 'Navy']] },
+      { id: 'eyebrow', rotulo: 'Sobretítulo', tipo: 'texto', limite: [4, 40] },
+      { id: 'titulo', rotulo: 'Título', tipo: 'texto', limite: [8, 70], ajuda: 'Na citação, *entre asteriscos* fica laranja.' },
       { id: 'texto', rotulo: 'Texto', tipo: 'area' },
-      { id: 'imagem', rotulo: 'Foto', tipo: 'imagem' },
-      { id: 'numeros', rotulo: 'Números (valor | legenda, um por linha)', tipo: 'area' },
+      { id: 'imagem', rotulo: 'Foto principal', tipo: 'imagem' },
+      { id: 'imagem2', rotulo: 'Foto menor (opcional)', tipo: 'imagem' },
+      { id: 'etiqueta', rotulo: 'Etiqueta sobre a foto', tipo: 'texto' },
+      { id: 'itens', rotulo: 'Itens, notas ou passos', tipo: 'lista', max: 4, itens: [
+        { id: 'icone', rotulo: 'Ícone (notas)', tipo: 'escolha', opcoes: [['sol', 'Sol'], ['coracao', 'Coração'], ['folha', 'Folha'], ['barco', 'Barco']] },
+        { id: 'rotulo', rotulo: 'Rótulo (notas)', tipo: 'texto' },
+        { id: 'titulo', rotulo: 'Título', tipo: 'texto' },
+        { id: 'texto', rotulo: 'Texto', tipo: 'area' },
+      ] },
+      { id: 'destaque', rotulo: 'Número em destaque (circulado)', tipo: 'grupo', itens: [
+        { id: 'valor', rotulo: 'Valor', tipo: 'texto' },
+        { id: 'texto', rotulo: 'Frase', tipo: 'texto' },
+      ] },
+      { id: 'numeros', rotulo: 'Números', tipo: 'lista', max: 4, itens: [
+        { id: 'valor', rotulo: 'Valor', tipo: 'texto' },
+        { id: 'legenda', rotulo: 'Legenda', tipo: 'texto' },
+      ] },
     ] },
   ],
   exemplo: {
-    titulo: 'AJIN 40 anos', subtitulo: 'A voz organizada de quem vive Jurerê Internacional desde 1986.', imagem: BASE + 'fotos/horta-baldinho-grupo-m.jpg',
+    eyebrow: 'Associação Jurerê Internacional', titulo: 'AJIN 40 anos', subtitulo: 'A voz organizada de quem vive Jurerê Internacional desde 1986.', capaFundo: 'azul',
     slides: [
-      { tipo: 'secao', titulo: 'Quem somos' },
-      { tipo: 'texto', rotulo: 'Representatividade', titulo: 'Uma associação feita pelos associados', texto: 'Quem decide é eleito entre os associados, presta contas a eles e trabalha sem remuneração.', imagem: BASE + 'fotos/inst-conselho.jpg' },
-      { tipo: 'numeros', rotulo: 'Segurança', titulo: 'Proteção que não dorme', numeros: '100 | câmeras em operação\n+30 mil | vistorias patrimoniais no ano\n+600 | escoltas de associados' },
+      { tipo: 'itens', eyebrow: 'Quem somos', titulo: 'A voz de quem mora em Jurerê Internacional', texto: 'A AJIN é uma entidade civil sem fins econômicos, que representa os moradores diante do poder público e cuida do bairro todos os dias.', itens: [
+        { titulo: 'Segurança', texto: 'Monitoramento 24 horas, rondas e vistorias em todo o bairro.' },
+        { titulo: 'Áreas adotadas', texto: 'Pé-de-Fruta com a Horta Comunitária, Praça dos Morrinhos e Parquinho dos Curumins.' },
+        { titulo: 'Cultura e comunidade', texto: 'Encontros ao longo do ano que reúnem famílias de todas as gerações.' },
+        { titulo: 'Representação', texto: 'A voz dos associados nos conselhos e diante do poder público.' },
+      ] },
+      { tipo: 'numeros', eyebrow: 'Segurança', titulo: 'Proteção que não dorme', numeros: [{ valor: '100', legenda: 'câmeras em operação' }, { valor: '+30 mil', legenda: 'vistorias patrimoniais no ano' }, { valor: '+600', legenda: 'escoltas de associados' }] },
+      { tipo: 'foto', eyebrow: 'Áreas adotadas · 01', titulo: 'Horta Comunitária do Pé-de-Fruta', texto: 'Um canteiro cuidado por vizinhos, aberto às famílias e às crianças do bairro.', imagem: BASE + 'fotos/horta-colheita-familia-m.jpg', imagem2: BASE + 'fotos/horta-baldinho-canteiro-m.jpg', etiqueta: 'Horta Comunitária' },
+      { tipo: 'notas', eyebrow: 'Encontros no bairro', titulo: 'O que fizemos juntos', itens: [
+        { icone: 'folha', rotulo: 'Pé-de-Fruta', titulo: 'Baldinho do Bem', texto: 'Crianças plantando e levando para casa o que cultivaram.' },
+        { icone: 'coracao', rotulo: 'Comunidade', titulo: 'Roda de conversa', texto: 'Vizinhos reunidos para falar de bem-estar e saúde.' },
+        { icone: 'sol', rotulo: 'Curumins', titulo: 'Parquinho renovado', texto: 'Um dos espaços mais movimentados do bairro, cuidado pela AJIN.' },
+      ] },
+      { tipo: 'pessoas', eyebrow: 'A comunidade', titulo: 'Feita pelos associados', texto: 'Quem decide é eleito entre os associados, presta contas a eles e trabalha sem remuneração.' },
       { tipo: 'citacao', titulo: 'Cuidar do território é cuidar de *quem vive nele.*', texto: 'Princípio que orienta o trabalho da AJIN' },
+      { tipo: 'fecho', titulo: 'Vamos conversar', texto: 'Jurerê Internacional é de quem cuida.', itens: [
+        { titulo: 'Conversa inicial', texto: 'Entendemos a demanda e o que ela significa para o bairro.' },
+        { titulo: 'Proposta', texto: 'Definimos juntos o formato e o calendário.' },
+        { titulo: 'Aprovação', texto: 'Toda decisão passa pela Diretoria Executiva da AJIN.' },
+        { titulo: 'Acompanhamento', texto: 'A equipe de Comunicação registra e presta contas.' },
+      ] },
     ],
   },
   paginas(p) {
-    const W = 1920, H = 1080
-    const rod = (escuro, n, total) => `<div class="ap__rodape"><img src="${escuro ? LOGO_BRANCO : LOGO_NAVY}" alt="AJIN" /><span>${String(n).padStart(2, '0')} / ${String(total).padStart(2, '0')}</span></div>`
-    const slides = [{ tipo: 'capa' }, ...(p.slides || [])]
-    const total = slides.length
-    return slides.map((s, i) => {
-      let cls = '', miolo = '', escuro = false
-      if (s.tipo === 'capa') { cls = 'ap--capa'; escuro = true; miolo = `${circulo('width:640px;height:640px;right:-220px;top:-260px')}${tracos('left:140px;top:120px', '#1f5bca')}<div class="ap__capa"><span class="p-rotulo p-rotulo--onda" style="font-size:30px">Associação Jurerê Internacional</span><h1 class="p-titulo">${marca(p.titulo)}</h1><p>${marca(p.subtitulo)}</p></div><div class="ap__foto p-selo p-sombra">${foto(p.imagem, p.titulo, '')}</div>${curvaPlaca(260)}` }
-      else if (s.tipo === 'secao') { cls = 'ap--secao'; escuro = true; miolo = `${circulo('width:700px;height:700px;right:-200px;bottom:-300px', '#f28c38')}<b>${String(i).padStart(2, '0')}</b><h2 class="p-titulo">${marca(s.titulo)}</h2>` }
-      else if (s.tipo === 'numeros') { cls = 'ap--numeros'; miolo = `${s.rotulo ? `<span class="p-rotulo" style="font-size:28px">${esc(s.rotulo)}</span>` : ''}<h2 class="p-titulo">${marca(s.titulo)}</h2><div class="ap__nums">${String(s.numeros || '').split('\n').filter(Boolean).slice(0, 3).map((l) => { const [v, t] = l.split('|'); return `<div class="ap__num"><b>${marca((v || '').trim())}</b><span>${marca((t || '').trim())}</span></div>` }).join('')}</div>` }
-      else if (s.tipo === 'citacao') { cls = 'ap--citacao'; escuro = true; miolo = `${tracos('right:140px;top:120px')}<blockquote>${marca(s.titulo).replace(/\*(.+?)\*/g, '<em>$1</em>')}</blockquote>${s.texto ? `<p>${marca(s.texto)}</p>` : ''}${curvaPlaca(220)}` }
-      else { cls = 'ap--texto'; miolo = `<div>${s.rotulo ? `<span class="p-rotulo" style="font-size:28px">${esc(s.rotulo)}</span>` : ''}<h2 class="p-titulo">${marca(s.titulo)}</h2><div class="p-texto" style="margin-top:30px;font-size:34px;line-height:1.5">${ps(s.texto)}</div></div><div class="ap__foto">${foto(s.imagem, s.titulo)}</div>` }
-      const naAreia = s.tipo === 'capa' || s.tipo === 'citacao'
-      return { w: W, h: H, html: `<div class="peca ap ${cls} ${escuro ? 'escuro' : ''}" style="width:${W}px;height:${H}px">${miolo}${rod(escuro && !naAreia, i + 1, total).replace('class="ap__rodape"', naAreia ? 'class="ap__rodape" style="color:#1f2a44"' : 'class="ap__rodape"')}${grao}</div>` }
-    })
+    const capaFundo = p.capaFundo || 'azul'
+    const capa = moldura(capaFundo, `
+      <img class="ap__brilho" src="${M}brilho.png" alt="" style="left:1000px;top:240px" />
+      <img class="ap__aj" src="${M}aj.webp" alt="" />
+      <div class="ap__miolo">${p.eyebrow ? `<span class="ap__eyebrow">${esc(p.eyebrow)}</span>` : ''}<h1 class="ap__titulo">${marca(p.titulo)}</h1><img class="ap__sublinhado" src="${M}sublinhado.png" alt="" />${p.subtitulo ? `<div class="ap__texto">${marca(p.subtitulo)}</div>` : ''}</div>
+      <span class="ap__assina"><b>A guardiã do bairro</b> · Há 40 anos em Jurerê Internacional</span>`, 'ap--capa')
+    return [capa, ...(p.slides || []).map((s) => slide(s, p))].map((html) => ({ w: 1920, h: 1080, html }))
   },
 }
 

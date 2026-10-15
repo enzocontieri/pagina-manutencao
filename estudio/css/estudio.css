@@ -145,3 +145,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   #impressao .peca { position: relative; break-after: page; }
   #impressao .peca:last-child { break-after: auto; }
 }
+
+/* como pedir ao agente */
+.dica { padding: 14px 16px; border-radius: 14px; background: #fff; border: 1.5px solid var(--linha); font-size: 14.5px; line-height: 1.5; }
+.dica p { margin: 0; } .dica p + p { margin-top: 8px; color: var(--fraco); }
