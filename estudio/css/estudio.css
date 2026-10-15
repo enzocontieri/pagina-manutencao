@@ -34,16 +34,20 @@ button { font: inherit; color: inherit; }
 .trilho::after { content: ''; flex: 0 0 1px; }
 
 .molde { flex: 0 0 auto; scroll-snap-align: start; }
+.molde + .molde { padding-left: 36px; border-left: 1.5px solid var(--linha); }
 .molde__cabeca { margin-bottom: 14px; }
 .molde__canal { display: inline-block; padding: 3px 10px; border-radius: 100px; background: var(--areia); font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
 .molde__cabeca h2 { margin: 8px 0 0; font-size: 26px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.1; }
 .molde__cabeca p { margin: 4px 0 0; color: var(--fraco); font-size: 15px; }
-.molde__paginas { display: block; margin-top: 4px; font-size: 13px; font-weight: 600; color: var(--fraco); }
+.molde__paginas-n { display: block; margin-top: 4px; font-size: 13px; font-weight: 600; color: var(--fraco); }
 
-/* o quadro corta a peça quando ela é mais alta que a tela; a peça é desenhada no tamanho real e reduzida */
+/* todas as páginas do molde, inteiras, lado a lado; a peça é desenhada no tamanho real e reduzida */
+.molde__paginas { display: flex; align-items: flex-start; gap: 18px; }
+.molde__pagina { flex: 0 0 auto; }
+.molde__pagina-nome { display: block; margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--fraco); min-height: 1.2em; }
 .molde__quadro { position: relative; overflow: hidden; border-radius: 10px; background: #fff; box-shadow: 0 20px 48px rgba(31, 42, 68, 0.22); }
 .molde__quadro > .peca { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
-.molde__quadro--cortado::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 110px; background: linear-gradient(to bottom, rgba(234, 219, 198, 0), rgba(234, 219, 198, 0.92)); pointer-events: none; }
+.molde__quadro--rola { overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--navy) transparent; }
 
 @media (max-width: 720px) {
   .topo { padding: 10px 16px; gap: 12px; }
@@ -53,5 +57,7 @@ button { font: inherit; color: inherit; }
   .mostra__cabeca p { font-size: 15.5px; }
   .mostra__nav { padding-bottom: 0; }
   .trilho { gap: 16px; padding: 6px 16px 28px; scroll-padding-left: 16px; }
+  .molde + .molde { padding-left: 16px; }
+  .molde__paginas { gap: 12px; }
   .molde__cabeca h2 { font-size: 22px; }
 }

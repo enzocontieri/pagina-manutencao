@@ -1,8 +1,9 @@
 /* =====================================================================
    Mostra dos moldes das peças da AJIN.
-   Só leitura: cada modelo aparece num card grande, em trilho horizontal,
-   desenhado a partir do exemplo em modelos.js (a mesma fonte do agente).
-   As peças de verdade são pedidas ao agente no grupo de WhatsApp.
+   Só leitura: cada modelo aparece com TODAS as suas páginas, inteiras,
+   lado a lado num trilho horizontal, desenhadas a partir do exemplo em
+   modelos.js (a mesma fonte do agente). As peças de verdade são pedidas
+   ao agente no grupo de WhatsApp.
    ===================================================================== */
 import { MODELOS, ORDEM } from './modelos.js'
 
@@ -18,47 +19,49 @@ const el = (tag, attrs = {}, ...filhos) => {
 }
 const ctx = { parceiros: [] }
 
-/* largura do card por modelo: peças deitadas ganham mais espaço; o resto segue um só tamanho */
-const LARGURA = { apresentacao: 840, email: 560 }
-const PADRAO = 520
+/* largura de cada página por modelo: peças deitadas ganham mais espaço; o resto segue um só tamanho */
+const LARGURA = { apresentacao: 820, email: 460 }
+const PADRAO = 480
 const larguraDe = (id) => Math.min(LARGURA[id] || PADRAO, innerWidth - (innerWidth < 720 ? 32 : 64))
-const alturaMaxima = () => Math.min(780, Math.round(innerHeight * 0.74))
+/* página sem altura fixa (e-mail) rola dentro do quadro em vez de ser cortada */
+const ALTURA_ROLAVEL = 900
 
 /* nos exemplos, o marcador [CONFIRMAR: ...] que o agente usa vira um valor de amostra: aqui é só mostra */
 const AMOSTRA = { data: '24/10', dia: '24/10', 'horário': '10h', hora: '10h', local: 'Sede da AJIN', nome: 'nome a confirmar' }
 const semMarcadores = (o) => JSON.parse(JSON.stringify(o ?? {}).replace(/\[CONFIRMAR:?\s*([^\]]*)\]/g, (_, k) => AMOSTRA[k.trim().toLowerCase()] || 'a confirmar'))
 
+function quadroDe(pg, largura, i, total) {
+  const k = largura / pg.w
+  const alturaFixa = pg.h ? Math.round(pg.h * k) : 0
+  const quadro = el('div', { class: 'molde__quadro', style: `width:${largura}px;height:${alturaFixa || ALTURA_ROLAVEL}px` })
+  quadro.innerHTML = pg.html
+  const peca = quadro.firstElementChild
+  if (peca) {
+    peca.style.transform = `scale(${k})`
+    /* altura automática (e-mail): mede depois de desenhar; se passar do limite, o quadro rola */
+    if (!pg.h) requestAnimationFrame(() => {
+      const h = Math.round(peca.offsetHeight * k)
+      quadro.style.height = Math.min(h, ALTURA_ROLAVEL) + 'px'
+      quadro.classList.toggle('molde__quadro--rola', h > ALTURA_ROLAVEL)
+      legenda.textContent = h > ALTURA_ROLAVEL ? 'Role dentro do quadro para ver o e-mail inteiro' : legenda.textContent
+    })
+  }
+  const legenda = el('span', { class: 'molde__pagina-nome' }, total > 1 ? `Página ${i + 1} de ${total}` : '')
+  return el('div', { class: 'molde__pagina' }, quadro, legenda)
+}
+
 function cardDe(id) {
   const m = MODELOS[id]
   let pgs = []
   try { pgs = m.paginas(semMarcadores(m.exemplo), ctx) } catch (e) { console.error(id, e) }
-  const pg = pgs[0]
   const largura = larguraDe(id)
-  const k = pg ? largura / pg.w : 1
-  const alturaReal = pg ? (pg.h || 0) * k : 0
-  const teto = alturaMaxima()
-  const quadro = el('div', { class: 'molde__quadro', style: `width:${largura}px;height:${Math.round(Math.min(alturaReal || teto, teto))}px` })
-  if (pg) {
-    quadro.innerHTML = pg.html
-    const peca = quadro.firstElementChild
-    if (peca) {
-      peca.style.transform = `scale(${k})`
-      /* altura automática (e-mail): mede depois de desenhar e corta se passar do teto */
-      if (!pg.h) requestAnimationFrame(() => {
-        const h = peca.offsetHeight * k
-        quadro.style.height = Math.round(Math.min(h, teto)) + 'px'
-        quadro.classList.toggle('molde__quadro--cortado', h > teto + 8)
-      })
-    }
-  }
-  if (alturaReal > teto + 8) quadro.classList.add('molde__quadro--cortado')
-  return el('article', { class: 'molde', 'data-id': id, style: `width:${largura}px` },
-    el('div', { class: 'molde__cabeca' },
+  return el('article', { class: 'molde', 'data-id': id },
+    el('div', { class: 'molde__cabeca', style: `max-width:${Math.max(largura, 420)}px` },
       el('span', { class: 'molde__canal' }, m.canal),
       el('h2', {}, m.nome),
       el('p', {}, m.descricao),
-      pgs.length > 1 ? el('span', { class: 'molde__paginas' }, `${pgs.length} páginas; a primeira à mostra`) : null),
-    quadro)
+      pgs.length > 1 ? el('span', { class: 'molde__paginas-n' }, `${pgs.length} páginas, todas à mostra`) : null),
+    el('div', { class: 'molde__paginas' }, pgs.map((pg, i) => quadroDe(pg, largura, i, pgs.length))))
 }
 
 function desenhar() {
@@ -66,7 +69,7 @@ function desenhar() {
   atualizarPosicao()
 }
 
-/* navegação: um card por vez, pelas setas, pelo teclado ou rolando */
+/* navegação: um modelo por vez, pelas setas, pelo teclado ou rolando */
 const trilho = $('#trilho')
 const cards = () => [...trilho.children]
 /* posição de rolagem em que o card encosta na margem interna do trilho */
