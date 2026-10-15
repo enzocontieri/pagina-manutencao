@@ -290,10 +290,12 @@ function paginasBoletim(p, ctx = {}) {
   const MB = BASE + 'estudio/marca/'
   const escura = (cls) => /ocorrencias|info|fecho/.test(cls)
   const pe = (cls) => `<svg class="bo__onda" viewBox="0 0 560 92" preserveAspectRatio="none"><path fill="#f28c38" d="M20 92 C 160 52, 300 6, 410 6 C 480 6, 530 26, 560 46 V92 Z"/><path fill="#1f5bca" d="M340 92 C 420 82, 500 78, 560 81 V92 Z"/></svg><img class="bo__icones" src="${MB}${escura(cls) ? 'icones-claro' : 'icones-escuro'}.png" alt="" />`
-  const sublinhado = `<img class="bo__sublinhado" src="${MB}sublinhado.png" alt="" />`
+  /* traço laranja com volume sob os títulos (a imagem fina do deck ficava sem peso no A4) */
+  const sublinhado = `<svg class="bo__sublinhado" viewBox="0 0 200 22" preserveAspectRatio="none"><path d="M6 13 C 48 2, 96 20, 142 9 S 186 5, 194 11" fill="none" stroke="#f28c38" stroke-width="9" stroke-linecap="round"/></svg>`
+  const associe = (cls = '') => `<div class="bo__associe ${cls}"><div><small>Associe-se</small><b>ajin.org.br/cadastro</b><p>Preencha o cadastro no site. A ficha de adesão chega pronta no seu WhatsApp para assinar pelo Gov.br.</p><div class="bo__planos"><span>AJIN Segurança</span><span>AJIN Manutenção</span><span>AJIN Total</span></div></div><div class="bo__qr"><img src="${MB}qr-cadastro.png" alt="QR code do cadastro" /><small>Aponte a câmera</small></div></div>`
   const COR_EDITORIA = (e) => /segur|alerta|pesar|protocolo/i.test(e) ? 'navy' : /ambiente|pé-de-fruta|manuten|saúde/i.test(e) ? 'mar' : 'onda'
   const ICONE_EDITORIA = (e) => /segur|alerta|protocolo/i.test(e) ? 'icone-sol' : /ambiente|pé-de-fruta|manuten/i.test(e) ? 'icone-folha' : /saúde|pesar|associad/i.test(e) ? 'icone-coracao' : 'icone-barco'
-  const pagina = (cls, miolo) => paginas.push({ w: 794, h: 1123, html: (num) => `<div class="peca bo ${cls}" style="width:794px;height:1123px">${miolo}${pe(cls)}<div class="bo__rodape"><span>${CONTATOS.site} · ${CONTATOS.instagram}</span><span>${String(num).padStart(2, '0')} / {{TOTAL}}</span></div>${grao}</div>` })
+  const pagina = (cls, miolo) => paginas.push({ w: 794, h: 1123, html: (num) => `<div class="peca bo ${cls}" style="width:794px;height:1123px">${miolo}${pe(cls)}<div class="bo__rodape"><span>${CONTATOS.site} · ${CONTATOS.instagram} · Associe-se: <b>ajin.org.br/cadastro</b></span><span>${String(num).padStart(2, '0')} / {{TOTAL}}</span></div>${grao}</div>` })
 
   /* capa */
   paginas.push({ w: 794, h: 1123, html: () => `<div class="peca bo bo--capa escuro" style="width:794px;height:1123px">${foto(p.capa, 'Foto da semana em Jurerê Internacional', 'p-foto', p.capaPosicao)}<div class="p-veu"></div><img class="bo__logo" src="${LOGO_BRANCO}" alt="AJIN" /><span class="bo__vol">VOL. ${esc(vol)}</span><img class="bo__brilho" src="${MB}brilho.png" alt="" /><div class="bo__capa"><span class="p-rotulo">Boletim semanal · associados AJIN</span><h1 class="p-titulo">Jurerê Internacional esta semana</h1>${sublinhado}${p.chamada ? `<p class="bo__chamada">${marca(p.chamada)}</p>` : ''}</div><div class="bo__data"><span class="bo__dia"><b>${isNaN(d) ? '' : d.getDate()}</b><small>${isNaN(d) ? '' : MESES[d.getMonth()].slice(0, 3).toUpperCase()}</small></span><span>Edição semanal<br>${isNaN(d) ? '' : d.getFullYear()}</span></div><span class="bo__assina">Sua voz em Jurerê Internacional</span><svg class="bo__onda" viewBox="0 0 794 120" preserveAspectRatio="none"><path fill="#f28c38" d="M0 120 C 180 70, 420 10, 600 14 C 690 16, 750 38, 794 60 V120 Z"/><path fill="#1f5bca" d="M380 120 C 520 104, 680 98, 794 104 V120 Z"/></svg>${grao}</div>` })
@@ -306,19 +308,29 @@ function paginasBoletim(p, ctx = {}) {
   /* matérias: corpo dividido pelo espaço de cada página */
   materias.forEach((m, i) => {
     const fotos = (m.fotos || []).filter(Boolean).slice(0, 4)
-    const altFotos = fotos.length === 0 ? 0 : fotos.length === 1 ? 300 : fotos.length === 2 ? 220 : 300
-    const capPrimeira = fotos.length ? 2300 : 4300, capCont = 4800
+    /* quanto cabe na página: duas colunas de ~44 caracteres por linha de 20,9 px, descontando
+       cabeçalho e título (175), rodapé com a onda (reservado nos 907 úteis), fotos e o cartão
+       de destaque (95). A foto principal cresce quando o texto é curto e encolhe quando é longo,
+       para a matéria caber inteira numa página sempre que possível. */
+    const temDestaque = Boolean(m.destaque && m.destaque.texto)
     const pars = paragrafos(m.corpo)
+    const chars = pars.reduce((a, x) => a + x.length, 0)
+    const alturaTexto = Math.ceil((chars + 44 * pars.length) / 88) * 20.9 + (temDestaque ? 95 : 0) + 30
+    const [minF, maxF] = fotos.length === 0 ? [0, 0] : fotos.length === 1 ? [240, 400] : fotos.length === 2 ? [180, 260] : [240, 340]
+    const altFotos = fotos.length ? Math.round(Math.max(minF, Math.min(maxF, 907 - 175 - 18 - alturaTexto))) : 0
+    const cabe = (altura) => Math.max(300, (altura / 20.9) * 88)
+    const capPrimeira = cabe(907 - 175 - (fotos.length ? altFotos + 18 : 0) - (temDestaque ? 95 : 0) - 30)
+    const capCont = cabe(907 - 100 - (temDestaque ? 95 : 0) - 30)
     const blocos = [[]]; let usado = 0, cap = capPrimeira
     for (const par of pars) {
-      if (usado + par.length > cap && blocos[blocos.length - 1].length) { blocos.push([]); usado = 0; cap = capCont }
-      blocos[blocos.length - 1].push(par); usado += par.length + 80
+      if (usado + par.length + 44 > cap && blocos[blocos.length - 1].length) { blocos.push([]); usado = 0; cap = capCont }
+      blocos[blocos.length - 1].push(par); usado += par.length + 44
     }
     blocos.forEach((bl, k) => {
       const corpo = bl.map((x) => `<p>${marca(x)}</p>`).join('')
       const ultimo = k === blocos.length - 1
-      const destaque = ultimo && m.destaque && m.destaque.texto ? `<div class="bo__destaque"><img class="fita" src="${MB}fita-2.png" alt="" /><img class="icone" src="${MB}${ICONE_EDITORIA(m.editoria || '')}.png" alt="" /><div><small>${esc(m.destaque.rotulo || 'Importante')}</small><b>${marca(m.destaque.texto)}</b></div></div>` : ''
-      const fotosHtml = k === 0 && fotos.length ? `<div class="bo__fotos" data-n="${fotos.length}" style="height:${altFotos}px">${fotos.map((f, j) => `<figure>${j === 0 ? `<img class="fita" src="${MB}fita-1.png" alt="" />` : ''}${foto(f, m.titulo, '')}</figure>`).join('')}</div>` : ''
+      const destaque = ultimo && m.destaque && m.destaque.texto ? `<div class="bo__destaque"><img class="icone" src="${MB}${ICONE_EDITORIA(m.editoria || '')}.png" alt="" /><div><small>${esc(m.destaque.rotulo || 'Importante')}</small><b>${marca(m.destaque.texto)}</b></div></div>` : ''
+      const fotosHtml = k === 0 && fotos.length ? `<div class="bo__fotos" data-n="${fotos.length}" style="height:${altFotos}px">${fotos.map((f) => `<figure>${foto(f, m.titulo, '')}</figure>`).join('')}</div>` : ''
       pagina('bo--materia', `${cab(i + 1)}<div class="bo__chapeu"><span class="bo__editoria bo__editoria--${COR_EDITORIA(m.editoria || '')}">${esc(m.editoria || 'Acontece em Jurerê')}</span></div><h2 class="p-titulo">${marca(m.titulo)}</h2>${k === 0 ? sublinhado : ''}${k === 0 ? (m.fina ? `<p class="bo__fina">${marca(m.fina)}</p>` : '') : '<p class="bo__cont">Continuação</p>'}${fotosHtml}<div class="bo__corpo">${corpo}</div>${destaque}`)
     })
   })
@@ -333,11 +345,11 @@ function paginasBoletim(p, ctx = {}) {
 
   /* informações importantes */
   if (p.incluirInfo !== false) {
-    pagina('bo--info', `${cab()}<span class="p-rotulo">Aos associados</span><h2 class="p-titulo">Informações importantes</h2><div class="bo__cards"><div class="bo__card bo__card--navy"><b>Plano de Segurança</b><span>Monitoramento por câmeras, rondas, vistorias e escoltas, 24 horas por dia.</span></div><div class="bo__card bo__card--mar"><b>Plano de Manutenção</b><span>Zeladoria das áreas adotadas, meio ambiente, eventos e representação do bairro.</span></div><div class="bo__card bo__card--onda"><b>Associe-se</b><span>Em ${CONTATOS.site}/cadastro ou pelo WhatsApp ${CONTATOS.whatsapp}.</span></div><div class="bo__card bo__card--clara"><b>Atualize seus dados</b><span>Escritório ${CONTATOS.escritorio}, de segunda a sexta.</span></div></div><div class="bo__contatos"><div><small>Segurança 24h</small><b>${CONTATOS.seguranca}</b></div><div><small>WhatsApp</small><b>${CONTATOS.whatsapp}</b></div><div><small>Escritório</small><b>${CONTATOS.escritorio}</b></div><div><small>E-mail</small><b>${CONTATOS.email}</b></div></div>`)
+    pagina('bo--info', `${cab()}<span class="p-rotulo">Aos associados</span><h2 class="p-titulo">Informações importantes</h2>${sublinhado}<div class="bo__grandes"><div><span class="ic">${ICONES.escudo}</span><small>Segurança 24 horas</small><b>${CONTATOS.seguranca}</b><em>Central de monitoramento, rondas e escoltas</em></div><div><span class="ic">${ICONES.whatsapp}</span><small>WhatsApp da AJIN</small><b>${CONTATOS.whatsapp}</b><em>Atendimento e comunicados</em></div><div><span class="ic">${ICONES.predio}</span><small>Escritório</small><b>${CONTATOS.escritorio}</b><em>Secretaria da associação</em></div><div><span class="ic">${ICONES.contato}</span><small>E-mail</small><b>${CONTATOS.email}</b><em>Documentos e solicitações</em></div></div>${associe()}`)
   }
 
   /* fecho */
-  paginas.push({ w: 794, h: 1123, html: (num) => `<div class="peca bo bo--fecho" style="width:794px;height:1123px"><img class="bo__pessoas" src="${MB}pessoas-2.webp" alt="" /><img class="bo__selo" src="${MB}selo.png" alt="" /><div class="bo__fecho"><img src="${LOGO_BRANCO}" alt="AJIN" style="height:52px" /><h2 class="p-titulo" style="margin-top:40px">Obrigado por ler até aqui.</h2><p>Tem uma sugestão de pauta, uma foto do bairro ou uma dúvida? Responda no grupo ou fale com a gente.</p><div class="bo__contatos" style="margin-top:28px"><div><small>Site</small><b>${CONTATOS.site}</b></div><div><small>Instagram</small><b>${CONTATOS.instagram}</b></div><div><small>WhatsApp</small><b>${CONTATOS.whatsapp}</b></div><div><small>Segurança 24h</small><b>${CONTATOS.seguranca}</b></div></div></div>${apoio(ctx.parceiros)}<div class="bo__rodape" style="color:#dcd6cb"><span>${CONTATOS.site} · ${CONTATOS.instagram}</span><span>${String(num).padStart(2, '0')} / {{TOTAL}}</span></div></div>` })
+  paginas.push({ w: 794, h: 1123, html: (num) => `<div class="peca bo bo--fecho" style="width:794px;height:1123px"><img class="bo__pessoas" src="${MB}pessoas-2.webp" alt="" /><img class="bo__selo" src="${MB}selo.png" alt="" /><div class="bo__fecho"><img src="${LOGO_BRANCO}" alt="AJIN" style="height:64px" /><h2 class="p-titulo" style="margin-top:40px">Obrigado por ler até aqui.</h2><p>Tem uma sugestão de pauta, uma foto do bairro ou uma dúvida? Responda no grupo ou fale com a gente.</p><div class="bo__contatos" style="margin-top:28px"><div><small>Site</small><b>${CONTATOS.site}</b></div><div><small>Instagram</small><b>${CONTATOS.instagram}</b></div><div><small>WhatsApp</small><b>${CONTATOS.whatsapp}</b></div><div><small>Segurança 24h</small><b>${CONTATOS.seguranca}</b></div></div>${associe('bo__associe--fecho')}</div>${apoio(ctx.parceiros)}<div class="bo__rodape" style="color:#dcd6cb"><span>${CONTATOS.site} · ${CONTATOS.instagram} · Associe-se: <b>ajin.org.br/cadastro</b></span><span>${String(num).padStart(2, '0')} / {{TOTAL}}</span></div></div>` })
 
   const total = paginas.length
   return paginas.map((pg, i) => ({ w: pg.w, h: pg.h, html: pg.html(i + 1).replace('{{TOTAL}}', String(total).padStart(2, '0')) }))
@@ -357,7 +369,7 @@ const boletim = {
       { id: 'editoria', rotulo: 'Editoria', tipo: 'escolha', opcoes: EDITORIAS.map((e) => [e, e]) },
       { id: 'titulo', rotulo: 'Título', tipo: 'texto', limite: [20, 80] },
       { id: 'fina', rotulo: 'Linha fina', tipo: 'texto', limite: [40, 140] },
-      { id: 'corpo', rotulo: 'Texto', tipo: 'area', ajuda: 'Linha em branco separa parágrafos.' },
+      { id: 'corpo', rotulo: 'Texto da matéria', tipo: 'area', limite: [900, 3200], ajuda: 'Texto completo, formato jornal: o fato principal no primeiro parágrafo, depois contexto, detalhes, serviço e fecho. Linha em branco separa parágrafos.' },
       { id: 'fotos', rotulo: 'Fotos (até 4)', tipo: 'imagens', max: 4 },
       { id: 'destaque', rotulo: 'Caixa de destaque', tipo: 'grupo', itens: [
         { id: 'rotulo', rotulo: 'Rótulo', tipo: 'texto', limite: [4, 24], ajuda: 'Ex.: Protocolo, Atenção, Como funciona.' },
@@ -374,8 +386,8 @@ const boletim = {
   exemplo: {
     data: '2026-10-20', capa: BASE + 'fotos/curumins-familia-m.jpg', chamada: 'O bairro em movimento: esporte, segurança e cuidado com as áreas adotadas.',
     materias: [
-      { editoria: 'Acontece em Jurerê', titulo: 'Jurerê recebe o Ironman 70.3 e a AJIN orienta os moradores', fina: 'Competição internacional muda o trânsito no domingo. Veja como sair e entrar no bairro.', corpo: 'A competição acontece no domingo, com largada na praia de Jurerê Internacional. [CONFIRMAR: horário de largada]\n\nA AJIN acompanhou com a organização o plano de trânsito e repassa aos associados as principais alterações.\n\nPedimos atenção redobrada a quem precisa sair cedo e paciência com as equipes de apoio, que estarão nas esquinas indicando os desvios.', fotos: [BASE + 'fotos/jurere-bairro-mata.jpg'], destaque: { rotulo: 'Atenção', texto: 'Programe a saída antes das [CONFIRMAR: horário] para evitar os bloqueios.' } },
-      { editoria: 'Área do Pé-de-Fruta', titulo: 'Horta Comunitária ganha novos canteiros', fina: 'Voluntários reorganizam o espaço para a temporada de verão.', corpo: 'Os voluntários da horta passaram a manhã de sábado preparando novos canteiros e reorganizando as composteiras.\n\nQualquer associado pode participar. Os horários estão com o escritório.', fotos: [BASE + 'fotos/horta-baldinho-grupo-m.jpg', BASE + 'fotos/horta-colheita-menino-m.jpg'], destaque: { rotulo: 'Participe', texto: 'Fale com o escritório para entrar no grupo de voluntários da horta.' } },
+      { editoria: 'Acontece em Jurerê', titulo: 'Jurerê recebe o Ironman 70.3 e a AJIN orienta os moradores', fina: 'Competição internacional muda o trânsito no domingo. Veja como sair e entrar no bairro.', corpo: 'A competição acontece no domingo, com largada na praia de Jurerê Internacional e percurso pelas principais avenidas do bairro. [CONFIRMAR: horário de largada]\n\nA AJIN acompanhou com a organização o plano de trânsito e repassa aos associados as principais alterações. Trechos das vias por onde a prova passa ficam fechados durante a competição, com equipes de apoio nas esquinas indicando os desvios. [CONFIRMAR: vias e horários dos bloqueios]\n\nQuem precisa sair cedo deve programar a saída antes do início dos bloqueios. Quem fica em casa pode aproveitar para assistir à passagem dos atletas: a prova costuma reunir famílias nas calçadas e é um dos momentos em que o bairro mais recebe visitantes.\n\nA central de segurança da AJIN acompanha o evento em contato com a organização e com a Polícia Militar. Qualquer ocorrência pode ser informada pelo telefone da segurança 24 horas, que atende durante toda a prova.\n\nDepois da competição, as equipes de manutenção percorrem as áreas adotadas e as vias do percurso. Se encontrar algo fora do lugar, avise o escritório.', fotos: [BASE + 'fotos/jurere-bairro-mata.jpg'], destaque: { rotulo: 'Atenção', texto: 'Programe a saída antes das [CONFIRMAR: horário] para evitar os bloqueios.' } },
+      { editoria: 'Área do Pé-de-Fruta', titulo: 'Horta Comunitária ganha novos canteiros', fina: 'Voluntários reorganizam o espaço para a temporada de verão.', corpo: 'Os voluntários da Horta Comunitária passaram a manhã de sábado preparando novos canteiros e reorganizando as composteiras. O trabalho começou cedo, com a chegada das primeiras famílias, e seguiu até perto do meio-dia.\n\nA horta fica dentro do Pé-de-Fruta, uma das três áreas adotadas pela AJIN, e é cuidada por moradores que se revezam durante a semana. Os novos canteiros vão receber hortaliças e temperos para a temporada de verão, e a colheita é dividida entre quem participa.\n\nQuem quiser entrar no grupo de voluntários pode procurar o escritório. Não é preciso ter experiência: os mais antigos ensinam o básico no primeiro dia, e as crianças são bem-vindas.\n\nA horta nasceu de um grupo de vizinhos que queria um espaço de convivência em volta do plantio. Hoje recebe atividades com escolas, oficinas e encontros de fim de semana, e virou um dos lugares mais visitados do Pé-de-Fruta.\n\nOs dias e horários de abertura da horta estão com o escritório. [CONFIRMAR: dias e horários]', fotos: [BASE + 'fotos/horta-baldinho-grupo-m.jpg', BASE + 'fotos/horta-colheita-menino-m.jpg'], destaque: { rotulo: 'Participe', texto: 'Fale com o escritório para entrar no grupo de voluntários da horta.' } },
     ],
     ocorrencias: [{ data: '[CONFIRMAR: dia]', hora: '22h10', local: 'Rua das Sapopemas', descricao: 'Portão de garagem encontrado aberto. A equipe tática acionou o morador e acompanhou o fechamento.' }],
   },
@@ -410,17 +422,36 @@ const email = {
   id: 'email',
   nome: 'E-mail marketing',
   canal: 'Zoho Campaigns',
-  descricao: 'Conteúdo de valor: o que importa, destrinchado, com peso nas palavras. Passa pela aprovação da diretoria e é enviado pelo Zoho.',
+  descricao: 'Conteúdo de valor em seções curtas: abertura, destaques com foto, números, pauta, agenda, convite para associar-se. Passa pela aprovação da diretoria e é enviado pelo Zoho.',
   campos: [
     { id: 'assunto', rotulo: 'Assunto', tipo: 'texto', limite: [25, 60] },
     { id: 'pre', rotulo: 'Pré-cabeçalho', tipo: 'texto', limite: [40, 110], ajuda: 'A frase que aparece ao lado do assunto na caixa de entrada.' },
+    { id: 'edicao', rotulo: 'Edição', tipo: 'texto', limite: [6, 40], ajuda: 'Ex.: Aos associados · outubro de 2026' },
     { id: 'imagem', rotulo: 'Imagem de abertura', tipo: 'imagem' },
     { id: 'rotulo', rotulo: 'Etiqueta', tipo: 'texto', limite: [4, 28] },
     { id: 'titulo', rotulo: 'Título', tipo: 'texto', limite: [25, 80] },
     { id: 'abertura', rotulo: 'Abertura', tipo: 'area', limite: [150, 420], ajuda: 'Comece por uma cena, não por um aviso.' },
-    { id: 'blocos', rotulo: 'Blocos', tipo: 'lista', max: 4, itens: [
+    { id: 'destaques', rotulo: 'Destaques com foto', tipo: 'lista', max: 3, itens: [
+      { id: 'imagem', rotulo: 'Foto', tipo: 'imagem' },
+      { id: 'rotulo', rotulo: 'Etiqueta', tipo: 'texto', limite: [4, 24] },
+      { id: 'titulo', rotulo: 'Título', tipo: 'texto', limite: [15, 60] },
+      { id: 'texto', rotulo: 'Texto', tipo: 'area', limite: [120, 320] },
+      { id: 'linkTexto', rotulo: 'Texto do link', tipo: 'texto', limite: [4, 30] },
+      { id: 'link', rotulo: 'Link', tipo: 'texto' },
+    ] },
+    { id: 'numeros', rotulo: 'Números', tipo: 'lista', max: 3, itens: [
+      { id: 'valor', rotulo: 'Valor', tipo: 'texto', limite: [1, 12] },
+      { id: 'legenda', rotulo: 'Legenda', tipo: 'texto', limite: [6, 40] },
+    ] },
+    { id: 'blocos', rotulo: 'Em pauta (texto)', tipo: 'lista', max: 3, itens: [
       { id: 'intertitulo', rotulo: 'Intertítulo', tipo: 'texto', limite: [10, 60] },
       { id: 'texto', rotulo: 'Texto', tipo: 'area', limite: [150, 700] },
+    ] },
+    { id: 'agenda', rotulo: 'Agenda', tipo: 'lista', max: 4, itens: [
+      { id: 'dia', rotulo: 'Dia', tipo: 'texto', limite: [1, 2] },
+      { id: 'mes', rotulo: 'Mês (3 letras)', tipo: 'texto', limite: [3, 3] },
+      { id: 'titulo', rotulo: 'O que acontece', tipo: 'texto', limite: [10, 60] },
+      { id: 'detalhe', rotulo: 'Hora e local', tipo: 'texto', limite: [5, 70] },
     ] },
     { id: 'destaque', rotulo: 'Destaque', tipo: 'area', limite: [40, 220] },
     { id: 'cta', rotulo: 'Botão', tipo: 'grupo', itens: [
@@ -432,12 +463,19 @@ const email = {
   exemplo: {
     assunto: 'O que muda em Jurerê com a temporada de verão',
     pre: 'Segurança reforçada, áreas adotadas em dia e o que pedimos a cada morador.',
-    imagem: BASE + 'fotos/horta-inaug-publico.jpg', rotulo: 'Aos associados',
+    edicao: 'Aos associados · outubro de 2026',
+    imagem: BASE + 'fotos/horta-inaug-publico.jpg', rotulo: 'Temporada 2026/2027',
     titulo: 'A temporada começa antes do primeiro turista chegar',
     abertura: 'Em dezembro o bairro muda de ritmo. A rua que de manhã tinha um corredor e dois cachorros passa a ter fila na esquina. É nesse momento que o cuidado de todo o ano mais aparece, e também quando ele mais precisa de você.',
-    blocos: [
-      { intertitulo: 'Segurança: mais olhos, mesma atenção', texto: 'A central de monitoramento segue 24 horas por dia, com as rondas e as vistorias de sempre. Nesta época, o bairro recebe mais gente de fora. Um minuto conferindo portões e janelas antes de sair ajuda a equipe a proteger a sua casa.' },
-      { intertitulo: 'Áreas adotadas prontas para receber', texto: 'Pé-de-Fruta, Praça dos Morrinhos e Parquinho dos Curumins passam por manutenção antes do pico de visitantes. Se notar algo fora do lugar, avise o escritório.' },
+    destaques: [
+      { imagem: BASE + 'fotos/pilar-seguranca.jpg', rotulo: 'Segurança', titulo: 'Mais olhos, a mesma atenção', texto: 'A central de monitoramento segue 24 horas por dia, com as rondas e as vistorias de sempre. Nesta época, o bairro recebe mais gente de fora. Um minuto conferindo portões e janelas antes de sair ajuda a equipe a proteger a sua casa.', linkTexto: 'Salve o número da segurança', link: 'https://wa.me/554832664300' },
+      { imagem: BASE + 'fotos/horta-baldinho-canteiro-m.jpg', rotulo: 'Áreas adotadas', titulo: 'Pé-de-Fruta, Morrinhos e Curumins prontos para receber', texto: 'As três áreas passam por manutenção antes do pico de visitantes: poda, pintura e revisão dos brinquedos. Se notar algo fora do lugar, avise o escritório.', linkTexto: 'Conheça as áreas adotadas', link: 'https://ajin.org.br/#bairro' },
+    ],
+    numeros: [{ valor: '100', legenda: 'câmeras em operação' }, { valor: '+30 mil', legenda: 'vistorias patrimoniais no ano' }, { valor: '+600', legenda: 'escoltas de associados' }],
+    blocos: [{ intertitulo: 'O que pedimos a cada morador', texto: 'Mantenha o cadastro atualizado no escritório, com telefone e contato de emergência. Avise a central quando a casa ficar vazia por alguns dias. E, se receber visitas, combine com elas as regras do bairro: som, estacionamento e lixo.' }],
+    agenda: [
+      { dia: '28', mes: 'NOV', titulo: 'Lançamento do livro dos 45 anos de Jurerê Internacional', detalhe: '[CONFIRMAR: horário e local]' },
+      { dia: '1', mes: 'DEZ', titulo: 'A AJIN completa 40 anos', detalhe: 'Fundada em 1º de dezembro de 1986' },
     ],
     destaque: 'Segurança 24h: (48) 3266-4300. Salve o número antes de precisar.',
     cta: { texto: 'Fale com a AJIN', link: 'https://wa.me/5548999497419' },
@@ -448,22 +486,49 @@ const email = {
 }
 
 /* HTML de e-mail em tabelas e estilo em linha: é o que os leitores de
-   e-mail respeitam. Mesmas cores e mesma hierarquia das outras peças. */
+   e-mail respeitam. Seções curtas que alternam texto, foto, número e
+   agenda, para a leitura ter ritmo. Mesmas cores das outras peças. */
 function emailHtml(p, ctx = {}) {
   const F = "font-family:Inter,Arial,Helvetica,sans-serif"
-  const bloco = (b) => `<tr><td style="padding:0 44px 26px"><h2 style="${F};margin:0 0 10px;font-size:22px;line-height:1.25;font-weight:800;color:#1f2a44;letter-spacing:-0.3px">${marca(b.intertitulo)}</h2>${paragrafos(b.texto).map((x) => `<p style="${F};margin:0 0 12px;font-size:16px;line-height:1.65;color:#3a4052">${marca(x)}</p>`).join('')}</td></tr>`
+  const QR = BASE + 'estudio/marca/qr-cadastro.png'
+  const secao = (titulo) => `<tr><td style="padding:34px 44px 14px"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="width:26px;height:4px;background:#f28c38;border-radius:4px"></td><td style="${F};padding-left:12px;font-size:12px;font-weight:800;letter-spacing:2px;color:#1f5bca;text-transform:uppercase">${esc(titulo)}</td></tr></table></td></tr>`
+  const pars = (t, tam = 16, cor = '#3a4052') => paragrafos(t).map((x) => `<p style="${F};margin:0 0 12px;font-size:${tam}px;line-height:1.65;color:${cor}">${marca(x)}</p>`).join('')
+
+  /* destaques: foto de um lado, texto do outro, alternando */
+  const destaques = (p.destaques || []).filter((d) => d.titulo).map((d, i) => {
+    const img = d.imagem ? `<img src="${esc(d.imagem)}" alt="" width="236" style="display:block;width:236px;height:auto;border-radius:12px">` : `<div style="width:236px;height:160px;border-radius:12px;background:#e3ddd1"></div>`
+    const txt = `${d.rotulo ? `<span style="${F};font-size:11px;font-weight:800;letter-spacing:2px;color:#1f5bca;text-transform:uppercase">${esc(d.rotulo)}</span>` : ''}<h3 style="${F};margin:8px 0 10px;font-size:20px;line-height:1.2;font-weight:800;color:#1f2a44;letter-spacing:-0.3px">${marca(d.titulo)}</h3><p style="${F};margin:0;font-size:15px;line-height:1.6;color:#3a4052">${marca(d.texto)}</p>${d.linkTexto ? `<a href="${esc(d.link || 'https://ajin.org.br')}" style="${F};display:inline-block;margin-top:12px;font-size:14px;font-weight:800;color:#1f5bca;text-decoration:none">${esc(d.linkTexto)} →</a>` : ''}`
+    const esq = i % 2 === 0
+    return `<tr><td style="padding:0 44px ${i === (p.destaques.length - 1) ? 10 : 26}px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="${i ? 'border-top:1px solid #e3ddd1;' : ''}"><tr>${esq ? `<td width="236" style="padding:${i ? 26 : 0}px 20px 0 0;vertical-align:top">${img}</td><td style="padding:${i ? 26 : 0}px 0 0;vertical-align:top">${txt}</td>` : `<td style="padding:${i ? 26 : 0}px 20px 0 0;vertical-align:top">${txt}</td><td width="236" style="padding:${i ? 26 : 0}px 0 0;vertical-align:top">${img}</td>`}</tr></table></td></tr>`
+  }).join('')
+
+  const numeros = (p.numeros || []).filter((n) => n.valor)
+  const cores = [['#1f2a44', '#f28c38', '#d3cfc6'], ['#1f5bca', '#ffffff', '#e6ecf8'], ['#f28c38', '#1f2a44', '#2b3245']]
+  const numerosHtml = numeros.length ? `<tr><td style="padding:0 44px 10px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>${numeros.slice(0, 3).map((n, i) => `<td width="${Math.floor(100 / numeros.length)}%" style="padding:0 ${i < numeros.length - 1 ? 10 : 0}px 0 0"><div style="background:${cores[i][0]};border-radius:14px;padding:18px 16px"><div style="${F};font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1;color:${cores[i][1]}">${marca(n.valor)}</div><div style="${F};margin-top:6px;font-size:12px;line-height:1.35;font-weight:600;color:${cores[i][2]}">${marca(n.legenda)}</div></div></td>`).join('')}</tr></table></td></tr>` : ''
+
+  const blocos = (p.blocos || []).filter((b) => b.texto).map((b) => `<tr><td style="padding:0 44px 18px"><h3 style="${F};margin:0 0 10px;font-size:20px;line-height:1.25;font-weight:800;color:#1f2a44;letter-spacing:-0.3px">${marca(b.intertitulo)}</h3>${pars(b.texto)}</td></tr>`).join('')
+
+  const agenda = (p.agenda || []).filter((a) => a.titulo)
+  const agendaHtml = agenda.length ? agenda.map((a, i) => `<tr><td style="padding:0 44px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="${i ? 'border-top:1px solid #e3ddd1;' : ''}"><tr><td width="64" style="padding:14px 16px 14px 0;vertical-align:top"><div style="width:62px;background:#1f2a44;border-radius:12px;padding:8px 0;text-align:center"><div style="${F};font-size:24px;font-weight:900;line-height:1;color:#f28c38">${esc(a.dia)}</div><div style="${F};font-size:10px;font-weight:800;letter-spacing:2px;color:#e9e2d3">${esc(String(a.mes || '').toUpperCase())}</div></div></td><td style="padding:14px 0;vertical-align:middle"><div style="${F};font-size:16px;font-weight:800;color:#1f2a44;line-height:1.3">${marca(a.titulo)}</div>${a.detalhe ? `<div style="${F};margin-top:4px;font-size:14px;color:#6b7180">${marca(a.detalhe)}</div>` : ''}</td></tr></table></td></tr>`).join('') : ''
+
   const parceiros = (ctx.parceiros || []).length ? `<tr><td style="padding:20px 44px;border-top:1px solid #e3ddd1"><span style="${F};font-size:11px;font-weight:800;letter-spacing:2px;color:#6b7180;text-transform:uppercase">Apoio</span><br>${ctx.parceiros.map((x) => x.logo ? `<img src="${esc(x.logo)}" alt="${esc(x.nome)}" height="34" style="margin:10px 16px 0 0;vertical-align:middle">` : `<b style="${F};font-size:14px;color:#1f2a44;margin-right:16px">${esc(x.nome)}</b>`).join('')}</td></tr>` : ''
+
   const corpo = `<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;background:#fbf8f2;border-radius:18px;overflow:hidden">
-    <tr><td style="background:#1f2a44;padding:26px 44px"><img src="${LOGO_BRANCO}" alt="AJIN" height="34" style="display:block;height:34px"></td></tr>
+    <tr><td style="background:#1f2a44;padding:22px 44px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td><img src="${LOGO_BRANCO}" alt="AJIN" height="40" style="display:block;height:40px"></td><td align="right" style="${F};font-size:11px;font-weight:800;letter-spacing:2px;color:#f28c38;text-transform:uppercase">${esc(p.edicao || 'Aos associados')}</td></tr></table></td></tr>
+    <tr><td style="height:5px;background:#f28c38;font-size:0;line-height:0">&nbsp;</td></tr>
     ${p.imagem ? `<tr><td><img src="${esc(p.imagem)}" alt="" width="600" style="display:block;width:600px;height:auto"></td></tr>` : ''}
-    <tr><td style="padding:34px 44px 8px">${p.rotulo ? `<span style="${F};font-size:12px;font-weight:800;letter-spacing:2px;color:#1f5bca;text-transform:uppercase">${esc(p.rotulo)}</span>` : ''}<h1 style="${F};margin:12px 0 0;font-size:32px;line-height:1.08;font-weight:900;color:#1f2a44;letter-spacing:-1px">${marca(p.titulo)}</h1><div style="height:4px;width:56px;background:#f28c38;border-radius:4px;margin:18px 0 0"></div></td></tr>
-    <tr><td style="padding:18px 44px 22px">${paragrafos(p.abertura).map((x) => `<p style="${F};margin:0 0 12px;font-size:18px;line-height:1.6;color:#2f3546;font-weight:500">${marca(x)}</p>`).join('')}</td></tr>
-    ${(p.blocos || []).filter((b) => b.texto).map(bloco).join('')}
-    ${p.destaque ? `<tr><td style="padding:0 44px 28px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="background:#1f2a44;border-radius:14px;padding:22px 24px;border-left:6px solid #f28c38"><p style="${F};margin:0;font-size:17px;line-height:1.5;color:#f3efe7;font-weight:700">${marca(p.destaque)}</p></td></tr></table></td></tr>` : ''}
-    ${p.cta && p.cta.texto ? `<tr><td style="padding:0 44px 34px"><a href="${esc(p.cta.link || 'https://ajin.org.br')}" style="${F};display:inline-block;background:#f28c38;color:#1f2a44;font-size:16px;font-weight:800;text-decoration:none;padding:16px 30px;border-radius:100px">${esc(p.cta.texto)}</a></td></tr>` : ''}
+    <tr><td style="padding:34px 44px 8px">${p.rotulo ? `<span style="${F};font-size:12px;font-weight:800;letter-spacing:2px;color:#1f5bca;text-transform:uppercase">${esc(p.rotulo)}</span>` : ''}<h1 style="${F};margin:12px 0 0;font-size:34px;line-height:1.06;font-weight:900;color:#1f2a44;letter-spacing:-1px">${marca(p.titulo)}</h1><div style="height:6px;width:72px;background:#f28c38;border-radius:6px;margin:18px 0 0"></div></td></tr>
+    <tr><td style="padding:18px 44px 12px">${pars(p.abertura, 18, '#2f3546')}</td></tr>
+    ${destaques ? secao('Em destaque') + destaques : ''}
+    ${numerosHtml ? secao('Em números') + numerosHtml : ''}
+    ${blocos ? secao('Em pauta') + blocos : ''}
+    ${agendaHtml ? secao('Agenda') + agendaHtml + '<tr><td style="height:16px;font-size:0">&nbsp;</td></tr>' : ''}
+    ${p.destaque ? `<tr><td style="padding:14px 44px 28px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="background:#1f2a44;border-radius:14px;padding:22px 24px;border-left:6px solid #f28c38"><p style="${F};margin:0;font-size:17px;line-height:1.5;color:#f3efe7;font-weight:700">${marca(p.destaque)}</p></td></tr></table></td></tr>` : ''}
+    ${p.cta && p.cta.texto ? `<tr><td style="padding:0 44px 30px"><a href="${esc(p.cta.link || 'https://ajin.org.br')}" style="${F};display:inline-block;background:#f28c38;color:#1f2a44;font-size:16px;font-weight:800;text-decoration:none;padding:16px 30px;border-radius:100px">${esc(p.cta.texto)}</a></td></tr>` : ''}
+    <tr><td style="padding:0 44px 30px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3efe7;border-radius:16px"><tr><td width="128" style="padding:22px 0 22px 22px;vertical-align:middle"><img src="${QR}" alt="QR code do cadastro" width="112" height="112" style="display:block;width:112px;height:112px;border-radius:12px;background:#fff"></td><td style="padding:22px 22px 22px 18px;vertical-align:middle"><span style="${F};font-size:11px;font-weight:800;letter-spacing:2px;color:#1f5bca;text-transform:uppercase">Associe-se</span><div style="${F};margin-top:6px;font-size:22px;font-weight:900;letter-spacing:-0.5px;color:#1f2a44">ajin.org.br/cadastro</div><p style="${F};margin:8px 0 0;font-size:14px;line-height:1.5;color:#3a4052">Planos Segurança, Manutenção e Total. A ficha de adesão chega pronta no seu WhatsApp para assinar pelo Gov.br.</p><a href="https://ajin.org.br/cadastro" style="${F};display:inline-block;margin-top:12px;background:#1f2a44;color:#e9e2d3;font-size:14px;font-weight:800;text-decoration:none;padding:11px 20px;border-radius:100px">Fazer meu cadastro</a></td></tr></table></td></tr>
     <tr><td style="padding:0 44px 34px"><p style="${F};margin:0;font-size:15px;color:#3a4052">Com cordiais saudações,<br><b style="color:#1f2a44">${esc(p.assinatura || 'Diretoria Executiva da AJIN')}</b></p></td></tr>
     ${parceiros}
-    <tr><td style="background:#1f2a44;padding:24px 44px"><p style="${F};margin:0;font-size:13px;line-height:1.7;color:#cfcbc4">AJIN · Associação Jurerê Internacional<br>Escritório ${CONTATOS.escritorio} · Segurança 24h ${CONTATOS.seguranca} · WhatsApp ${CONTATOS.whatsapp}<br><a href="https://ajin.org.br" style="color:#f28c38;text-decoration:none">ajin.org.br</a> · ${CONTATOS.instagram}</p><p style="${F};margin:12px 0 0;font-size:12px;color:#9a9890">Você recebe este e-mail por ser associado ou ter pedido as comunicações da AJIN. <a href="$[LI:UNSUBSCRIBE]$" style="color:#cfcbc4">Descadastrar</a></p></td></tr>
+    <tr><td style="background:#1f2a44;padding:26px 44px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="${F};font-size:13px;line-height:1.8;color:#cfcbc4;vertical-align:top"><b style="color:#e9e2d3">Segurança 24h</b> ${CONTATOS.seguranca}<br><b style="color:#e9e2d3">WhatsApp</b> ${CONTATOS.whatsapp}<br><b style="color:#e9e2d3">Escritório</b> ${CONTATOS.escritorio}</td><td align="right" style="${F};font-size:13px;line-height:1.8;color:#cfcbc4;vertical-align:top"><a href="https://ajin.org.br" style="color:#f28c38;text-decoration:none;font-weight:800">ajin.org.br</a><br>${CONTATOS.instagram}<br>${CONTATOS.email}</td></tr></table><p style="${F};margin:16px 0 0;font-size:12px;line-height:1.6;color:#9a9890">AJIN · Associação Jurerê Internacional. Você recebe este e-mail por ser associado ou ter pedido as comunicações da AJIN. <a href="$[LI:UNSUBSCRIBE]$" style="color:#cfcbc4">Descadastrar</a></p></td></tr>
   </table>`
   const documento = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.assunto)}</title></head><body style="margin:0;padding:0;background:#eadbc6"><span style="display:none;max-height:0;overflow:hidden">${esc(p.pre)}</span><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eadbc6"><tr><td align="center" style="padding:30px 12px">${corpo}</td></tr></table></body></html>`
   return { corpo, documento }
