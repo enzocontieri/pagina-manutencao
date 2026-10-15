@@ -106,19 +106,20 @@ const flyerWhatsapp = {
     legenda: 'Prezado(a) associado(a),\n\nNo próximo sábado a Horta Comunitária recebe as crianças para mais um plantio do Baldinho do Bem. 🌱\n\n📅 Sábado, [CONFIRMAR: data]\n⏰ 9h30\n📍 Horta Comunitária, Pé-de-Fruta\n\nConfirme sua presença aqui no WhatsApp da AJIN: (48) 99949-7419.\n\nDiretoria AJIN',
   },
   paginas(p, ctx = {}) {
+    /* mesmo molde do card de notícia: foto forte em cima, etiqueta, título no navy,
+       uma linha de apoio, informações numa linha discreta e a onda da marca no pé */
     const story = p.formato === 'story', h = story ? 1920 : 1350
-    const info = (p.info || []).filter((i) => i.texto).map((i) => `<div class="fw__linha">${icone(i.icone, 'onda')}<span>${marca(i.texto)}</span></div>`).join('')
-    return [{ w: 1080, h, html: `
-      <div class="peca fw ${story ? 'fw--story' : ''}" style="width:1080px;height:${h}px">
-        <div class="fw__foto">${foto(p.imagem, p.titulo)}<img class="fw__logo" src="${LOGO_BRANCO}" alt="AJIN" />${p.rotulo ? `<span class="fw__rotulo">${esc(p.rotulo)}</span>` : ''}</div>
-        <div class="fw__painel">${ondaWhats}
-          <h1 class="p-titulo fw__titulo">${marca(p.titulo)}</h1>
-          ${p.subtitulo ? `<p class="fw__sub">${marca(p.subtitulo)}</p>` : ''}
-          ${info ? `<div class="fw__info">${info}</div>` : ''}
-          <div class="fw__rodape">${p.cta ? `<span class="fw__cta">${marca(p.cta)}</span>` : '<span></span>'}<span class="fw__contato">WhatsApp ${CONTATOS.whatsapp}<br>${CONTATOS.instagram}</span></div>
-          ${apoio(ctx.parceiros)}
-        </div>${grao}
-      </div>` }]
+    const info = (p.info || []).filter((i) => i.texto).map((i) => `<span class="fl__item">${ICONES[i.icone] || ICONES.data}${marca(i.texto)}</span>`).join('')
+    const cta = p.cta ? `${marca(p.cta)} · <b>${CONTATOS.whatsapp}</b>` : `WhatsApp da AJIN · <b>${CONTATOS.whatsapp}</b>`
+    return [{ w: 1080, h, html: `<div class="peca fl ${story ? 'fl--story' : ''}" style="width:1080px;height:${h}px">
+      <div class="fl__foto">${foto(p.imagem, p.titulo)}</div>
+      <img class="fl__logo" src="${LOGO_BRANCO}" alt="AJIN" />
+      ${p.rotulo ? `<span class="fl__tag">${esc(p.rotulo)}</span>` : ''}
+      <div class="fl__texto"><h1 class="p-titulo">${marca(p.titulo)}</h1>${p.subtitulo ? `<p>${marca(p.subtitulo)}</p>` : ''}${info ? `<div class="fl__info">${info}</div>` : ''}</div>
+      <span class="fl__cta">${cta}</span>
+      ${apoio(ctx.parceiros)}
+      <svg class="fl__onda" viewBox="0 0 760 130" preserveAspectRatio="none"><path fill="#f28c38" d="M40 130 C 250 80, 460 10, 600 10 C 680 10, 730 40, 760 70 V130 Z"/><path fill="#1f5bca" d="M420 130 C 540 116, 660 110, 760 114 V130 Z"/></svg>${grao}
+    </div>` }]
   },
   legenda: (p) => p.legenda || '',
 }
@@ -258,7 +259,7 @@ const storyInstagram = {
     { id: 'linkNota', rotulo: 'Nota do caminho', tipo: 'texto', limite: [4, 30], ajuda: 'Ex.: Link na bio' },
   ],
   exemplo: {
-    imagem: BASE + 'fotos/horta-baldinho-grupo-m.jpg', tag: 'Convite', rotulo: 'Meio ambiente',
+    imagem: BASE + 'fotos/horta-colheita-familia-m.jpg', tag: 'Convite', rotulo: 'Meio ambiente',
     titulo: 'Plantio com as crianças na horta', texto: 'Uma manhã de terra nas mãos no Pé-de-Fruta.',
     info: [{ icone: 'data', texto: 'Sábado, [CONFIRMAR: data]' }, { icone: 'hora', texto: '9h30' }],
     link: 'ajin.org.br', linkNota: 'Link na bio',
@@ -426,7 +427,7 @@ const email = {
   exemplo: {
     assunto: 'O que muda em Jurerê com a temporada de verão',
     pre: 'Segurança reforçada, áreas adotadas em dia e o que pedimos a cada morador.',
-    imagem: BASE + 'fotos/capa-bairro-m.jpg', rotulo: 'Aos associados',
+    imagem: BASE + 'fotos/horta-inaug-publico.jpg', rotulo: 'Aos associados',
     titulo: 'A temporada começa antes do primeiro turista chegar',
     abertura: 'Em dezembro o bairro muda de ritmo. A rua que de manhã tinha um corredor e dois cachorros passa a ter fila na esquina. É nesse momento que o cuidado de todo o ano mais aparece, e também quando ele mais precisa de você.',
     blocos: [

@@ -168,6 +168,31 @@
 .ig--link .ig__link b { font-size: 40px; font-weight: 900; letter-spacing: -0.02em; }
 .ig--link .ig__link span { font-size: 28px; font-weight: 600; color: var(--fraco); }
 
+/* ---------- flyer de WhatsApp: molde do card de notícia, limpo ---------- */
+.fl { padding: 0; background: var(--navy) url('../marca/fundo-navy.jpg') center/cover; color: var(--areia); }
+.fl__foto { position: absolute; left: 0; right: 0; top: 0; height: 740px; overflow: hidden; }
+.fl__foto::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(31,42,68,0.5), rgba(31,42,68,0) 28%, rgba(31,42,68,0) 72%, rgba(31,42,68,0.92)); }
+.fl__logo { position: absolute; left: 88px; top: 70px; height: 62px; z-index: 3; }
+.fl__tag { position: absolute; left: 88px; top: 672px; z-index: 3; padding: 14px 26px; border-radius: 100px; background: var(--onda); color: var(--navy); font-size: 24px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
+.fl__texto { position: absolute; left: 88px; right: 88px; top: 780px; z-index: 3; }
+.fl__texto h1 { font-size: 72px; line-height: 1.02; color: #ece4d6; letter-spacing: -0.04em; }
+.fl__texto p { margin-top: 20px; font-size: 32px; line-height: 1.35; color: #cfd0d6; font-weight: 500; max-width: 32ch; }
+.fl__info { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px 30px; }
+.fl__item { display: inline-flex; align-items: center; gap: 12px; font-size: 30px; font-weight: 700; color: #ece4d6; }
+.fl__item svg { width: 30px; height: 30px; fill: var(--onda); flex: none; }
+.fl__cta { position: absolute; left: 88px; bottom: 60px; z-index: 4; font-size: 26px; font-weight: 600; color: #cfd0d6; }
+.fl__cta b { color: var(--onda); font-weight: 800; }
+.fl__onda { position: absolute; right: 0; bottom: 0; width: 520px; height: 110px; z-index: 2; }
+.fl .p-apoio { position: absolute; left: 88px; right: 88px; bottom: 120px; z-index: 4; color: var(--areia); }
+.fl--story .fl__foto { height: 1100px; }
+.fl--story .fl__logo { top: 150px; }
+.fl--story .fl__tag { top: 1030px; }
+.fl--story .fl__texto { top: 1140px; }
+.fl--story .fl__texto h1 { font-size: 92px; }
+.fl--story .fl__texto p { font-size: 38px; }
+.fl--story .fl__item { font-size: 36px; }
+.fl--story .fl__cta { bottom: 200px; font-size: 30px; }
+
 /* ---------- card de notícia (news): a matéria forte do boletim no feed ---------- */
 .ig--news { padding: 0; background: var(--navy) url('../marca/fundo-navy.jpg') center/cover; color: var(--areia); }
 .ig--news .ig__news-foto { position: absolute; left: 0; right: 0; top: 0; height: 760px; overflow: hidden; }
