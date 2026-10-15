@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Estúdio de comunicação | AJIN</title>
+<title>Moldes das peças | AJIN</title>
 <meta name="robots" content="noindex, nofollow" />
-<meta name="description" content="Estúdio de comunicação da AJIN: flyers, carrosséis, e-mails, boletins, apresentações e documentos na identidade da associação." />
+<meta name="description" content="Moldes das peças de comunicação da AJIN: flyer, story, carrossel, boletim, e-mail, apresentação e documentos na identidade da associação." />
 <link rel="icon" type="image/png" sizes="32x32" href="../marca/icone-32.png" />
 <link rel="apple-touch-icon" href="../marca/icone-180.png" />
 <link rel="stylesheet" href="css/pecas.css" />
@@ -15,50 +15,24 @@
   <header class="topo">
     <a class="topo__marca" href="../"><img src="../marca/ajin-branco.png" alt="AJIN" width="81" height="32" /></a>
     <span class="topo__nome">Estúdio de comunicação</span>
-    <span class="topo__estado">O agente atende no grupo de WhatsApp</span>
+    <span class="topo__estado">As peças são pedidas no grupo de WhatsApp</span>
   </header>
 
-  <main class="aba" data-painel="criar">
-    <aside class="lado">
-      <section class="bloco">
-        <h2 class="bloco__titulo"><small>01</small>O que vamos criar</h2>
-        <div class="modelos" id="modelos"></div>
-      </section>
-
-      <section class="bloco">
-        <h2 class="bloco__titulo"><small>02</small>Pedir ao agente</h2>
-        <div class="dica">
-          <p>O agente conversa no <b>grupo de comunicação da AJIN</b> no WhatsApp. Mande <b>/marketing</b> e conte o que precisa: ele pergunta o que faltar, devolve a prévia e, com <b>/enviar</b>, leva para a diretoria aprovar.</p>
-          <p>Aqui no estúdio você monta e ajusta à mão, com prévia no tamanho final, e baixa em PNG, PDF ou HTML.</p>
-        </div>
-      </section>
-
-      <section class="bloco">
-        <h2 class="bloco__titulo"><small>03</small>Conteúdo da peça</h2>
-        <div id="formulario"></div>
-      </section>
-    </aside>
-
-    <section class="palco">
-      <div class="palco__barra">
-        <div class="palco__info"><b id="peca-nome"></b><span id="peca-canal"></span></div>
-        <div class="palco__acoes" id="acoes"></div>
+  <main class="mostra">
+    <div class="mostra__cabeca">
+      <div>
+        <h1>Os moldes das peças da AJIN</h1>
+        <p>Toda peça sai de um destes moldes, na identidade da associação. O pedido é feito no grupo de comunicação, com <b>/marketing</b> e o assunto; aqui ficam só os modelos, para consulta.</p>
       </div>
-      <div class="avisos" id="avisos"></div>
-      <div class="paginas" id="paginas"></div>
-      <div class="legenda" id="legenda" hidden>
-        <div class="legenda__topo"><b>Texto para colar</b><button class="botao botao--linha botao--pequeno" id="copiar-legenda">Copiar</button></div>
-        <pre id="legenda-texto"></pre>
+      <div class="mostra__nav">
+        <button type="button" id="anterior" aria-label="Modelo anterior">&larr;</button>
+        <span id="posicao" aria-live="polite"></span>
+        <button type="button" id="proximo" aria-label="Próximo modelo">&rarr;</button>
       </div>
-    </section>
+    </div>
+    <div class="trilho" id="trilho" tabindex="0" aria-label="Moldes das peças, role para o lado"></div>
   </main>
 
-
-  <div class="toque" id="toque" role="status" aria-live="polite"></div>
-  <div id="impressao" aria-hidden="true"></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
