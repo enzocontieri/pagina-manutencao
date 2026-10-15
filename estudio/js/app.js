@@ -174,7 +174,7 @@ function mudou() { atualizarVolume(); clearTimeout(temporizador); temporizador =
 /* ---------------------------------------------------------------------
    Prévia
    --------------------------------------------------------------------- */
-const LARGURA_PREVIA = { 'flyer-whatsapp': 440, 'carrossel-instagram': 380, boletim: 430, email: 680, apresentacao: 720, oficio: 560, 'ficha-adesao': 560 }
+const LARGURA_PREVIA = { 'flyer-whatsapp': 440, 'carrossel-instagram': 380, 'story-instagram': 320, boletim: 430, email: 680, apresentacao: 720, oficio: 560, 'ficha-adesao': 560 }
 let paginasAtuais = []
 
 function foraDoLimite(campos, alvo, achados = []) {
@@ -249,7 +249,7 @@ function montarAcoes() {
     b.push(botao('Copiar HTML do e-mail', async () => avisar(await exportar.copiar(m.email(p, ctx)) ? 'HTML copiado.' : 'Não deu para copiar.')))
     b.push(botao('Baixar HTML', () => exportar.baixar(new Blob([m.email(p, ctx)], { type: 'text/html' }), `${nomeArquivo()}.html`)))
   }
-  if (m.derivar) b.push(botao('Gerar carrossel do boletim', () => { const d = m.derivar(p); trocarModelo(d.modelo, d.peca); avisar('Carrossel do boletim pronto para revisar.') }))
+  if (m.derivar) for (const d of [].concat(m.derivar(p))) b.push(botao(`Gerar ${d.nome || 'peça derivada'}`, () => { trocarModelo(d.modelo, d.peca); avisar(`${d.nome || 'Peça'} pronta para revisar.`) }))
   $('#acoes').replaceChildren(...b)
 }
 

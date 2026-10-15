@@ -161,6 +161,13 @@ const TIPOS_CARD = {
       { id: 'texto', rotulo: 'Parágrafo', tipo: 'area', limite: [180, 225] },
     ] },
   ] },
+  news: { nome: 'Notícia (card único)', campos: [
+    { id: 'imagem', rotulo: 'Foto', tipo: 'imagem' },
+    { id: 'rotulo', rotulo: 'Etiqueta', tipo: 'texto', limite: [4, 30], ajuda: 'Ex.: Boletim vol. 54, Segurança.' },
+    { id: 'titulo', rotulo: 'Manchete', tipo: 'texto', limite: [20, 70] },
+    { id: 'texto', rotulo: 'Linha fina', tipo: 'area', limite: [40, 130] },
+    { id: 'leia', rotulo: 'Onde ler', tipo: 'texto', limite: [6, 40], ajuda: 'Ex.: ajin.org.br/boletim' },
+  ] },
   fecho: { nome: 'Fechamento', campos: [
     { id: 'titulo', rotulo: 'Título', tipo: 'texto', limite: [20, 45] },
     { id: 'texto', rotulo: 'Frase de fecho', tipo: 'area', limite: [80, 95] },
@@ -189,6 +196,9 @@ function cardIG(c, i, total, ctx = {}) {
     }
     case 'fecho':
       return caixa('ig--fecho escuro', true, `${circulo('width:420px;height:420px;right:-150px;top:-140px')}${tracos('right:88px;top:130px')}<div class="ig__fecho"><h2 class="p-titulo">${marca(c.titulo)}</h2><p>${marca(c.texto)}</p>${c.cta ? `<span class="ig__cta">${marca(c.cta)}</span>` : ''}</div>${apoio(ctx.parceiros)}${curvaPlaca(330)}`)
+    case 'news':
+      /* card único de notícia: foto forte em cima, manchete no navy, onda da marca no pé */
+      return { w: 1080, h: 1350, html: `<div class="peca ig ig--news" style="width:1080px;height:1350px"><div class="ig__news-foto">${foto(c.imagem, c.titulo)}</div><img class="ig__logo-news" src="${LOGO_BRANCO}" alt="AJIN" />${c.rotulo ? `<span class="ig__news-tag">${esc(c.rotulo)}</span>` : ''}<div class="ig__news-texto"><h1 class="p-titulo">${marca(c.titulo)}</h1>${c.texto ? `<p>${marca(c.texto)}</p>` : ''}</div><span class="ig__news-leia">Leia mais em <b>${esc(c.leia || 'ajin.org.br')}</b></span><svg class="ig__onda" viewBox="0 0 760 130" preserveAspectRatio="none"><path fill="#f28c38" d="M40 130 C 250 80, 460 10, 600 10 C 680 10, 730 40, 760 70 V130 Z"/><path fill="#1f5bca" d="M420 130 C 540 116, 660 110, 760 114 V130 Z"/></svg>${grao}</div>` }
     case 'boletim-capa':
       return caixa('ig--capa ig--foto ig--boletim', true, `${foto(c.imagem, c.titulo)}<div class="p-veu"></div><span class="ig__vol"><small>VOL.</small><b>${esc(c.volume)}</b></span><div class="ig__capa"><span class="p-rotulo">${esc(c.rotulo || 'Boletim semanal')}</span><h1 class="p-titulo">${marca(c.titulo)}</h1>${c.apoio ? `<p>${marca(c.apoio)}</p>` : ''}</div>`)
     case 'boletim-link':
@@ -224,6 +234,39 @@ const carrosselInstagram = {
   },
   paginas(p, ctx = {}) { const cs = p.cards || []; return cs.map((c, i) => cardIG(c, i, cs.length, ctx)) },
   legenda: (p) => p.legenda || '',
+}
+
+/* =====================================================================
+   2b. STORY DO INSTAGRAM (1080 × 1920)
+   ===================================================================== */
+const storyInstagram = {
+  id: 'story-instagram',
+  nome: 'Story do Instagram',
+  canal: 'Instagram (stories)',
+  descricao: 'Tela cheia vertical: foto que domina, uma manchete, informação essencial e o caminho (link na bio ou site).',
+  campos: [
+    { id: 'imagem', rotulo: 'Foto', tipo: 'imagem' },
+    { id: 'tag', rotulo: 'Etiqueta no alto', tipo: 'texto', limite: [3, 24], ajuda: 'Ex.: Boletim vol. 54, Convite, Novidade.' },
+    { id: 'rotulo', rotulo: 'Tema', tipo: 'texto', limite: [4, 28] },
+    { id: 'titulo', rotulo: 'Manchete', tipo: 'texto', limite: [15, 60] },
+    { id: 'texto', rotulo: 'Frase de apoio', tipo: 'area', limite: [30, 120] },
+    { id: 'info', rotulo: 'Informações', tipo: 'lista', max: 3, itens: [
+      { id: 'icone', rotulo: 'Tipo', tipo: 'escolha', opcoes: [['data', 'Data'], ['hora', 'Horário'], ['local', 'Local'], ['contato', 'Contato']] },
+      { id: 'texto', rotulo: 'Texto', tipo: 'texto', limite: [4, 40] },
+    ] },
+    { id: 'link', rotulo: 'Caminho', tipo: 'texto', limite: [6, 40], ajuda: 'Ex.: ajin.org.br/boletim' },
+    { id: 'linkNota', rotulo: 'Nota do caminho', tipo: 'texto', limite: [4, 30], ajuda: 'Ex.: Link na bio' },
+  ],
+  exemplo: {
+    imagem: BASE + 'fotos/horta-baldinho-grupo-m.jpg', tag: 'Convite', rotulo: 'Meio ambiente',
+    titulo: 'Plantio com as crianças na horta', texto: 'Uma manhã de terra nas mãos no Pé-de-Fruta.',
+    info: [{ icone: 'data', texto: 'Sábado, [CONFIRMAR: data]' }, { icone: 'hora', texto: '9h30' }],
+    link: 'ajin.org.br', linkNota: 'Link na bio',
+  },
+  paginas(p) {
+    const info = (p.info || []).filter((i) => i.texto).map((i) => `<div class="fw__linha">${icone(i.icone, 'onda')}<span>${marca(i.texto)}</span></div>`).join('')
+    return [{ w: 1080, h: 1920, html: `<div class="peca st" style="width:1080px;height:1920px">${foto(p.imagem, p.titulo)}<div class="st__veu"></div><img class="st__logo" src="${LOGO_BRANCO}" alt="AJIN" />${p.tag ? `<span class="st__tag">${esc(p.tag)}</span>` : ''}<div class="st__texto">${p.rotulo ? `<span class="p-rotulo">${esc(p.rotulo)}</span>` : ''}<h1 class="p-titulo">${marca(p.titulo)}</h1>${p.texto ? `<p>${marca(p.texto)}</p>` : ''}${info ? `<div class="st__info">${info}</div>` : ''}</div>${p.link ? `<div class="st__link"><b>${esc(p.link)}</b><span>${esc(p.linkNota || 'Link na bio')}</span></div>` : ''}<svg class="st__onda" viewBox="0 0 1080 190" preserveAspectRatio="none"><path fill="#f28c38" d="M0 190 C 260 120, 600 20, 820 22 C 940 24, 1020 60, 1080 90 V190 Z"/><path fill="#1f5bca" d="M500 190 C 700 168, 900 158, 1080 164 V190 Z"/></svg>${grao}</div>` }]
+  },
 }
 
 /* =====================================================================
@@ -331,23 +374,26 @@ const boletim = {
     ocorrencias: [{ data: '[CONFIRMAR: dia]', hora: '22h10', local: 'Rua das Sapopemas', descricao: 'Portão de garagem encontrado aberto. A equipe tática acionou o morador e acompanhou o fechamento.' }],
   },
   paginas: paginasBoletim,
-  /* o boletim pronto vira um carrossel curto de Instagram */
+  /* boletim aprovado vira sempre: card de notícia no feed (a matéria forte ou a
+     capa) e story. O PDF vai para o site. Devolve a lista de peças derivadas. */
   derivar(p) {
     const data = p.data || new Date().toISOString().slice(0, 10)
-    const m = (p.materias || [])[0] || {}
     const vol = p.volume || volumeDoBoletim(data)
-    return {
-      modelo: 'carrossel-instagram',
-      peca: {
+    const materias = (p.materias || []).filter((m) => m.titulo)
+    /* matéria forte: a primeira com foto (o boletim abre pela mais importante); sem foto, a capa */
+    const forte = materias.find((m) => (m.fotos || []).filter(Boolean).length) || null
+    const imagem = forte ? forte.fotos.filter(Boolean)[0] : p.capa
+    const manchete = forte ? forte.titulo : 'Jurerê Internacional esta semana'
+    const fina = forte ? (forte.fina || paragrafos(forte.corpo)[0] || '') : (p.chamada || '')
+    const tag = `Boletim vol. ${vol}`
+    return [
+      { modelo: 'carrossel-instagram', nome: 'Card de notícia', peca: {
         tema: 'Notícias e Informações',
-        cards: [
-          { tipo: 'boletim-capa', imagem: p.capa, volume: vol, rotulo: `Boletim semanal · ${dataPorExtenso(data)}`, titulo: 'Jurerê Internacional esta semana', apoio: p.chamada || '', gancho: 'A principal' },
-          { tipo: 'rasgada', imagem: (m.fotos || [])[0] || p.capa, titulo: (m.titulo || '').slice(0, 60), subtitulo: m.editoria || '', texto: (m.fina || paragrafos(m.corpo)[0] || '').slice(0, 185), gancho: 'Leia tudo' },
-          { tipo: 'boletim-link', titulo: 'O boletim completo está no site.', texto: `Vol. ${vol}, com todas as matérias da semana e as ocorrências de segurança.`, link: 'ajin.org.br/boletim' },
-        ],
-        legenda: `Saiu o Boletim Semanal vol. ${vol}. 📰\n\n${m.titulo || ''}\n\nO boletim completo, com todas as matérias da semana, está no site da AJIN. Link na bio.\n\n#JurerêInternacional #AJIN #BoletimAJIN`,
-      },
-    }
+        cards: [{ tipo: 'news', imagem, rotulo: tag, titulo: manchete.slice(0, 70), texto: fina.slice(0, 130), leia: 'ajin.org.br/boletim' }],
+        legenda: `Saiu o Boletim Semanal vol. ${vol}. 📰\n\n${manchete}\n\n${fina}\n\nO boletim completo, com todas as matérias da semana, está no site da AJIN. Link na bio.\n\n#JurerêInternacional #AJIN #BoletimAJIN`,
+      } },
+      { modelo: 'story-instagram', nome: 'Story', peca: { imagem, tag, rotulo: forte?.editoria || 'Boletim semanal', titulo: manchete.slice(0, 60), texto: fina.slice(0, 120), link: 'ajin.org.br/boletim', linkNota: 'Link na bio' } },
+    ]
   },
 }
 
@@ -700,5 +746,5 @@ const fichaAdesao = {
   },
 }
 
-export const MODELOS = { 'flyer-whatsapp': flyerWhatsapp, 'carrossel-instagram': carrosselInstagram, boletim, email, apresentacao, oficio, 'ficha-adesao': fichaAdesao }
-export const ORDEM = ['flyer-whatsapp', 'carrossel-instagram', 'email', 'boletim', 'apresentacao', 'oficio', 'ficha-adesao']
+export const MODELOS = { 'flyer-whatsapp': flyerWhatsapp, 'carrossel-instagram': carrosselInstagram, 'story-instagram': storyInstagram, boletim, email, apresentacao, oficio, 'ficha-adesao': fichaAdesao }
+export const ORDEM = ['flyer-whatsapp', 'carrossel-instagram', 'story-instagram', 'email', 'boletim', 'apresentacao', 'oficio', 'ficha-adesao']

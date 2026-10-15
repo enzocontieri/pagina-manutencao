@@ -168,6 +168,39 @@
 .ig--link .ig__link b { font-size: 40px; font-weight: 900; letter-spacing: -0.02em; }
 .ig--link .ig__link span { font-size: 28px; font-weight: 600; color: var(--fraco); }
 
+/* ---------- card de notícia (news): a matéria forte do boletim no feed ---------- */
+.ig--news { padding: 0; background: var(--navy) url('../marca/fundo-navy.jpg') center/cover; color: var(--areia); }
+.ig--news .ig__news-foto { position: absolute; left: 0; right: 0; top: 0; height: 760px; overflow: hidden; }
+.ig--news .ig__news-foto::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(31,42,68,0.55), rgba(31,42,68,0) 30%, rgba(31,42,68,0) 70%, rgba(31,42,68,0.9)); }
+.ig--news .ig__news-tag { position: absolute; left: 88px; top: 690px; z-index: 3; display: inline-flex; align-items: center; gap: 14px; padding: 14px 26px; border-radius: 100px; background: var(--onda); color: var(--navy); font-size: 24px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
+.ig--news .ig__news-texto { position: absolute; left: 88px; right: 88px; top: 800px; z-index: 3; }
+.ig--news .ig__news-texto h1 { font-size: 70px; line-height: 1.02; color: #ece4d6; letter-spacing: -0.04em; }
+.ig--news .ig__news-texto p { margin-top: 22px; font-size: 32px; line-height: 1.35; color: #cfd0d6; font-weight: 500; max-width: 30ch; }
+.ig--news .ig__news-leia { position: absolute; left: 88px; bottom: 60px; z-index: 4; font-size: 26px; font-weight: 800; color: #ece4d6; }
+.ig--news .ig__news-leia b { color: var(--onda); }
+.ig--news .ig__onda { position: absolute; right: 0; bottom: 0; width: 760px; height: 130px; z-index: 2; }
+.ig--news .ig__topo, .ig--news .ig__rodape { display: none; }
+.ig--news .ig__logo-news { position: absolute; left: 88px; top: 70px; height: 62px; z-index: 3; }
+
+/* =====================================================================
+   STORY DO INSTAGRAM · 1080 × 1920
+   ===================================================================== */
+.st { width: 1080px; height: 1920px; padding: 0; background: var(--navy); color: var(--areia); }
+.st .p-foto { position: absolute; inset: 0; }
+.st__veu { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(31,42,68,0.6), rgba(31,42,68,0.05) 22%, rgba(31,42,68,0.55) 42%, rgba(31,42,68,0.95) 70%); }
+.st__logo { position: absolute; left: 90px; top: 150px; height: 72px; z-index: 3; }
+.st__tag { position: absolute; right: 90px; top: 160px; z-index: 3; padding: 14px 26px; border-radius: 100px; background: var(--onda); color: var(--navy); font-size: 26px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
+.st__texto { position: absolute; left: 90px; right: 90px; bottom: 520px; z-index: 3; }
+.st__texto .p-rotulo { font-size: 28px; color: var(--onda); }
+.st__texto h1 { margin-top: 24px; font-size: 104px; line-height: 0.98; color: #fff; letter-spacing: -0.045em; }
+.st__texto p { margin-top: 28px; font-size: 40px; line-height: 1.35; color: #e4e0d8; font-weight: 500; }
+.st__info { margin-top: 30px; display: grid; gap: 16px; }
+.st__info .fw__linha { font-size: 38px; }
+.st__link { position: absolute; left: 90px; right: 90px; bottom: 260px; z-index: 4; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 34px 40px; border-radius: 32px; background: #fff; color: var(--navy); box-shadow: 0 20px 40px rgba(0,0,0,0.25); }
+.st__link b { font-size: 40px; font-weight: 900; letter-spacing: -0.02em; }
+.st__link span { font-size: 26px; font-weight: 700; color: var(--fraco); text-align: right; }
+.st__onda { position: absolute; right: 0; bottom: 0; width: 100%; height: 190px; z-index: 2; }
+
 /* =====================================================================
    BOLETIM SEMANAL · A4 vertical (794 × 1123 px a 96 dpi)
    ===================================================================== */
