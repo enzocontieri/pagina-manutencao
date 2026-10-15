@@ -157,6 +157,7 @@
 .ig--fecho .ig__fecho { position: absolute; left: 88px; right: 88px; top: 230px; }
 .ig--fecho h2 { font-size: 92px; color: var(--branco); }
 .ig--fecho p { margin-top: 30px; font-size: 38px; line-height: 1.38; color: #d7d3cb; font-weight: 500; max-width: 24ch; }
+.ig__fecho-contatos { margin-top: 40px; font-size: 24px; }
 .ig--fecho .ig__cta { margin-top: 46px; display: inline-flex; align-items: center; min-height: 90px; padding: 0 44px; border-radius: 100px; background: var(--onda); color: var(--navy); font-weight: 900; font-size: 32px; }
 .ig--fecho .p-apoio { position: absolute; left: 88px; right: 88px; bottom: 300px; color: var(--areia); }
 
@@ -168,42 +169,53 @@
 .ig--link .ig__link b { font-size: 40px; font-weight: 900; letter-spacing: -0.02em; }
 .ig--link .ig__link span { font-size: 28px; font-weight: 600; color: var(--fraco); }
 
-/* ---------- flyer de WhatsApp: molde do card de notícia, limpo ---------- */
+/* ---------- contatos institucionais: sempre presentes ---------- */
+.p-contatos { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 30px; font-size: 22px; font-weight: 600; color: #cfd0d6; z-index: 4; }
+.p-contatos span { display: inline-flex; align-items: center; gap: 9px; white-space: nowrap; }
+.p-contatos svg { width: 24px; height: 24px; fill: var(--onda); flex: none; }
+.p-contatos b { color: #ece4d6; font-weight: 800; }
+
+/* ---------- flyer de WhatsApp: molde do card de notícia, limpo ----------
+   Texto e rodapé numa coluna: o rodapé fica no pé e nunca cruza o texto. */
 .fl { padding: 0; background: var(--navy) url('../marca/fundo-navy.jpg') center/cover; color: var(--areia); }
-.fl__foto { position: absolute; left: 0; right: 0; top: 0; height: 740px; overflow: hidden; }
+.fl__foto { position: absolute; left: 0; right: 0; top: 0; height: 690px; overflow: hidden; }
 .fl__foto::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(31,42,68,0.5), rgba(31,42,68,0) 28%, rgba(31,42,68,0) 72%, rgba(31,42,68,0.92)); }
 .fl__logo { position: absolute; left: 88px; top: 70px; height: 62px; z-index: 3; }
-.fl__tag { position: absolute; left: 88px; top: 672px; z-index: 3; padding: 14px 26px; border-radius: 100px; background: var(--onda); color: var(--navy); font-size: 24px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
-.fl__texto { position: absolute; left: 88px; right: 88px; top: 780px; z-index: 3; }
-.fl__texto h1 { font-size: 72px; line-height: 1.02; color: #ece4d6; letter-spacing: -0.04em; }
-.fl__texto p { margin-top: 20px; font-size: 32px; line-height: 1.35; color: #cfd0d6; font-weight: 500; max-width: 32ch; }
-.fl__info { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px 30px; }
-.fl__item { display: inline-flex; align-items: center; gap: 12px; font-size: 30px; font-weight: 700; color: #ece4d6; }
-.fl__item svg { width: 30px; height: 30px; fill: var(--onda); flex: none; }
-.fl__cta { position: absolute; left: 88px; bottom: 60px; z-index: 4; font-size: 26px; font-weight: 600; color: #cfd0d6; }
-.fl__cta b { color: var(--onda); font-weight: 800; }
-.fl__onda { position: absolute; right: 0; bottom: 0; width: 520px; height: 110px; z-index: 2; }
-.fl .p-apoio { position: absolute; left: 88px; right: 88px; bottom: 120px; z-index: 4; color: var(--areia); }
-.fl--story .fl__foto { height: 1100px; }
+.fl__tag { position: absolute; left: 88px; top: 624px; z-index: 3; padding: 14px 26px; border-radius: 100px; background: var(--onda); color: var(--navy); font-size: 24px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
+.fl__painel { position: absolute; left: 88px; right: 88px; top: 730px; bottom: 100px; z-index: 3; display: flex; flex-direction: column; }
+.fl__texto h1 { font-size: 66px; line-height: 1.02; color: #ece4d6; letter-spacing: -0.04em; }
+.fl__texto p { margin-top: 18px; font-size: 30px; line-height: 1.35; color: #cfd0d6; font-weight: 500; max-width: 34ch; }
+.fl__info { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 10px 28px; }
+.fl__item { display: inline-flex; align-items: center; gap: 12px; font-size: 28px; font-weight: 700; color: #ece4d6; }
+.fl__item svg { width: 28px; height: 28px; fill: var(--onda); flex: none; }
+.fl__pe { margin-top: auto; padding-top: 22px; display: grid; gap: 14px; }
+.fl__cta { font-size: 28px; font-weight: 800; color: var(--onda); }
+.fl .p-apoio { color: var(--areia); }
+.fl__onda { position: absolute; right: 0; bottom: 0; width: 620px; height: 80px; z-index: 2; }
+.fl__contatos, .ig__news-contatos { flex-wrap: nowrap; gap: 24px; font-size: 20px; }
+.fl__contatos svg, .ig__news-contatos svg { width: 22px; height: 22px; }
+.fl--story .fl__foto { height: 1080px; }
 .fl--story .fl__logo { top: 150px; }
-.fl--story .fl__tag { top: 1030px; }
-.fl--story .fl__texto { top: 1140px; }
-.fl--story .fl__texto h1 { font-size: 92px; }
-.fl--story .fl__texto p { font-size: 38px; }
-.fl--story .fl__item { font-size: 36px; }
-.fl--story .fl__cta { bottom: 200px; font-size: 30px; }
+.fl--story .fl__tag { top: 1012px; }
+.fl--story .fl__painel { top: 1120px; bottom: 150px; }
+.fl--story .fl__texto h1 { font-size: 88px; }
+.fl--story .fl__texto p { font-size: 36px; }
+.fl--story .fl__item { font-size: 34px; }
+.fl--story .fl__cta { font-size: 32px; }
+.fl--story .fl__contatos { font-size: 24px; flex-wrap: wrap; }
 
 /* ---------- card de notícia (news): a matéria forte do boletim no feed ---------- */
 .ig--news { padding: 0; background: var(--navy) url('../marca/fundo-navy.jpg') center/cover; color: var(--areia); }
-.ig--news .ig__news-foto { position: absolute; left: 0; right: 0; top: 0; height: 760px; overflow: hidden; }
+.ig--news .ig__news-foto { position: absolute; left: 0; right: 0; top: 0; height: 720px; overflow: hidden; }
 .ig--news .ig__news-foto::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(31,42,68,0.55), rgba(31,42,68,0) 30%, rgba(31,42,68,0) 70%, rgba(31,42,68,0.9)); }
-.ig--news .ig__news-tag { position: absolute; left: 88px; top: 690px; z-index: 3; display: inline-flex; align-items: center; gap: 14px; padding: 14px 26px; border-radius: 100px; background: var(--onda); color: var(--navy); font-size: 24px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
-.ig--news .ig__news-texto { position: absolute; left: 88px; right: 88px; top: 800px; z-index: 3; }
-.ig--news .ig__news-texto h1 { font-size: 70px; line-height: 1.02; color: #ece4d6; letter-spacing: -0.04em; }
-.ig--news .ig__news-texto p { margin-top: 22px; font-size: 32px; line-height: 1.35; color: #cfd0d6; font-weight: 500; max-width: 30ch; }
-.ig--news .ig__news-leia { position: absolute; left: 88px; bottom: 60px; z-index: 4; font-size: 26px; font-weight: 800; color: #ece4d6; }
+.ig--news .ig__news-tag { position: absolute; left: 88px; top: 654px; z-index: 3; display: inline-flex; align-items: center; gap: 14px; padding: 14px 26px; border-radius: 100px; background: var(--onda); color: var(--navy); font-size: 24px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
+.ig--news .ig__news-painel { position: absolute; left: 88px; right: 88px; top: 790px; bottom: 100px; z-index: 3; display: flex; flex-direction: column; }
+.ig--news .ig__news-pe { margin-top: auto; padding-top: 22px; display: grid; gap: 14px; }
+.ig--news .ig__news-texto h1 { font-size: 66px; line-height: 1.02; color: #ece4d6; letter-spacing: -0.04em; }
+.ig--news .ig__news-texto p { margin-top: 18px; font-size: 30px; line-height: 1.35; color: #cfd0d6; font-weight: 500; max-width: 30ch; }
+.ig--news .ig__news-leia { font-size: 28px; font-weight: 800; color: #ece4d6; }
 .ig--news .ig__news-leia b { color: var(--onda); }
-.ig--news .ig__onda { position: absolute; right: 0; bottom: 0; width: 760px; height: 130px; z-index: 2; }
+.ig--news .ig__onda { position: absolute; right: 0; bottom: 0; width: 620px; height: 80px; z-index: 2; }
 .ig--news .ig__topo, .ig--news .ig__rodape { display: none; }
 .ig--news .ig__logo-news { position: absolute; left: 88px; top: 70px; height: 62px; z-index: 3; }
 
@@ -215,16 +227,18 @@
 .st__veu { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(31,42,68,0.6), rgba(31,42,68,0.05) 22%, rgba(31,42,68,0.55) 42%, rgba(31,42,68,0.95) 70%); }
 .st__logo { position: absolute; left: 90px; top: 150px; height: 72px; z-index: 3; }
 .st__tag { position: absolute; right: 90px; top: 160px; z-index: 3; padding: 14px 26px; border-radius: 100px; background: var(--onda); color: var(--navy); font-size: 26px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
-.st__texto { position: absolute; left: 90px; right: 90px; bottom: 520px; z-index: 3; }
+.st__texto { position: absolute; left: 90px; right: 90px; bottom: 580px; z-index: 3; }
 .st__texto .p-rotulo { font-size: 28px; color: var(--onda); }
 .st__texto h1 { margin-top: 24px; font-size: 104px; line-height: 0.98; color: #fff; letter-spacing: -0.045em; }
 .st__texto p { margin-top: 28px; font-size: 40px; line-height: 1.35; color: #e4e0d8; font-weight: 500; }
 .st__info { margin-top: 30px; display: grid; gap: 16px; }
 .st__info .fw__linha { font-size: 38px; }
-.st__link { position: absolute; left: 90px; right: 90px; bottom: 260px; z-index: 4; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 34px 40px; border-radius: 32px; background: #fff; color: var(--navy); box-shadow: 0 20px 40px rgba(0,0,0,0.25); }
+.st__link { position: absolute; left: 90px; right: 90px; bottom: 330px; z-index: 4; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 34px 40px; border-radius: 32px; background: #fff; color: var(--navy); box-shadow: 0 20px 40px rgba(0,0,0,0.25); }
 .st__link b { font-size: 40px; font-weight: 900; letter-spacing: -0.02em; }
 .st__link span { font-size: 26px; font-weight: 700; color: var(--fraco); text-align: right; }
-.st__onda { position: absolute; right: 0; bottom: 0; width: 100%; height: 190px; z-index: 2; }
+.st__onda { position: absolute; right: 0; bottom: 0; width: 100%; height: 130px; z-index: 2; }
+.st__contatos { position: absolute; left: 90px; right: 90px; bottom: 210px; font-size: 26px; }
+.st__contatos svg { width: 28px; height: 28px; }
 
 /* =====================================================================
    BOLETIM SEMANAL · A4 vertical (794 × 1123 px a 96 dpi)

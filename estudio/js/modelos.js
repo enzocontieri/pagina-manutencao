@@ -51,7 +51,11 @@ export const ICONES = {
   predio: '<svg viewBox="0 0 24 24"><path d="M12 2 2 7.5v2h20v-2zM4 11h3v8H4zM10.5 11h3v8h-3zM17 11h3v8h-3zM2 20.5h20V23H2z"/></svg>',
   sol: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
   alerta: '<svg viewBox="0 0 24 24"><path d="M12 2 1 21.5h22zm-1 7h2v6h-2zm0 8h2v2h-2z"/></svg>',
+  site: '<svg viewBox="0 0 24 24"><path d="M12 1.5a10.5 10.5 0 1 0 0 21 10.5 10.5 0 0 0 0-21zm6.9 6.5h-3.1a16 16 0 0 0-1.4-4.1A8.5 8.5 0 0 1 18.9 8zM12 3.6c.9 1.2 1.6 2.7 2 4.4h-4c.4-1.7 1.1-3.2 2-4.4zM3.8 14a8.6 8.6 0 0 1 0-4h3.5a17 17 0 0 0 0 4zm.9 2h3.1c.3 1.5.8 2.9 1.4 4.1A8.5 8.5 0 0 1 4.7 16zM7.8 8H4.7a8.5 8.5 0 0 1 4.5-4.1C8.6 5.1 8.1 6.5 7.8 8zM12 20.4c-.9-1.2-1.6-2.7-2-4.4h4c-.4 1.7-1.1 3.2-2 4.4zm2.4-6.4H9.6a15 15 0 0 1 0-4h4.8a15 15 0 0 1 0 4zm.4 6.1c.6-1.2 1.1-2.6 1.4-4.1h3.1a8.5 8.5 0 0 1-4.5 4.1zm1.9-6.1a17 17 0 0 0 0-4h3.5a8.6 8.6 0 0 1 0 4z"/></svg>',
+  whatsapp: '<svg viewBox="0 0 24 24"><path d="M12 1.6a10.3 10.3 0 0 0-8.9 15.5L1.6 22.4l5.4-1.4A10.3 10.3 0 1 0 12 1.6zm5.5 14.6c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2.1 1-2.4c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.6 2.1 1.1 1 2 1.3 2.3 1.4.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.6.3.1.2.1.8-.1 1.4z"/></svg>',
 }
+/* contatos institucionais: vão sempre, em toda peça visual (pedido da equipe em 15/10/2026) */
+const contatosFixos = (classe = '') => `<div class="p-contatos ${classe}"><span>${ICONES.escudo}Segurança 24h <b>${CONTATOS.seguranca}</b></span><span>${ICONES.whatsapp}WhatsApp <b>${CONTATOS.whatsapp}</b></span><span>${ICONES.site}<b>${CONTATOS.site}</b></span></div>`
 const icone = (nome, cor = 'onda') => `<span class="p-icone p-icone--${cor}">${ICONES[nome] || ICONES.sol}</span>`
 const tracos = (estilo, cor = '#1f5bca') => `<svg class="p-tracos" style="${estilo}" viewBox="0 0 44 26"><path d="M3 4h38M3 13h38M3 22h38" fill="none" stroke="${cor}" stroke-width="4" stroke-linecap="round"/></svg>`
 const circulo = (estilo, cor = '#1f5bca') => `<span class="p-circulo" style="${estilo};border-color:${cor}"></span>`
@@ -91,7 +95,7 @@ const flyerWhatsapp = {
     { id: 'titulo', rotulo: 'Título', tipo: 'texto', limite: [12, 48] },
     { id: 'subtitulo', rotulo: 'Frase de apoio', tipo: 'area', limite: [40, 120] },
     { id: 'info', rotulo: 'Informações', tipo: 'lista', max: 4, itens: [
-      { id: 'icone', rotulo: 'Tipo', tipo: 'escolha', opcoes: [['data', 'Data'], ['hora', 'Horário'], ['local', 'Local'], ['valor', 'Valor'], ['contato', 'Contato']] },
+      { id: 'icone', rotulo: 'Tipo', tipo: 'escolha', opcoes: [['data', 'Data'], ['hora', 'Horário'], ['local', 'Local'], ['valor', 'Valor'], ['contato', 'Telefone'], ['site', 'Site']] },
       { id: 'texto', rotulo: 'Texto', tipo: 'texto', limite: [4, 48] },
     ] },
     { id: 'cta', rotulo: 'Chamada para ação', tipo: 'texto', limite: [6, 32] },
@@ -110,14 +114,15 @@ const flyerWhatsapp = {
        uma linha de apoio, informações numa linha discreta e a onda da marca no pé */
     const story = p.formato === 'story', h = story ? 1920 : 1350
     const info = (p.info || []).filter((i) => i.texto).map((i) => `<span class="fl__item">${ICONES[i.icone] || ICONES.data}${marca(i.texto)}</span>`).join('')
-    const cta = p.cta ? `${marca(p.cta)} · <b>${CONTATOS.whatsapp}</b>` : `WhatsApp da AJIN · <b>${CONTATOS.whatsapp}</b>`
+    const cta = p.cta ? marca(p.cta) : ''
     return [{ w: 1080, h, html: `<div class="peca fl ${story ? 'fl--story' : ''}" style="width:1080px;height:${h}px">
       <div class="fl__foto">${foto(p.imagem, p.titulo)}</div>
       <img class="fl__logo" src="${LOGO_BRANCO}" alt="AJIN" />
       ${p.rotulo ? `<span class="fl__tag">${esc(p.rotulo)}</span>` : ''}
-      <div class="fl__texto"><h1 class="p-titulo">${marca(p.titulo)}</h1>${p.subtitulo ? `<p>${marca(p.subtitulo)}</p>` : ''}${info ? `<div class="fl__info">${info}</div>` : ''}</div>
-      <span class="fl__cta">${cta}</span>
-      ${apoio(ctx.parceiros)}
+      <div class="fl__painel">
+        <div class="fl__texto"><h1 class="p-titulo">${marca(p.titulo)}</h1>${p.subtitulo ? `<p>${marca(p.subtitulo)}</p>` : ''}${info ? `<div class="fl__info">${info}</div>` : ''}</div>
+        <div class="fl__pe">${apoio(ctx.parceiros)}${cta ? `<span class="fl__cta">${cta}</span>` : ''}${contatosFixos('fl__contatos')}</div>
+      </div>
       <svg class="fl__onda" viewBox="0 0 760 130" preserveAspectRatio="none"><path fill="#f28c38" d="M40 130 C 250 80, 460 10, 600 10 C 680 10, 730 40, 760 70 V130 Z"/><path fill="#1f5bca" d="M420 130 C 540 116, 660 110, 760 114 V130 Z"/></svg>${grao}
     </div>` }]
   },
@@ -196,10 +201,10 @@ function cardIG(c, i, total, ctx = {}) {
       return caixa('ig--caixas', false, `${tracos('right:88px;top:120px')}<div class="ig__caixas">${(c.itens || []).map((it, k) => `<div class="ig__caixa ig__caixa--${cores[k % 3]}">${icone(it.icone || 'sol', ic[k % 3])}<b>${marca(it.subtitulo)}</b><span>${marca(it.texto)}</span></div>`).join('')}</div>`)
     }
     case 'fecho':
-      return caixa('ig--fecho escuro', true, `${circulo('width:420px;height:420px;right:-150px;top:-140px')}${tracos('right:88px;top:130px')}<div class="ig__fecho"><h2 class="p-titulo">${marca(c.titulo)}</h2><p>${marca(c.texto)}</p>${c.cta ? `<span class="ig__cta">${marca(c.cta)}</span>` : ''}</div>${apoio(ctx.parceiros)}${curvaPlaca(330)}`)
+      return caixa('ig--fecho escuro', true, `${circulo('width:420px;height:420px;right:-150px;top:-140px')}${tracos('right:88px;top:130px')}<div class="ig__fecho"><h2 class="p-titulo">${marca(c.titulo)}</h2><p>${marca(c.texto)}</p>${c.cta ? `<span class="ig__cta">${marca(c.cta)}</span>` : ''}${contatosFixos('ig__fecho-contatos')}</div>${apoio(ctx.parceiros)}${curvaPlaca(330)}`)
     case 'news':
       /* card único de notícia: foto forte em cima, manchete no navy, onda da marca no pé */
-      return { w: 1080, h: 1350, html: `<div class="peca ig ig--news" style="width:1080px;height:1350px"><div class="ig__news-foto">${foto(c.imagem, c.titulo)}</div><img class="ig__logo-news" src="${LOGO_BRANCO}" alt="AJIN" />${c.rotulo ? `<span class="ig__news-tag">${esc(c.rotulo)}</span>` : ''}<div class="ig__news-texto"><h1 class="p-titulo">${marca(c.titulo)}</h1>${c.texto ? `<p>${marca(c.texto)}</p>` : ''}</div><span class="ig__news-leia">Leia mais em <b>${esc(c.leia || 'ajin.org.br')}</b></span><svg class="ig__onda" viewBox="0 0 760 130" preserveAspectRatio="none"><path fill="#f28c38" d="M40 130 C 250 80, 460 10, 600 10 C 680 10, 730 40, 760 70 V130 Z"/><path fill="#1f5bca" d="M420 130 C 540 116, 660 110, 760 114 V130 Z"/></svg>${grao}</div>` }
+      return { w: 1080, h: 1350, html: `<div class="peca ig ig--news" style="width:1080px;height:1350px"><div class="ig__news-foto">${foto(c.imagem, c.titulo)}</div><img class="ig__logo-news" src="${LOGO_BRANCO}" alt="AJIN" />${c.rotulo ? `<span class="ig__news-tag">${esc(c.rotulo)}</span>` : ''}<div class="ig__news-painel"><div class="ig__news-texto"><h1 class="p-titulo">${marca(c.titulo)}</h1>${c.texto ? `<p>${marca(c.texto)}</p>` : ''}</div><div class="ig__news-pe"><span class="ig__news-leia">Leia mais em <b>${esc(c.leia || 'ajin.org.br')}</b></span>${contatosFixos('ig__news-contatos')}</div></div><svg class="ig__onda" viewBox="0 0 760 130" preserveAspectRatio="none"><path fill="#f28c38" d="M40 130 C 250 80, 460 10, 600 10 C 680 10, 730 40, 760 70 V130 Z"/><path fill="#1f5bca" d="M420 130 C 540 116, 660 110, 760 114 V130 Z"/></svg>${grao}</div>` }
     case 'boletim-capa':
       return caixa('ig--capa ig--foto ig--boletim', true, `${foto(c.imagem, c.titulo)}<div class="p-veu"></div><span class="ig__vol"><small>VOL.</small><b>${esc(c.volume)}</b></span><div class="ig__capa"><span class="p-rotulo">${esc(c.rotulo || 'Boletim semanal')}</span><h1 class="p-titulo">${marca(c.titulo)}</h1>${c.apoio ? `<p>${marca(c.apoio)}</p>` : ''}</div>`)
     case 'boletim-link':
@@ -252,7 +257,7 @@ const storyInstagram = {
     { id: 'titulo', rotulo: 'Manchete', tipo: 'texto', limite: [15, 60] },
     { id: 'texto', rotulo: 'Frase de apoio', tipo: 'area', limite: [30, 120] },
     { id: 'info', rotulo: 'Informações', tipo: 'lista', max: 3, itens: [
-      { id: 'icone', rotulo: 'Tipo', tipo: 'escolha', opcoes: [['data', 'Data'], ['hora', 'Horário'], ['local', 'Local'], ['contato', 'Contato']] },
+      { id: 'icone', rotulo: 'Tipo', tipo: 'escolha', opcoes: [['data', 'Data'], ['hora', 'Horário'], ['local', 'Local'], ['contato', 'Telefone'], ['site', 'Site']] },
       { id: 'texto', rotulo: 'Texto', tipo: 'texto', limite: [4, 40] },
     ] },
     { id: 'link', rotulo: 'Caminho', tipo: 'texto', limite: [6, 40], ajuda: 'Ex.: ajin.org.br/boletim' },
@@ -266,7 +271,7 @@ const storyInstagram = {
   },
   paginas(p) {
     const info = (p.info || []).filter((i) => i.texto).map((i) => `<div class="fw__linha">${icone(i.icone, 'onda')}<span>${marca(i.texto)}</span></div>`).join('')
-    return [{ w: 1080, h: 1920, html: `<div class="peca st" style="width:1080px;height:1920px">${foto(p.imagem, p.titulo)}<div class="st__veu"></div><img class="st__logo" src="${LOGO_BRANCO}" alt="AJIN" />${p.tag ? `<span class="st__tag">${esc(p.tag)}</span>` : ''}<div class="st__texto">${p.rotulo ? `<span class="p-rotulo">${esc(p.rotulo)}</span>` : ''}<h1 class="p-titulo">${marca(p.titulo)}</h1>${p.texto ? `<p>${marca(p.texto)}</p>` : ''}${info ? `<div class="st__info">${info}</div>` : ''}</div>${p.link ? `<div class="st__link"><b>${esc(p.link)}</b><span>${esc(p.linkNota || 'Link na bio')}</span></div>` : ''}<svg class="st__onda" viewBox="0 0 1080 190" preserveAspectRatio="none"><path fill="#f28c38" d="M0 190 C 260 120, 600 20, 820 22 C 940 24, 1020 60, 1080 90 V190 Z"/><path fill="#1f5bca" d="M500 190 C 700 168, 900 158, 1080 164 V190 Z"/></svg>${grao}</div>` }]
+    return [{ w: 1080, h: 1920, html: `<div class="peca st" style="width:1080px;height:1920px">${foto(p.imagem, p.titulo)}<div class="st__veu"></div><img class="st__logo" src="${LOGO_BRANCO}" alt="AJIN" />${p.tag ? `<span class="st__tag">${esc(p.tag)}</span>` : ''}<div class="st__texto">${p.rotulo ? `<span class="p-rotulo">${esc(p.rotulo)}</span>` : ''}<h1 class="p-titulo">${marca(p.titulo)}</h1>${p.texto ? `<p>${marca(p.texto)}</p>` : ''}${info ? `<div class="st__info">${info}</div>` : ''}</div>${p.link ? `<div class="st__link"><b>${esc(p.link)}</b><span>${esc(p.linkNota || 'Link na bio')}</span></div>` : ''}${contatosFixos('st__contatos')}<svg class="st__onda" viewBox="0 0 1080 190" preserveAspectRatio="none"><path fill="#f28c38" d="M0 190 C 260 120, 600 20, 820 22 C 940 24, 1020 60, 1080 90 V190 Z"/><path fill="#1f5bca" d="M500 190 C 700 168, 900 158, 1080 164 V190 Z"/></svg>${grao}</div>` }]
   },
 }
 
