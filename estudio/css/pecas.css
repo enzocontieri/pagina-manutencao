@@ -299,7 +299,7 @@
 .bo__destaque::before { display: none; }
 .bo__destaque > img.icone { width: 30px; height: 30px; }
 .bo__destaque .fita { position: absolute; left: 50%; top: -14px; width: 110px; translate: -50% 0; }
-.bo__destaque small { color: var(--onda); }
+.bo__destaque small { color: var(--mar); }
 
 /* ocorrências: navy com meio-tom */
 .bo--ocorrencias { background: var(--navy) url('../marca/fundo-navy.jpg') center/cover; color: var(--areia); }
