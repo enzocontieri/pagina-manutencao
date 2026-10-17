@@ -112,6 +112,7 @@
 <script>
 const NAVY = '#1f2a44', MAR = '#1f5bca', ONDA = '#f28c38', AREIA = '#e9e2d3';
 const LOGO_BRANCO = 'marca/ajin-branco.png', LOGO_RAZAO = 2895 / 1149;
+const LOGO_NAVY = 'marca/ajin-navy.png';   // fundo claro, como a pedra azul da sacada, pede o logo navy
 // Vãos entre as letras do logo (fração da largura), medidos no PNG: a junta do vidro cai num deles.
 const VAOS_LOGO = [0.592, 0.693];
 
@@ -179,7 +180,16 @@ const CENAS = [
     frente: [
       [[360, 506], [1215, 541], [1215, 900], [360, 900]],          // mureta da sacada
     ],
-    ficha: '<b>Logo em destaque</b> para a rua, em vinil microperfurado (de dentro a vista continua livre). A junta central cai no vão entre as letras. Vidros de 0,94 + 0,96 + 0,95 + 0,83 m por 2,45 m.',
+    // pedra azul da sacada: face de 7,52 x 1,45 m e os cantos dela na foto. O lado direito segue a vertical real da foto
+    // (a foto foi tirada de baixo e as verticais fogem para cima, perto de x 690); a largura deixa a escala horizontal igual à vertical no logo.
+    pedra: {
+      W: 7520, H: 1450, quad: [[381, 510], [1205, 546], [1229, 701], [366, 690]],
+      logo: { cx: 2390, largura: 1200, espessura: 60, afastamento: 20 },   // no eixo do logo do vidro, como se vê na foto
+      recorte: [1680, 380, 1500, 700],   // área da camada em volta do logo (mm): a camada não precisa cobrir a pedra inteira
+      paralaxe: [0.17, -0.22],   // pelos pontos de fuga da foto: a frente do relevo corre para a direita e para cima
+      sol: [0.9, 0.35],          // sol de lado, vindo da esquerda (sombra da sacada vizinha no vão): sombra para a direita e um pouco para baixo
+    },
+    ficha: '<b>Logo em destaque</b> para a rua, em vinil microperfurado (de dentro a vista continua livre). A junta central cai no vão entre as letras. Na pedra azul da sacada, o logo AJIN navy em impressão 3D, com 1,20 m de largura e 6 cm de relevo, alinhado ao logo do vidro. Vidros de 0,94 + 0,96 + 0,95 + 0,83 m por 2,45 m.',
   },
 ];
 
@@ -253,7 +263,7 @@ function arteFachada(c) {
     <path d="${curva}" fill="none" stroke="${ONDA}" stroke-width="16" stroke-linecap="round"/>
     <image href="${LOGO_BRANCO}" x="${lx}" y="${ly}" width="${lw}" height="${lh}" preserveAspectRatio="xMidYMid meet"/>`;
   const defs = `<linearGradient id="vfach" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${NAVY}" stop-opacity=".35"/><stop offset=".35" stop-color="${NAVY}" stop-opacity="0"/><stop offset=".55" stop-color="${NAVY}" stop-opacity=".3"/></linearGradient>`;
-  return { W, H, s, defs };
+  return { W, H, s, defs, logoCentro: lx + lw / 2 };
 }
 
 // contorno real de cada letra (mm a partir do início da linha), para saber onde a junta corta
@@ -334,6 +344,30 @@ function arteCorredor(c) {
   return { W, H, s, defs };
 }
 
+// logo em impressão 3D sobre a pedra: sombra na pedra, laterais do relevo e a face com o PNG oficial
+function artePedra(p, prefixo) {
+  const { cx, largura: lw, espessura, afastamento } = p.logo;
+  const lh = lw / LOGO_RAZAO, lx = cx - lw / 2, ly = p.H / 2 - lh / 2, fundo = afastamento + espessura, id = n => prefixo + n;
+  const img = (dx, dy) => `<image href="${LOGO_NAVY}" x="${(lx + dx).toFixed(2)}" y="${(ly + dy).toFixed(2)}" width="${lw}" height="${lh}" preserveAspectRatio="xMidYMid meet"/>`;
+  const pilha = (fx, fy) => { let r = ''; for (let d = afastamento; d <= fundo; d += 5) r += img(fx(d), fy(d)); return r; };
+  // sombra: o relevo inteiro, do pino até a frente, projetado na pedra
+  const sombra = `<g filter="url(#${id('sombra')})">${pilha(d => p.sol[0] * d, d => p.sol[1] * d)}</g>`;
+  // laterais, mesmo material da frente. A extrusão inteira fica no tom das faces de baixo, na sombra; por cima, a mesma
+  // extrusão arrastada só na horizontal, recortada pela silhueta dela (sem degrau no topo das hastes), no tom das faces da esquerda, que pegam o sol
+  const diagonal = pilha(d => p.paralaxe[0] * d, d => p.paralaxe[1] * d);
+  const logo = `<g filter="url(#${id('baixo')})">${diagonal}</g>
+    <g mask="url(#${id('silhueta')})"><g filter="url(#${id('esquerda')})">${pilha(d => p.paralaxe[0] * d, () => p.paralaxe[1] * fundo)}</g></g>
+    ${img(p.paralaxe[0] * fundo, p.paralaxe[1] * fundo)}`;
+  const defsSombra = `<filter id="${id('sombra')}" x="-10%" y="-20%" width="120%" height="140%" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="0 0 0 0 .44  0 0 0 0 .5  0 0 0 0 .58  0 0 0 1 0"/><feGaussianBlur stdDeviation="5"/></filter>`;
+  const defsLogo = `<filter id="${id('baixo')}" color-interpolation-filters="sRGB">
+      <feComponentTransfer><feFuncR type="linear" slope=".48"/><feFuncG type="linear" slope=".52"/><feFuncB type="linear" slope=".6"/></feComponentTransfer></filter>
+    <filter id="${id('esquerda')}" color-interpolation-filters="sRGB">
+      <feComponentTransfer><feFuncR type="linear" slope=".9"/><feFuncG type="linear" slope=".89"/><feFuncB type="linear" slope=".88"/></feComponentTransfer></filter>
+    <mask id="${id('silhueta')}" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="${p.W}" height="${p.H}">${diagonal}</mask>`;
+  return { sombra, logo, defsSombra, defsLogo };
+}
+
 function gerarArte(c, frase) {
   if (c.arte === 'faixa') return arteFaixa(c, frase);
   if (c.arte === 'fachada') return arteFachada(c);
@@ -341,7 +375,7 @@ function gerarArte(c, frase) {
 }
 
 // ---------- homografia: retângulo do painel -> quadrilátero da foto ----------
-function homografia(src, dst) {
+function matrizH(src, dst) {
   const A = [], b = [];
   for (let i = 0; i < 4; i++) {
     const [x, y] = src[i], [X, Y] = dst[i];
@@ -360,6 +394,11 @@ function homografia(src, dst) {
   }
   const h = new Array(n);
   for (let i = n - 1; i >= 0; i--) { let s = b[i]; for (let k = i + 1; k < n; k++) s -= A[i][k] * h[k]; h[i] = s / A[i][i]; }
+  return h;
+}
+const projetar = (h, [x, y]) => { const w = h[6] * x + h[7] * y + 1; return [(h[0] * x + h[1] * y + h[2]) / w, (h[3] * x + h[4] * y + h[5]) / w]; };
+function homografia(src, dst) {
+  const h = matrizH(src, dst);
   return `matrix3d(${h[0]},${h[3]},0,${h[6]},${h[1]},${h[4]},0,${h[7]},0,0,1,0,${h[2]},${h[5]},0,1)`;
 }
 
@@ -396,6 +435,16 @@ function montarFoto(c, a) {
   const vidro = c.quads.map(q => poli(q));
   vidro.forEach(cp => { html += `<img class="reflexo" src="${c.foto}" alt="" style="clip-path:${cp};opacity:${c.reflexo}" />`; });
   (c.frente || []).forEach(p => { html += `<img class="frente" src="${c.foto}" alt="" style="clip-path:${poli(p)}" />`; });
+  if (c.pedra) {
+    // camadas só na área em volta do logo, posicionadas pelos cantos dessa área projetados na face da pedra
+    const pe = c.pedra, [rx, ry, rw, rh] = pe.recorte, pd = artePedra(pe, 'pf-');
+    const face = matrizH([[0, 0], [pe.W, 0], [pe.W, pe.H], [0, pe.H]], pe.quad);
+    const cantos = [[rx, ry], [rx + rw, ry], [rx + rw, ry + rh], [rx, ry + rh]].map(q => projetar(face, q));
+    const pw = rw * K, ph = rh * K, m = homografia([[0, 0], [pw, 0], [pw, ph], [0, ph]], cantos);
+    const camada = (defs, corpo, extra = '') => `<div class="painel" style="width:${pw}px;height:${ph}px;transform:${m};${extra}">
+      <svg width="${pw}" height="${ph}" viewBox="${rx} ${ry} ${rw} ${rh}"><defs>${defs}</defs>${corpo}</svg></div>`;
+    html += camada(pd.defsSombra, pd.sombra, 'mix-blend-mode:multiply') + camada(pd.defsLogo, pd.logo);
+  }
   html += `</div>`;
   cena.innerHTML = html;
   ajustarEscala();
@@ -423,7 +472,31 @@ function montarPlana(c, a) {
   $('plana').innerHTML = `<svg viewBox="${-padE} ${y0 - padT} ${a.W + padE + padD} ${y1 - y0 + padT + padB}" role="img" aria-label="Arte plana com as medidas dos vidros">
     ${fundo}<svg x="0" y="${y0}" width="${a.W}" height="${y1 - y0}" viewBox="0 ${y0} ${a.W} ${y1 - y0}">${svgArte(a, 'pl-')}</svg>
     <rect y="${y0}" width="${a.W}" height="${y1 - y0}" fill="none" stroke="${NAVY}" stroke-width="5"/>${marcas}</svg>
-    ${faixa ? `<p class="ficha" style="margin:12px 0 0">Recorte de 60 cm em volta da faixa. O vidro inteiro tem ${m(a.H)} de altura.</p>` : ''}`;
+    ${faixa ? `<p class="ficha" style="margin:12px 0 0">Recorte de 60 cm em volta da faixa. O vidro inteiro tem ${m(a.H)} de altura.</p>` : ''}
+    ${c.pedra ? detalhePedra(c, a) : ''}`;
+}
+
+// detalhe da pedra na arte plana: o trecho em frente à sala, com a face do logo e as medidas, na mesma escala da plana dos vidros
+const PEDRA_COR = '#84aad2';   // cor média da pedra azul na foto (material real, não é cor da marca)
+function detalhePedra(c, a) {
+  const pl = c.pedra.logo, lw = pl.largura, lh = lw / LOGO_RAZAO, SH = c.pedra.H, m = v => (v / 1000).toFixed(2).replace('.', ',') + ' m';
+  const eixo = a.logoCentro ?? a.W / 2, lx = eixo - lw / 2, ly = SH / 2 - lh / 2, cota = NAVY, f = 'font-family="Inter" font-weight="700"';
+  const padE = 170, padD = 520, padT = 220, padB = 230;   // mesma faixa horizontal da plana dos vidros: o eixo fica embaixo do logo de cima
+  return `<svg viewBox="${-padE} ${-padT} ${a.W + padE + padD} ${SH + padT + padB}" role="img" aria-label="Pedra azul da sacada com o logo em impressão 3D e as medidas" style="margin-top:28px">
+    <rect width="${a.W}" height="${SH}" fill="${PEDRA_COR}"/>
+    <image href="${LOGO_NAVY}" x="${lx}" y="${ly}" width="${lw}" height="${lh}" preserveAspectRatio="xMidYMid meet"/>
+    <g stroke="${cota}" stroke-width="5">
+      <line x1="${lx}" y1="${ly - 70}" x2="${lx + lw}" y2="${ly - 70}"/><line x1="${lx}" y1="${ly - 100}" x2="${lx}" y2="${ly - 40}"/><line x1="${lx + lw}" y1="${ly - 100}" x2="${lx + lw}" y2="${ly - 40}"/>
+      <line x1="${lx + lw + 70}" y1="${ly}" x2="${lx + lw + 70}" y2="${ly + lh}"/><line x1="${lx + lw + 40}" y1="${ly}" x2="${lx + lw + 100}" y2="${ly}"/><line x1="${lx + lw + 40}" y1="${ly + lh}" x2="${lx + lw + 100}" y2="${ly + lh}"/>
+      <line x1="${eixo}" y1="${SH + 10}" x2="${eixo}" y2="${SH + 70}"/>
+    </g>
+    <text x="${lx + lw / 2}" y="${ly - 115}" text-anchor="middle" ${f} font-size="80" fill="${cota}">${m(lw)}</text>
+    <text x="${lx + lw + 125}" y="${ly + lh / 2 + 28}" ${f} font-size="80" fill="${cota}">${m(lh)}</text>
+    <text x="-70" y="${SH / 2}" text-anchor="middle" ${f} font-size="72" fill="${cota}" transform="rotate(-90 -70 ${SH / 2})">pedra, cerca de ${m(SH)}</text>
+    <text x="${eixo}" y="${SH + 160}" text-anchor="middle" ${f} font-size="72" fill="${cota}">eixo do logo do vidro</text>
+  </svg>
+  <p class="ficha" style="margin:12px 0 0"><b>Pedra azul da sacada:</b> logo AJIN navy com a onda laranja, em impressão 3D, com ${m(lw)} por ${m(lh)}, ${pl.espessura / 10} cm de relevo e ${pl.afastamento / 10} cm de afastamento da pedra, alinhado ao logo do vidro. A altura da pedra foi estimada pela foto e precisa ser medida no local. A arvorezinha da frente precisa ficar abaixo da pedra para não cobrir o logo.</p>
+  <p class="ficha" style="margin:10px 0 0"><b>Produção:</b> só com o SVG oficial pedido à agência, nunca redesenhado a partir do PNG. Letras e onda impressas uma a uma em ASA ou PETG com proteção UV (nunca PLA, que amolece no sol), laterais na mesma cor da face, pintura PU com proteção UV casada a partir do HEX (#1F2A44 e #F28C38) e aprovada numa amostra física. Cada letra com pelo menos 2 pinos de inox colados com epóxi e a onda com 3, sobre espaçadores de ${pl.afastamento / 10} cm, furados com gabarito de papel.</p>`;
 }
 
 function render() {
