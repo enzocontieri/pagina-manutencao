@@ -99,7 +99,7 @@
     <div class="opcoes">
       <div class="grupo" id="grupoFrase">
         <button data-frase="futuro">Construindo o futuro</button>
-        <button data-frase="cuida">Jurerê é de quem cuida</button>
+        <button data-frase="cuida">Jurerê Internacional é de quem cuida</button>
       </div>
       <div class="grupo">
         <button data-modo="foto">Na foto</button>
@@ -211,7 +211,7 @@ const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 // ---------- artes (unidades em mm) ----------
 const FRASES = {
   futuro: ['Construindo o futuro de Jurerê', 'Internacional todos os dias'],
-  cuida: ['Jurerê é de quem cuida'],
+  cuida: ['Jurerê Internacional', 'é de quem cuida'],   // o nome vai sempre inteiro: nunca só "Jurerê"
 };
 
 // QR code do cadastro de associados (https://www.ajin.org.br/cadastro/), correção M, versão 3: 29 x 29 módulos.
@@ -345,9 +345,9 @@ function arteCorredor(c) {
     xc += Math.max(largura(rotulo, 700, fsR, 0.12), largura(valor, 700, fsC)) + 150;
   }
   // selo no último vidro, centrado na altura do bloco
-  const p4x = juntas[2], p4w = c.larguras[3], cx = p4x + p4w / 2, r = 330, rt = 286;
+  const p4x = juntas[2], p4w = c.larguras[3], cx = p4x + p4w / 2, r = 330, rt = 280;
   const cy = (yT1 - fsT * 0.73 - 92 + yL0 + (lead.length - 1) * lhL) / 2;
-  const anel = 'JURERÊ É DE QUEM CUIDA · JURERÊ É DE QUEM CUIDA · ';
+  const anel = 'JURERÊ INTERNACIONAL É DE QUEM CUIDA · ';   // nome inteiro, uma volta só (duas não cabem)
   const chao = H - 190;
   const curva = `M0 ${chao + 30} C ${W * 0.22} ${chao + 120}, ${W * 0.45} ${chao + 110}, ${W * 0.6} ${chao + 30} S ${W * 0.86} ${chao - 50}, ${W} ${chao + 10}`;
   const logoW = 640, logoH = logoW / LOGO_RAZAO;
@@ -366,7 +366,7 @@ function arteCorredor(c) {
       <circle cx="${cx}" cy="${cy}" r="${r}" fill="${NAVY}" opacity=".6"/>
       <circle cx="${cx}" cy="${cy}" r="${r * 0.66}" fill="none" stroke="${AREIA}" stroke-opacity=".4" stroke-width="5"/>
       <path id="anel" d="M${cx},${cy} m-${rt},0 a${rt},${rt} 0 1,1 ${2 * rt},0 a${rt},${rt} 0 1,1 -${2 * rt},0" fill="none"/>
-      <text font-family="Inter" font-weight="700" font-size="44" fill="${AREIA}"><textPath href="#anel" textLength="${2 * Math.PI * rt - 30}" lengthAdjust="spacing">${anel}</textPath></text>
+      <text font-family="Inter" font-weight="700" font-size="48" fill="${AREIA}"><textPath href="#anel" textLength="${2 * Math.PI * rt - 30}" lengthAdjust="spacing">${anel}</textPath></text>
       <text x="${cx}" y="${cy - 52}" text-anchor="middle" font-family="Inter" font-weight="700" font-size="46" letter-spacing="8" fill="${ONDA}">DESDE</text>
       <text x="${cx}" y="${cy + 92}" text-anchor="middle" font-family="Inter" font-weight="900" font-size="150" letter-spacing="-4" fill="${AREIA}">1986</text>
     </g>
