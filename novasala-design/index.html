@@ -121,6 +121,7 @@ const CENAS = [
   {
     id: 'terreo-corredor', andar: 'Térreo', nome: 'Corredor interno', foto: 'fotos/1.jpg',
     arte: 'faixa', larguras: [1040, 900, 1040, 1040], altura: 2150, puxadores: ['dir', null, null, null],
+    qr: 1,   // vidro 2, ao lado da porta
     quads: [
       [[48, -51], [530, 5], [530, 923], [48, 1003]],
       [[530, 5], [940, 53], [940, 855], [530, 923]],
@@ -132,11 +133,12 @@ const CENAS = [
       [[0, 0], [70, 0], [80, 900], [0, 900]],                     // parede azul
       [[452, 462], [481, 462], [481, 650], [452, 650]],           // puxador
     ],
-    ficha: '<b>Faixa de 10 cm</b> centrada a 1,075 m do piso, um módulo por vidro (a porta abre sem cortar a arte). Vidros de 1,04 + 0,90 + 1,04 + 1,04 m por 2,15 m.',
+    ficha: '<b>Faixa de 10 cm</b> centrada a 1,075 m do piso, um módulo por vidro (a porta abre sem cortar a arte). No vidro 2, ao lado da porta, um <b>QR code</b> leva ao site da AJIN, com as informações e o Associe-se. Vidros de 1,04 + 0,90 + 1,04 + 1,04 m por 2,15 m.',
   },
   {
     id: 'terreo-alameda', andar: 'Térreo', nome: 'Alameda', foto: 'fotos/3.jpg',
     arte: 'faixa', larguras: [910, 900, 900, 900], altura: 2180, puxadores: [null, 'dir', 'esq', null],
+    qr: 0,   // vidro 1, vizinho da porta dupla
     quads: [
       [[318, -14], [642, 30], [642, 800], [318, 862]],
       [[642, 30], [899, 63], [899, 765], [642, 800]],
@@ -150,7 +152,7 @@ const CENAS = [
       [[927, 390], [957, 390], [957, 512], [927, 512]],           // puxador direito
       [[886, 436], [920, 436], [920, 474], [886, 474]],           // fechadura
     ],
-    ficha: '<b>Faixa de 10 cm</b> centrada a 1,09 m do piso, um módulo por vidro, livre dos puxadores. Vidros de 0,91 + 0,90 + 0,90 + 0,90 m por 2,18 m.',
+    ficha: '<b>Faixa de 10 cm</b> centrada a 1,09 m do piso, um módulo por vidro, livre dos puxadores. No vidro 1, vizinho da porta, um <b>QR code</b> leva ao site da AJIN, com as informações e o Associe-se. Vidros de 0,91 + 0,90 + 0,90 + 0,90 m por 2,18 m.',
   },
   {
     id: 'superior-corredor', andar: 'Superior', nome: 'Corredor', foto: 'fotos/5.jpg',
@@ -165,7 +167,7 @@ const CENAS = [
     frente: [
       [[118, 0], [442, 0], [442, 118], [428, 160], [392, 190], [330, 205], [262, 204], [200, 190], [150, 165], [124, 132]], // luminária
     ],
-    ficha: '<b>Mensagem institucional</b> em vinil blackout, aplicado por fora numa peça contínua sobre os quatro vidros. Vidros de 1,01 + 1,03 + 1,00 + 0,98 m por 2,21 m.',
+    ficha: '<b>Mensagem institucional</b> em vinil blackout, aplicado por fora numa peça contínua sobre os quatro vidros, com site, WhatsApp e Instagram embaixo do texto. Vidros de 1,01 + 1,03 + 1,00 + 0,98 m por 2,21 m.',
   },
   {
     id: 'superior-alameda', andar: 'Superior', nome: 'Alameda', foto: 'fotos/7.jpg',
@@ -208,6 +210,18 @@ const FRASES = {
   cuida: ['Jurerê é de quem cuida'],
 };
 
+// QR code do site (página inicial, com as informações e o "Associe-se"), correção M, versão 2: 25 x 25 módulos.
+// Gerado com o pacote qrcode em producao/qr-site.json; o gerar.js usa o mesmo arquivo.
+const QR_SITE = ["1111111001011100101111111","1000001000000111001000001","1011101011000010101011101","1011101010000110001011101","1011101011011010001011101","1000001010101101001000001","1111111010101010101111111","0000000011101000100000000","1011111001001110001111100","0100110001001000110100010","1111001001101111111111011","0100110111110011010100001","0010101001011100011110111","1100010110000100110101010","1001111000111111011111011","1001010100110000010110001","1001101100110110111110100","0000000010101001100011000","1111111001100100101010111","1000001011001000100011010","1011101011001111111110111","1011101011100010001011111","1011101010111101000001101","1000001001110001110111001","1111111010111000000111111"];
+const CONTATOS = [['SITE', 'ajin.org.br'], ['WHATSAPP', '(48) 99949-7419'], ['INSTAGRAM', '@ajinjurere']];   // conferidos no site e no registro institucional
+// QR em módulos escuros sobre um quadrado areia (leitura comum em qualquer celular); lado em mm, com 3 módulos de margem
+function qrSite(x, y, lado) {
+  const n = QR_SITE.length, m = lado / (n + 6);
+  let d = '';
+  QR_SITE.forEach((l, i) => { for (const r of l.matchAll(/1+/g)) d += `M${(x + (3 + r.index) * m).toFixed(3)} ${(y + (3 + i) * m).toFixed(3)}h${(r[0].length * m).toFixed(3)}v${m.toFixed(3)}h${(-r[0].length * m).toFixed(3)}z`; });
+  return `<rect x="${x}" y="${y}" width="${lado}" height="${lado}" rx="3" fill="${AREIA}"/><path d="${d}" fill="${NAVY}"/>`;
+}
+
 function arteFaixa(c, frase) {
   const W = c.larguras.reduce((a, b) => a + b, 0), H = c.altura, faixa = 100, y0 = H / 2 - faixa / 2;
   const linhas = FRASES[frase];
@@ -220,11 +234,16 @@ function arteFaixa(c, frase) {
   const fs = Math.min(linhas.length > 1 ? 31 : 40, (Math.min(...livres) - logoW - 2 * gap) / base * 100);
   const txtW = Math.max(...linhas.map(l => largura(l, 700, fs)));
   const bloco = logoW + 2 * gap + txtW;
+  // QR code do site num vidro só (c.qr = índice do vidro), no fim do módulo, acima do fio laranja
+  const QR_LADO = 88, QR_GAP = 30, avisos = [];
   c.larguras.forEach((w, i) => {
     s += `<rect x="${x}" y="${y0}" width="${w}" height="${faixa}" fill="${NAVY}"/>`;
     s += `<rect x="${x}" y="${y0 + faixa - 4}" width="${w}" height="4" fill="${ONDA}"/>`;
     const esq = c.puxadores?.[i] === 'esq' ? FOLGA_PUXADOR : FOLGA, dir = c.puxadores?.[i] === 'dir' ? FOLGA_PUXADOR : FOLGA;
-    const bx = x + esq + (w - esq - dir - bloco) / 2, cy = H / 2 - 2;
+    const comQr = c.qr === i, total = bloco + (comQr ? QR_GAP + QR_LADO : 0);
+    if (total > w - esq - dir + 0.5) avisos.push(`vidro ${i + 1}: o módulo não cabe (${total.toFixed(0)} mm para ${w - esq - dir} mm livres)`);
+    const bx = x + esq + (w - esq - dir - total) / 2, cy = H / 2 - 2;
+    if (comQr) s += qrSite(bx + bloco + QR_GAP, y0 + 4, QR_LADO);
     s += `<image href="${LOGO_BRANCO}" x="${bx}" y="${cy - logoH / 2}" width="${logoW}" height="${logoH}" preserveAspectRatio="xMidYMid meet"/>`;
     s += `<rect x="${bx + logoW + gap - 0.9}" y="${cy - 23}" width="1.8" height="46" fill="${AREIA}" opacity=".45"/>`;
     const lh = fs * 1.1, t0 = cy - (linhas.length - 1) * lh / 2 + fs * 0.36;
@@ -233,7 +252,8 @@ function arteFaixa(c, frase) {
     });
     x += w;
   });
-  return { W, H, s };
+  avisos.forEach(a => console.warn('Faixa ' + c.id + ', ' + a));
+  return { W, H, s, avisos };
 }
 
 function arteFachada(c) {
@@ -311,6 +331,14 @@ function arteCorredor(c) {
   const fsL = 66, lhL = fsL * 1.42;
   const lead = quebrar('Desde 1º de dezembro de 1986, a Associação Jurerê Internacional representa associados, proprietários e moradores, e cuida da identidade do bairro.', 500, fsL, larguraTitulo);
   const yL0 = yT2 + 150;
+  // contatos numa linha embaixo do texto: rótulo laranja em caixa alta e o endereço em areia
+  const fsR = 40, fsC = 66, yC1 = yL0 + (lead.length - 1) * lhL + 135, yC2 = yC1 + 78;
+  let xc = mx, contatos = '';
+  for (const [rotulo, valor] of CONTATOS) {
+    contatos += `<text x="${xc}" y="${yC1}" font-family="Inter" font-weight="700" font-size="${fsR}" letter-spacing="${0.12 * fsR}" fill="${ONDA}">${rotulo}</text>`
+      + `<text x="${xc}" y="${yC2}" font-family="Inter" font-weight="700" font-size="${fsC}" fill="${AREIA}">${esc(valor)}</text>`;
+    xc += Math.max(largura(rotulo, 700, fsR, 0.12), largura(valor, 700, fsC)) + 150;
+  }
   // selo no último vidro, centrado na altura do bloco
   const p4x = juntas[2], p4w = c.larguras[3], cx = p4x + p4w / 2, r = 330, rt = 286;
   const cy = (yT1 - fsT * 0.73 - 92 + yL0 + (lead.length - 1) * lhL) / 2;
@@ -328,6 +356,7 @@ function arteCorredor(c) {
       <tspan x="${mx}" y="${yT1}">${l1}</tspan><tspan x="${mx}" y="${yT2}">${l2}</tspan></text>
     <rect x="${mx + antes}" y="${yT1 + 30}" width="${jur}" height="20" rx="10" fill="${ONDA}"/>
     ${lead.map((t, i) => `<text x="${mx}" y="${yL0 + i * lhL}" font-family="Inter" font-weight="500" font-size="${fsL}" fill="${AREIA}">${esc(t)}</text>`).join('')}
+    ${contatos}
     <g>
       <circle cx="${cx}" cy="${cy}" r="${r}" fill="${NAVY}" opacity=".6"/>
       <circle cx="${cx}" cy="${cy}" r="${r * 0.66}" fill="none" stroke="${AREIA}" stroke-opacity=".4" stroke-width="5"/>
