@@ -242,10 +242,9 @@ function qrSite(x, y, lado) {
 // Textos conferidos no site: título e lead da capa, frentes 01 a 06, contatos do rodapé e o fecho
 const FRENTES = ['Segurança', 'Representatividade', 'Zeladoria', 'Meio ambiente', 'Cultura e convivência', 'Voluntariado'];
 const PAINEL = {
-  titulo: ['Há 40 anos,', 'a voz de Jurerê', 'Internacional.'],
+  titulo: ['Há mais de 40 anos,', 'a voz de Jurerê', 'Internacional.'],
   lead: 'Desde 1986, a AJIN representa associados, proprietários e moradores, e cuida da identidade do bairro.',
   chamada: 'ASSOCIE-SE', url: 'ajin.org.br/cadastro', dica: 'Aponte a câmera e faça parte da associação.',
-  fecho: 'Jurerê Internacional é de quem cuida.',   // o nome vai sempre inteiro: nunca só "Jurerê"
 };
 function quebrar(t, peso, tam, max) {
   const linhas = []; let atual = '';
@@ -258,11 +257,11 @@ function artePainel(c, i, x, w, H) {
   const k = w / 1040, cx = x + w / 2, mx = 60 * k;
   const T = (t, peso, fs, px, y, fill, o = {}) => `<text x="${px}" y="${y}" font-family="Inter" font-weight="${peso}" font-size="${fs}" fill="${fill}"${o.ancora ? ` text-anchor="${o.ancora}"` : ''}${o.espaco ? ` letter-spacing="${o.espaco * fs}"` : ''}>${esc(t)}</text>`;
   let s = `<rect x="${x}" y="0" width="${w}" height="${H}" fill="${NAVY}"/>`;
-  const lw = 520 * k, lh = lw / LOGO_RAZAO, ly = 150 * k;
+  const lw = 520 * k, lh = lw / LOGO_RAZAO, ly = 120 * k;   // logo um pouco mais alto: o título ganhou entrelinha
   s += `<image href="${LOGO_BRANCO}" x="${cx - lw / 2}" y="${ly}" width="${lw}" height="${lh}" preserveAspectRatio="xMidYMid meet"/>`;
-  // entrelinha 1,09 e o fio laranja colado em Jurerê: o fio fica livre do "l" de Internacional, como no painel do superior
-  const fsT = 76 * k, lhT = fsT * 1.09;
-  let y = ly + lh + 110 * k + fsT * 0.76;
+  // entrelinha 1,18 e o fio laranja colado em Jurerê: o fio fica bem livre do "l" de Internacional
+  const fsT = 76 * k, lhT = fsT * 1.18;
+  let y = ly + lh + 95 * k + fsT * 0.76;
   PAINEL.titulo.forEach((l, j) => { s += T(l, 900, fsT, cx, y + j * lhT, AREIA, { ancora: 'middle' }); });
   const wl2 = largura(PAINEL.titulo[1], 900, fsT), antes = largura('a voz de ', 900, fsT), jur = largura('Jurerê', 900, fsT);
   s += `<rect x="${cx - wl2 / 2 + antes}" y="${y + lhT + 4.5 * k}" width="${jur}" height="${12 * k}" rx="${6 * k}" fill="${ONDA}"/>`;
@@ -283,7 +282,6 @@ function artePainel(c, i, x, w, H) {
   const chao = H - 150 * k;
   const curva = `M${x} ${chao + 30 * k} C ${x + w * 0.22} ${chao + 60 * k}, ${x + w * 0.45} ${chao + 55 * k}, ${x + w * 0.6} ${chao + 20 * k} S ${x + w * 0.86} ${chao - 45 * k}, ${x + w} ${chao + 5 * k}`;
   s += `<path d="${curva} V ${H} H ${x} Z" fill="${AREIA}"/><path d="${curva}" fill="none" stroke="${ONDA}" stroke-width="${12 * k}" stroke-linecap="round"/>`;
-  s += T(PAINEL.fecho, 700, 34 * k, cx, H - 40 * k, NAVY, { ancora: 'middle' });
   // contatos, de baixo para cima: duas colunas, rótulo laranja e valor em areia
   const colE = x + mx, colD = cx + 16 * k, fsR = 22 * k, fsV = 32 * k;
   const pares = [[CONTATOS[2], CONTATOS[1]], [CONTATOS[0], CONTATOS[3]]];   // segurança 24h e WhatsApp em cima; site e Instagram embaixo
@@ -292,14 +290,13 @@ function artePainel(c, i, x, w, H) {
     pares[r].forEach(([rot, val], col) => { const px = col ? colD : colE; s += T(rot, 700, fsR, px, yv - 44 * k, ONDA, { espaco: 0.12 }) + T(val, 700, fsV, px, yv, AREIA); });
     yv -= 92 * k;
   }
-  // as seis frentes, numeradas como no site
-  const fsN = 28 * k, fsF = 32 * k;
-  let yf = yv + 92 * k - 110 * k;   // respiro entre as frentes e os contatos
-  for (let r = 2; r >= 0; r--) {
-    [0, 1].forEach(col => { const n = r * 2 + col, px = col ? colD : colE; s += T(String(n + 1).padStart(2, '0'), 900, fsN, px, yf, ONDA) + T(FRENTES[n], 700, fsF, px + 52 * k, yf, AREIA); });
-    yf -= 62 * k;
+  // as seis frentes, numeradas como no site, logo abaixo do QR (mesma distância nos dois vidros), com letra maior
+  const fsN = 31 * k, fsF = 36 * k, yCab = qy + lado + 118 * k + 111 * k;
+  s += T('NOSSAS FRENTES', 700, 30 * k, colE, yCab, ONDA, { espaco: 0.14 });
+  for (let r = 0; r < 3; r++) {
+    const yf = yCab + 74 * k + r * 70 * k;
+    [0, 1].forEach(col => { const n = r * 2 + col, px = col ? colD : colE; s += T(String(n + 1).padStart(2, '0'), 900, fsN, px, yf, ONDA) + T(FRENTES[n], 700, fsF, px + 58 * k, yf, AREIA); });
   }
-  s += T('NOSSAS FRENTES', 700, 26 * k, colE, yf + 62 * k - 66 * k, ONDA, { espaco: 0.14 });
   return s;
 }
 
