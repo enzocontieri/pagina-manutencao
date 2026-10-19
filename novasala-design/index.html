@@ -133,7 +133,7 @@ const CENAS = [
       [[0, 0], [70, 0], [80, 900], [0, 900]],                     // parede azul
       [[452, 462], [481, 462], [481, 650], [452, 650]],           // puxador
     ],
-    ficha: '<b>Faixa de 10 cm</b> centrada a 1,075 m do piso, um módulo por vidro (a porta abre sem cortar a arte). No vidro 2, ao lado da porta, um <b>QR code</b> leva ao site da AJIN, com as informações e o Associe-se. Vidros de 1,04 + 0,90 + 1,04 + 1,04 m por 2,15 m.',
+    ficha: '<b>Faixa de 10 cm</b> centrada a 1,075 m do piso, um módulo por vidro (a porta abre sem cortar a arte). No vidro 2, ao lado da porta, um <b>QR code</b> leva ao cadastro de associados no site da AJIN. Vidros de 1,04 + 0,90 + 1,04 + 1,04 m por 2,15 m.',
   },
   {
     id: 'terreo-alameda', andar: 'Térreo', nome: 'Alameda', foto: 'fotos/3.jpg',
@@ -152,7 +152,7 @@ const CENAS = [
       [[927, 390], [957, 390], [957, 512], [927, 512]],           // puxador direito
       [[886, 436], [920, 436], [920, 474], [886, 474]],           // fechadura
     ],
-    ficha: '<b>Faixa de 10 cm</b> centrada a 1,09 m do piso, um módulo por vidro, livre dos puxadores. No vidro 1, vizinho da porta, um <b>QR code</b> leva ao site da AJIN, com as informações e o Associe-se. Vidros de 0,91 + 0,90 + 0,90 + 0,90 m por 2,18 m.',
+    ficha: '<b>Faixa de 10 cm</b> centrada a 1,09 m do piso, um módulo por vidro, livre dos puxadores. No vidro 1, vizinho da porta, um <b>QR code</b> leva ao cadastro de associados no site da AJIN. Vidros de 0,91 + 0,90 + 0,90 + 0,90 m por 2,18 m.',
   },
   {
     id: 'superior-corredor', andar: 'Superior', nome: 'Corredor', foto: 'fotos/5.jpg',
@@ -167,7 +167,7 @@ const CENAS = [
     frente: [
       [[118, 0], [442, 0], [442, 118], [428, 160], [392, 190], [330, 205], [262, 204], [200, 190], [150, 165], [124, 132]], // luminária
     ],
-    ficha: '<b>Mensagem institucional</b> em vinil blackout, aplicado por fora numa peça contínua sobre os quatro vidros, com site, WhatsApp e Instagram embaixo do texto. Vidros de 1,01 + 1,03 + 1,00 + 0,98 m por 2,21 m.',
+    ficha: '<b>Mensagem institucional</b> em vinil blackout, aplicado por fora numa peça contínua sobre os quatro vidros, com site, WhatsApp, segurança 24 horas e Instagram embaixo do texto. Vidros de 1,01 + 1,03 + 1,00 + 0,98 m por 2,21 m.',
   },
   {
     id: 'superior-alameda', andar: 'Superior', nome: 'Alameda', foto: 'fotos/7.jpg',
@@ -210,10 +210,10 @@ const FRASES = {
   cuida: ['Jurerê é de quem cuida'],
 };
 
-// QR code do site (página inicial, com as informações e o "Associe-se"), correção M, versão 2: 25 x 25 módulos.
+// QR code do cadastro de associados (https://www.ajin.org.br/cadastro/), correção M, versão 3: 29 x 29 módulos.
 // Gerado com o pacote qrcode em producao/qr-site.json; o gerar.js usa o mesmo arquivo.
-const QR_SITE = ["1111111001011100101111111","1000001000000111001000001","1011101011000010101011101","1011101010000110001011101","1011101011011010001011101","1000001010101101001000001","1111111010101010101111111","0000000011101000100000000","1011111001001110001111100","0100110001001000110100010","1111001001101111111111011","0100110111110011010100001","0010101001011100011110111","1100010110000100110101010","1001111000111111011111011","1001010100110000010110001","1001101100110110111110100","0000000010101001100011000","1111111001100100101010111","1000001011001000100011010","1011101011001111111110111","1011101011100010001011111","1011101010111101000001101","1000001001110001110111001","1111111010111000000111111"];
-const CONTATOS = [['SITE', 'ajin.org.br'], ['WHATSAPP', '(48) 99949-7419'], ['INSTAGRAM', '@ajinjurere']];   // conferidos no site e no registro institucional
+const QR_SITE = ["11111110001110011001101111111","10000010010000000110001000001","10111010100100101011001011101","10111010110010001110001011101","10111010111101110111101011101","10000010100011111100001000001","11111110101010101010101111111","00000000101011010001100000000","10111110011110110101001111100","11100101001110011011011110001","00000010011000000110110000000","10000101101010101001100101010","10000010011000000100000001100","00001100101101110011111010001","01000111100101111010011101100","01010100110111001001011110010","00001111110000100100100101100","10000000111000000011111110101","10001111110000011000111100100","10011001101100101011100110010","10111111100000000101111110111","00000000110111101010100011111","11111110000001110011101011100","10000010101101000001100010000","10111010100010111100111110110","10111010110011001000100101111","10111010101111010111111111110","10000010000011111000101101010","11111110101111111100011111100"];
+const CONTATOS = [['SITE', 'ajin.org.br'], ['WHATSAPP', '(48) 99949-7419'], ['SEGURANÇA 24H', '(48) 3266-4300'], ['INSTAGRAM', '@ajinjurere']];   // conferidos no site e no registro institucional
 // QR em módulos escuros sobre um quadrado areia (leitura comum em qualquer celular); lado em mm, com 3 módulos de margem
 function qrSite(x, y, lado) {
   const n = QR_SITE.length, m = lado / (n + 6);
