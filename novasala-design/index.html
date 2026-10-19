@@ -123,6 +123,7 @@ const VAOS_LOGO = [0.592, 0.693];
 const CENAS = [
   {
     id: 'terreo-corredor', andar: 'Térreo', nome: 'Corredor interno', foto: 'fotos/1.jpg',
+    faixaCentro: 1130,   // a fechadura da porta vai até cerca de 1,04 m (medida pela foto): a faixa fica de 1,08 a 1,18 m
     arte: 'faixa', larguras: [1040, 900, 1040, 1040], altura: 2150, puxadores: ['dir', null, null, null],
     paineis: [3],   // vidro 4 (mesa da secretária atrás): vinil inteiro, com o QR do cadastro no centro
     qr: [1],        // QR da faixa no vidro 2 (ao lado da porta)
@@ -143,10 +144,11 @@ const CENAS = [
       [[1305, 700], [1310, 684], [1330, 673], [1380, 668], [1430, 672], [1452, 682], [1458, 695], [1455, 760], [1445, 815], [1316, 815], [1310, 760]],
       [[1150, 680], [1196, 686], [1215, 690], [1232, 700], [1245, 715], [1252, 735], [1252, 758], [1268, 765], [1278, 780], [1278, 795], [1265, 805], [1196, 815], [1150, 815]],
     ],
-    ficha: '<b>Vidro 4 inteiro</b> (a mesa da secretária fica atrás): papel institucional da AJIN, as seis frentes, os contatos e o <b>QR code do cadastro</b> no centro, em destaque. Nos vidros 1 a 3, a <b>faixa de 10 cm</b> centrada a 1,075 m do piso, um módulo por vidro (a porta abre sem cortar a arte), com QR na faixa do vidro 2. Vidros de 1,04 + 0,90 + 1,04 + 1,04 m por 2,15 m.',
+    ficha: '<b>Vidro 4 inteiro</b> (a mesa da secretária fica atrás): papel institucional da AJIN, as seis frentes, os contatos e o <b>QR code do cadastro</b> no centro, em destaque. Nos vidros 1 a 3, a <b>faixa de 10 cm</b> com o centro a 1,13 m do piso, acima da fechadura, um módulo por vidro (a porta abre sem cortar a arte), com QR na faixa do vidro 2. Vidros de 1,04 + 0,90 + 1,04 + 1,04 m por 2,15 m.',
   },
   {
     id: 'terreo-alameda', andar: 'Térreo', nome: 'Alameda', foto: 'fotos/3.jpg',
+    faixaCentro: 1130,   // a fechadura das portas vai até cerca de 1,05 m (medida pela foto): a faixa fica de 1,08 a 1,18 m
     arte: 'faixa', larguras: [910, 900, 900, 900], altura: 2180, puxadores: [null, 'dir', 'esq', null],
     paineis: [0],   // vidro 1 (mesa da secretária atrás): vinil inteiro, com o QR do cadastro no centro
     qr: [3],        // QR da faixa no vidro 4, do outro lado da porta dupla
@@ -165,7 +167,7 @@ const CENAS = [
       [[890.5, 440], [922, 440], [922, 473.5], [890.5, 473.5]],   // fechadura (a placa)
       [[316, 739], [678, 688], [887, 811], [887, 822], [540, 900], [430, 900], [316, 746]],   // mesa de madeira da calçada
     ],
-    ficha: '<b>Vidro 1 inteiro</b> (a mesa da secretária fica atrás): papel institucional da AJIN, as seis frentes, os contatos e o <b>QR code do cadastro</b> no centro, em destaque. Nos vidros 2 a 4, a <b>faixa de 10 cm</b> centrada a 1,09 m do piso, um módulo por vidro, livre dos puxadores, com QR na faixa do vidro 4. Vidros de 0,91 + 0,90 + 0,90 + 0,90 m por 2,18 m.',
+    ficha: '<b>Vidro 1 inteiro</b> (a mesa da secretária fica atrás): papel institucional da AJIN, as seis frentes, os contatos e o <b>QR code do cadastro</b> no centro, em destaque. Nos vidros 2 a 4, a <b>faixa de 10 cm</b> com o centro a 1,13 m do piso, acima das fechaduras, um módulo por vidro, livre dos puxadores, com QR na faixa do vidro 4. Vidros de 0,91 + 0,90 + 0,90 + 0,90 m por 2,18 m.',
   },
   {
     id: 'superior-corredor', andar: 'Superior', nome: 'Corredor', foto: 'fotos/5.jpg',
@@ -275,7 +277,7 @@ function artePainel(c, i, x, w, H) {
   s += T(PAINEL.url, 700, 40 * k, cx, qy + lado + 70 * k, AREIA, { ancora: 'middle' });
   s += T(PAINEL.dica, 500, 26 * k, cx, qy + lado + 118 * k, AREIA, { ancora: 'middle' });
   // o fio laranja da faixa dos outros vidros continua dos dois lados do QR
-  const fio = H / 2 + 46, folga = 30 * k;
+  const fio = H - (c.faixaCentro ?? H / 2) + 46, folga = 30 * k;   // na altura do fio laranja da faixa
   s += `<rect x="${x}" y="${fio}" width="${cx - lado / 2 - folga - x}" height="4" fill="${ONDA}"/><rect x="${cx + lado / 2 + folga}" y="${fio}" width="${x + w - (cx + lado / 2 + folga)}" height="4" fill="${ONDA}"/>`;
   // pé em areia com a onda laranja
   const chao = H - 150 * k;
@@ -302,7 +304,8 @@ function artePainel(c, i, x, w, H) {
 }
 
 function arteFaixa(c, frase) {
-  const W = c.larguras.reduce((a, b) => a + b, 0), H = c.altura, faixa = 100, y0 = H / 2 - faixa / 2;
+  // centro da faixa em mm do piso (c.faixaCentro), acima das fechaduras das portas; sem o campo, no meio do vidro
+  const W = c.larguras.reduce((a, b) => a + b, 0), H = c.altura, faixa = 100, centro = H - (c.faixaCentro ?? H / 2), y0 = centro - faixa / 2;
   const linhas = FRASES[frase];
   let s = '', x = 0;
   // fonte única para todos os vidros, calculada pelo vidro mais apertado
@@ -322,7 +325,7 @@ function arteFaixa(c, frase) {
     const esq = c.puxadores?.[i] === 'esq' ? FOLGA_PUXADOR : FOLGA, dir = c.puxadores?.[i] === 'dir' ? FOLGA_PUXADOR : FOLGA;
     const comQr = (c.qr || []).includes(i), total = bloco + (comQr ? QR_GAP + QR_LADO : 0);
     if (total > w - esq - dir + 0.5) avisos.push(`vidro ${i + 1}: o módulo não cabe (${total.toFixed(0)} mm para ${w - esq - dir} mm livres)`);
-    const bx = x + esq + (w - esq - dir - total) / 2, cy = H / 2 - 2;
+    const bx = x + esq + (w - esq - dir - total) / 2, cy = centro - 2;
     if (comQr) s += qrSite(bx + bloco + QR_GAP, y0 + 4, QR_LADO);
     s += `<image href="${LOGO_BRANCO}" x="${bx}" y="${cy - logoH / 2}" width="${logoW}" height="${logoH}" preserveAspectRatio="xMidYMid meet"/>`;
     s += `<rect x="${bx + logoW + gap - 0.9}" y="${cy - 23}" width="1.8" height="46" fill="${AREIA}" opacity=".45"/>`;
@@ -565,7 +568,7 @@ function montarFoto(c, a) {
 function montarPlana(c, a) {
   // na faixa, a vista plana recorta 60 cm em volta da faixa para ela não sumir no vidro inteiro
   const faixa = c.arte === 'faixa' && !(c.paineis || []).length;   // com vidro inteiro, a plana mostra a parede toda
-  const y0 = faixa ? a.H / 2 - 300 : 0, y1 = faixa ? a.H / 2 + 300 : a.H;
+  const cf = a.H - (c.faixaCentro ?? a.H / 2), y0 = faixa ? cf - 300 : 0, y1 = faixa ? cf + 300 : a.H;
   const m = (v) => (v / 1000).toFixed(2).replace('.', ',') + ' m';
   let marcas = '', x = 0;
   c.larguras.forEach((w, i) => {
@@ -575,7 +578,7 @@ function montarPlana(c, a) {
     x += w;
   });
   const meio = (y0 + y1) / 2;
-  const alt = faixa ? `faixa de 10 cm, centro a ${m(a.H / 2)} do piso` : m(a.H);
+  const alt = faixa ? `faixa de 10 cm, centro a ${m(a.H - cf)} do piso` : m(a.H);
   marcas += `<text x="-70" y="${meio}" text-anchor="middle" font-family="Inter" font-weight="700" font-size="${faixa ? 46 : 64}" fill="${NAVY}" transform="rotate(-90 -70 ${meio})">${faixa ? '10 cm' : alt}</text>`;
   if (c.mureta) marcas += `<line x1="-30" y1="${a.H - c.mureta}" x2="${a.W + 30}" y2="${a.H - c.mureta}" stroke="${MAR}" stroke-width="5" stroke-dasharray="10 10"/><text x="${a.W + 50}" y="${a.H - c.mureta + 20}" font-family="Inter" font-weight="700" font-size="56" fill="${MAR}">topo da mureta</text>`;
   const fundo = faixa ? `<rect y="${y0}" width="${a.W}" height="${y1 - y0}" fill="${MAR}" opacity=".07"/>` : '';
