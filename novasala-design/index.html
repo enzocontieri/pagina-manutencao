@@ -232,11 +232,10 @@ function qrSite(x, y, lado, margem = 3) {   // margem em módulos (zona clara em
 }
 
 // vidro inteiro (mesa da secretária atrás): papel institucional, as seis frentes do site, contatos e o QR do cadastro no centro.
-// Textos conferidos no site: título e lead da capa, frentes 01 a 06, contatos do rodapé e o fecho
-const FRENTES = ['Segurança', 'Representatividade', 'Zeladoria', 'Meio ambiente', 'Cultura e convivência', 'Voluntariado'];
+// Textos conferidos no site: título da capa, frentes 01 a 06, contatos do rodapé e o fecho
+const FRENTES = ['Bairro seguro', 'Representatividade', 'Zeladoria', 'Meio ambiente', 'Cultura e convivência', 'Voluntariado'];
 const PAINEL = {
   titulo: ['A sua voz em', 'Jurerê Internacional.'],   // sem data (diretoria, 21/10/2026), com o nome inteiro numa linha só
-  lead: 'Desde 1986, a AJIN representa associados, proprietários e moradores, e cuida da identidade do bairro.',
   chamada: 'ASSOCIE-SE', url: 'ajin.org.br/cadastro', dica: 'Aponte a câmera e faça parte da associação.',
 };
 function quebrar(t, peso, tam, max) {
@@ -250,22 +249,21 @@ function artePainel(c, i, x, w, H) {
   const k = w / 1040, cx = x + w / 2, mx = 60 * k;
   const T = (t, peso, fs, px, y, fill, o = {}) => `<text x="${px}" y="${y}" font-family="Inter" font-weight="${peso}" font-size="${fs}" fill="${fill}"${o.ancora ? ` text-anchor="${o.ancora}"` : ''}${o.espaco ? ` letter-spacing="${o.espaco * fs}"` : ''}>${esc(t)}</text>`;
   let s = `<rect x="${x}" y="0" width="${w}" height="${H}" fill="${NAVY}"/>`;
-  const lw = 520 * k, lh = lw / LOGO_RAZAO, ly = 120 * k;   // logo um pouco mais alto: o título ganhou entrelinha
+  // logo e título centrados no espaço acima da chamada do QR (a frase de apoio saiu: diretoria, 21/10/2026)
+  const lado = 300 * k, qy = H / 2 - lado / 2;
+  const fsT = 76 * k, lhT = fsT * 1.18;
+  const lw = 520 * k, lh = lw / LOGO_RAZAO;
+  const blocoTopo = lh + 95 * k + fsT * 0.76 + (PAINEL.titulo.length - 1) * lhT + fsT * 0.2;
+  const ly = Math.max(120 * k, (qy - 81 * k - blocoTopo) / 2);
   s += `<image href="${LOGO_BRANCO}" x="${cx - lw / 2}" y="${ly}" width="${lw}" height="${lh}" preserveAspectRatio="xMidYMid meet"/>`;
   // entrelinha 1,18 e o fio laranja colado em Jurerê: o fio fica bem livre do "l" de Internacional
-  const fsT = 76 * k, lhT = fsT * 1.18;
   let y = ly + lh + 95 * k + fsT * 0.76;
   PAINEL.titulo.forEach((l, j) => { s += T(l, 900, fsT, cx, y + j * lhT, AREIA, { ancora: 'middle' }); });
   // fio laranja embaixo de "Jurerê", na linha em que ele estiver
   const lj = PAINEL.titulo.findIndex(l => l.includes('Jurerê')), lin = PAINEL.titulo[lj];
   const wl2 = largura(lin, 900, fsT), antes = largura(lin.slice(0, lin.indexOf('Jurerê')), 900, fsT), jur = largura('Jurerê', 900, fsT);
   s += `<rect x="${cx - wl2 / 2 + antes}" y="${y + lj * lhT + 4.5 * k}" width="${jur}" height="${12 * k}" rx="${6 * k}" fill="${ONDA}"/>`;
-  y += (PAINEL.titulo.length - 1) * lhT;
-  const fsL = 30 * k, lhL = fsL * 1.42, lead = quebrar(PAINEL.lead, 500, fsL, w - 2 * mx);
-  y += 80 * k;
-  lead.forEach((l, j) => { s += T(l, 500, fsL, cx, y + j * lhL, AREIA, { ancora: 'middle' }); });
   // QR do cadastro no centro do vidro, em destaque
-  const lado = 300 * k, qy = H / 2 - lado / 2;
   s += T(PAINEL.chamada, 700, 34 * k, cx, qy - 56 * k, ONDA, { ancora: 'middle', espaco: 0.14 });
   s += qrSite(cx - lado / 2, qy, lado);
   s += T(PAINEL.url, 700, 40 * k, cx, qy + lado + 70 * k, AREIA, { ancora: 'middle' });
