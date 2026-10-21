@@ -97,10 +97,6 @@
   <div class="rodape">
     <p class="ficha" id="ficha"></p>
     <div class="opcoes">
-      <div class="grupo" id="grupoFrase">
-        <button data-frase="futuro">Construindo o futuro</button>
-        <button data-frase="cuida">Jurerê Internacional é de quem cuida</button>
-      </div>
       <div class="grupo">
         <button data-modo="foto">Na foto</button>
         <button data-modo="plana">Arte plana</button>
@@ -126,7 +122,7 @@ const CENAS = [
     faixaCentro: 1130,   // a fechadura da porta vai até cerca de 1,04 m (medida pela foto): a faixa fica de 1,08 a 1,18 m
     arte: 'faixa', larguras: [1040, 900, 1040, 1040], altura: 2150, puxadores: ['dir', null, null, null],
     paineis: [3],   // vidro 4 (mesa da secretária atrás): vinil inteiro, com o QR do cadastro no centro
-    qr: [1],        // QR da faixa no vidro 2 (ao lado da porta)
+    qr: [0, 1, 2],  // QR em todos os vidros da faixa, inclusive a porta
     quads: [
       // base no pé real do vidro, y = 1112,2 - 0,258x (fresta escura e filete claro medidos na foto)
       [[17.5, -54.5], [530.2, 5], [536.1, 973.9], [82.8, 1090.8]],
@@ -151,7 +147,7 @@ const CENAS = [
     faixaCentro: 1130,   // a fechadura das portas vai até cerca de 1,05 m (medida pela foto): a faixa fica de 1,08 a 1,18 m
     arte: 'faixa', larguras: [910, 900, 900, 900], altura: 2180, puxadores: [null, 'dir', 'esq', null],
     paineis: [0],   // vidro 1 (mesa da secretária atrás): vinil inteiro, com o QR do cadastro no centro
-    qr: [3],        // QR da faixa no vidro 4, do outro lado da porta dupla
+    qr: [1, 2, 3],  // QR em todos os vidros da faixa, inclusive as portas
     quads: [
       // base no pé do vidro (inclinação perto de -0,24, medida sob as portas e no fixo da direita)
       [[296, -17], [638.7, 29.6], [646.8, 820], [333.8, 888]],
@@ -221,20 +217,17 @@ function largura(texto, peso, tamanho, espaco = 0) {
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
 // ---------- artes (unidades em mm) ----------
-const FRASES = {
-  futuro: ['Construindo o futuro de Jurerê', 'Internacional todos os dias'],
-  cuida: ['Jurerê Internacional', 'é de quem cuida'],   // o nome vai sempre inteiro: nunca só "Jurerê"
-};
+const FRASES = { nome: ['Associação Jurerê', 'Internacional'] };   // a faixa leva só o nome da associação, com o QR (diretoria, 21/10/2026)
 
 // QR code do cadastro de associados (https://www.ajin.org.br/cadastro/), correção M, versão 3: 29 x 29 módulos.
 // Gerado com o pacote qrcode em producao/qr-site.json; o gerar.js usa o mesmo arquivo.
 const QR_SITE = ["11111110001110011001101111111","10000010010000000110001000001","10111010100100101011001011101","10111010110010001110001011101","10111010111101110111101011101","10000010100011111100001000001","11111110101010101010101111111","00000000101011010001100000000","10111110011110110101001111100","11100101001110011011011110001","00000010011000000110110000000","10000101101010101001100101010","10000010011000000100000001100","00001100101101110011111010001","01000111100101111010011101100","01010100110111001001011110010","00001111110000100100100101100","10000000111000000011111110101","10001111110000011000111100100","10011001101100101011100110010","10111111100000000101111110111","00000000110111101010100011111","11111110000001110011101011100","10000010101101000001100010000","10111010100010111100111110110","10111010110011001000100101111","10111010101111010111111111110","10000010000011111000101101010","11111110101111111100011111100"];
 const CONTATOS = [['SITE', 'ajin.org.br'], ['WHATSAPP', '(48) 99949-7419'], ['SEGURANÇA 24H', '(48) 3266-4300'], ['INSTAGRAM', '@ajinjurere']];   // conferidos no site e no registro institucional
 // QR em módulos escuros sobre um quadrado areia (leitura comum em qualquer celular); lado em mm, com 3 módulos de margem
-function qrSite(x, y, lado) {
-  const n = QR_SITE.length, m = lado / (n + 6);
+function qrSite(x, y, lado, margem = 3) {   // margem em módulos (zona clara em volta)
+  const n = QR_SITE.length, m = lado / (n + 2 * margem);
   let d = '';
-  QR_SITE.forEach((l, i) => { for (const r of l.matchAll(/1+/g)) d += `M${(x + (3 + r.index) * m).toFixed(3)} ${(y + (3 + i) * m).toFixed(3)}h${(r[0].length * m).toFixed(3)}v${m.toFixed(3)}h${(-r[0].length * m).toFixed(3)}z`; });
+  QR_SITE.forEach((l, i) => { for (const r of l.matchAll(/1+/g)) d += `M${(x + (margem + r.index) * m).toFixed(3)} ${(y + (margem + i) * m).toFixed(3)}h${(r[0].length * m).toFixed(3)}v${m.toFixed(3)}h${(-r[0].length * m).toFixed(3)}z`; });
   return `<rect x="${x}" y="${y}" width="${lado}" height="${lado}" rx="3" fill="${AREIA}"/><path d="${d}" fill="${NAVY}"/>`;
 }
 
@@ -242,7 +235,7 @@ function qrSite(x, y, lado) {
 // Textos conferidos no site: título e lead da capa, frentes 01 a 06, contatos do rodapé e o fecho
 const FRENTES = ['Segurança', 'Representatividade', 'Zeladoria', 'Meio ambiente', 'Cultura e convivência', 'Voluntariado'];
 const PAINEL = {
-  titulo: ['Há mais de 40 anos,', 'a voz de Jurerê', 'Internacional.'],
+  titulo: ['A sua voz em', 'Jurerê Internacional.'],   // sem data (diretoria, 21/10/2026), com o nome inteiro numa linha só
   lead: 'Desde 1986, a AJIN representa associados, proprietários e moradores, e cuida da identidade do bairro.',
   chamada: 'ASSOCIE-SE', url: 'ajin.org.br/cadastro', dica: 'Aponte a câmera e faça parte da associação.',
 };
@@ -263,8 +256,10 @@ function artePainel(c, i, x, w, H) {
   const fsT = 76 * k, lhT = fsT * 1.18;
   let y = ly + lh + 95 * k + fsT * 0.76;
   PAINEL.titulo.forEach((l, j) => { s += T(l, 900, fsT, cx, y + j * lhT, AREIA, { ancora: 'middle' }); });
-  const wl2 = largura(PAINEL.titulo[1], 900, fsT), antes = largura('a voz de ', 900, fsT), jur = largura('Jurerê', 900, fsT);
-  s += `<rect x="${cx - wl2 / 2 + antes}" y="${y + lhT + 4.5 * k}" width="${jur}" height="${12 * k}" rx="${6 * k}" fill="${ONDA}"/>`;
+  // fio laranja embaixo de "Jurerê", na linha em que ele estiver
+  const lj = PAINEL.titulo.findIndex(l => l.includes('Jurerê')), lin = PAINEL.titulo[lj];
+  const wl2 = largura(lin, 900, fsT), antes = largura(lin.slice(0, lin.indexOf('Jurerê')), 900, fsT), jur = largura('Jurerê', 900, fsT);
+  s += `<rect x="${cx - wl2 / 2 + antes}" y="${y + lj * lhT + 4.5 * k}" width="${jur}" height="${12 * k}" rx="${6 * k}" fill="${ONDA}"/>`;
   y += (PAINEL.titulo.length - 1) * lhT;
   const fsL = 30 * k, lhL = fsL * 1.42, lead = quebrar(PAINEL.lead, 500, fsL, w - 2 * mx);
   y += 80 * k;
@@ -303,18 +298,20 @@ function artePainel(c, i, x, w, H) {
 function arteFaixa(c, frase) {
   // centro da faixa em mm do piso (c.faixaCentro), acima das fechaduras das portas; sem o campo, no meio do vidro
   const W = c.larguras.reduce((a, b) => a + b, 0), H = c.altura, faixa = 100, centro = H - (c.faixaCentro ?? H / 2), y0 = centro - faixa / 2;
-  const linhas = FRASES[frase];
+  const linhas = FRASES[frase] || FRASES.nome;
   let s = '', x = 0;
   // fonte única para todos os vidros, calculada pelo vidro mais apertado
   const logoH = 50, logoW = logoH * LOGO_RAZAO, gap = 22;
   const FOLGA = 70, FOLGA_PUXADOR = 255;            // o puxador vai até 24,5 cm da borda da porta: o texto fica fora dele
-  const livres = c.larguras.map((w, i) => w - FOLGA - (c.puxadores?.[i] ? FOLGA_PUXADOR : FOLGA));
+  // QR do cadastro nos vidros de c.qr: quadrado da altura da faixa (lê a cerca de 1 m), no fim do módulo, interrompendo o fio laranja
+  const QR_LADO = 100, QR_GAP = 22;
+  const faixas = c.larguras.map((_, i) => i).filter(i => !(c.paineis || []).includes(i));
+  const livres = faixas.map(i => c.larguras[i] - FOLGA - (c.puxadores?.[i] ? FOLGA_PUXADOR : FOLGA) - ((c.qr || []).includes(i) ? QR_GAP + QR_LADO : 0));
   const base = Math.max(...linhas.map(l => largura(l, 700, 100)));
   const fs = Math.min(linhas.length > 1 ? 31 : 40, (Math.min(...livres) - logoW - 2 * gap) / base * 100);
   const txtW = Math.max(...linhas.map(l => largura(l, 700, fs)));
   const bloco = logoW + 2 * gap + txtW;
-  // QR code do cadastro nos vidros de c.qr (índices), no fim do módulo, acima do fio laranja
-  const QR_LADO = 88, QR_GAP = 30, avisos = [];
+  const avisos = [];
   c.larguras.forEach((w, i) => {
     if ((c.paineis || []).includes(i)) { s += artePainel(c, i, x, w, H); x += w; return; }
     s += `<rect x="${x}" y="${y0}" width="${w}" height="${faixa}" fill="${NAVY}"/>`;
@@ -323,7 +320,7 @@ function arteFaixa(c, frase) {
     const comQr = (c.qr || []).includes(i), total = bloco + (comQr ? QR_GAP + QR_LADO : 0);
     if (total > w - esq - dir + 0.5) avisos.push(`vidro ${i + 1}: o módulo não cabe (${total.toFixed(0)} mm para ${w - esq - dir} mm livres)`);
     const bx = x + esq + (w - esq - dir - total) / 2, cy = centro - 2;
-    if (comQr) s += qrSite(bx + bloco + QR_GAP, y0 + 4, QR_LADO);
+    if (comQr) s += qrSite(bx + bloco + QR_GAP, y0, QR_LADO, 2);
     s += `<image href="${LOGO_BRANCO}" x="${bx}" y="${cy - logoH / 2}" width="${logoW}" height="${logoH}" preserveAspectRatio="xMidYMid meet"/>`;
     s += `<rect x="${bx + logoW + gap - 0.9}" y="${cy - 23}" width="1.8" height="46" fill="${AREIA}" opacity=".45"/>`;
     const lh = fs * 1.1, t0 = cy - (linhas.length - 1) * lh / 2 + fs * 0.36;
@@ -409,11 +406,10 @@ function arteCorredor(c) {
   const antes = largura('A voz de ', 900, fsT, ls), jur = largura('Jurerê', 900, fsT, ls);
   const larguraTitulo = Math.max(largura(l1, 900, fsT, ls), largura(l2, 900, fsT, ls));
   // texto embaixo do título, na mesma largura
-  const fsL = 66, lhL = fsL * 1.42;
-  const lead = quebrar('Desde 1º de dezembro de 1986, a Associação Jurerê Internacional representa associados, proprietários e moradores, e cuida da identidade do bairro.', 500, fsL, larguraTitulo);
-  const yL0 = yT2 + 150;
+  // o parágrafo embaixo do título saiu (diretoria, 21/10/2026): os contatos e o selo ficam onde estavam
+  const lhL = 66 * 1.42, fimBloco = yT2 + 150 + 2 * lhL;
   // contatos numa linha embaixo do texto: rótulo laranja em caixa alta e o endereço em areia
-  const fsR = 40, fsC = 66, yC1 = yL0 + (lead.length - 1) * lhL + 135, yC2 = yC1 + 78;
+  const fsR = 40, fsC = 66, yC1 = fimBloco + 135, yC2 = yC1 + 78;
   let xc = mx, contatos = '';
   for (const [rotulo, valor] of CONTATOS) {
     contatos += `<text x="${xc}" y="${yC1}" font-family="Inter" font-weight="700" font-size="${fsR}" letter-spacing="${0.12 * fsR}" fill="${ONDA}">${rotulo}</text>`
@@ -422,7 +418,7 @@ function arteCorredor(c) {
   }
   // selo no último vidro, centrado na altura do bloco
   const p4x = juntas[2], p4w = c.larguras[3], cx = p4x + p4w / 2, r = 330, rt = 280;
-  const cy = (yT1 - fsT * 0.73 - 92 + yL0 + (lead.length - 1) * lhL) / 2;
+  const cy = (yT1 - fsT * 0.73 - 92 + fimBloco) / 2;
   const anel = 'JURERÊ INTERNACIONAL É DE QUEM CUIDA · ';   // nome inteiro, uma volta só (duas não cabem)
   const chao = H - 190;
   const curva = `M0 ${chao + 30} C ${W * 0.22} ${chao + 120}, ${W * 0.45} ${chao + 110}, ${W * 0.6} ${chao + 30} S ${W * 0.86} ${chao - 50}, ${W} ${chao + 10}`;
@@ -436,7 +432,6 @@ function arteCorredor(c) {
     <text font-family="Inter" font-weight="900" font-size="${fsT}" letter-spacing="${ls * fsT}" fill="${AREIA}">
       <tspan x="${mx}" y="${yT1}">${l1}</tspan><tspan x="${mx}" y="${yT2}">${l2}</tspan></text>
     <rect x="${mx + antes}" y="${yT1 + 16}" width="${jur}" height="20" rx="10" fill="${ONDA}"/>
-    ${lead.map((t, i) => `<text x="${mx}" y="${yL0 + i * lhL}" font-family="Inter" font-weight="500" font-size="${fsL}" fill="${AREIA}">${esc(t)}</text>`).join('')}
     ${contatos}
     <g>
       <circle cx="${cx}" cy="${cy}" r="${r}" fill="${NAVY}" opacity=".6"/>
@@ -515,7 +510,7 @@ function homografia(src, dst) {
 // ---------- montagem ----------
 const K = 0.5;          // px por mm no espaço do painel
 const MARGEM = 3;       // o vinil termina 3 mm antes da borda do vidro
-const estado = { cena: CENAS[0].id, frase: 'futuro', modo: 'foto', corte: 0.5 };
+const estado = { cena: CENAS[0].id, frase: 'nome', modo: 'foto', corte: 0.5 };
 try { Object.assign(estado, JSON.parse(localStorage.getItem('vidros-ajin') || '{}')); } catch (e) {}
 const salvar = () => { try { localStorage.setItem('vidros-ajin', JSON.stringify({ cena: estado.cena, frase: estado.frase, modo: estado.modo })); } catch (e) {} };
 
@@ -617,7 +612,6 @@ function render() {
   montarFoto(c, a);
   montarPlana(c, a);
   $('ficha').innerHTML = c.ficha;
-  $('grupoFrase').hidden = c.arte !== 'faixa';
   document.querySelectorAll('#abas button').forEach(b => b.setAttribute('aria-pressed', b.dataset.cena === c.id));
   document.querySelectorAll('[data-frase]').forEach(b => b.setAttribute('aria-pressed', b.dataset.frase === estado.frase));
   document.querySelectorAll('.opcoes [data-modo]').forEach(b => b.setAttribute('aria-pressed', b.dataset.modo === estado.modo));
