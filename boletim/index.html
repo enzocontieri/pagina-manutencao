@@ -12,8 +12,9 @@
 <link rel="preload" href="../fontes/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
 <style>
   /* Boletim semanal: a edição mais recente em destaque, na placa navy da
-     marca, e as anteriores em lista. Os dados vêm da lista pública
-     boletins.json, que o agente grava quando a diretoria aprova a edição. */
+     marca, e as anteriores em lista. Os dados vêm de boletins.json, nesta mesma
+     pasta, atualizado a cada edição aprovada junto com o PDF em pdf/, a capa em
+     capas/ e a cópia boletim-semanal.pdf (o link fixo do botão do site). */
   @font-face { font-family: 'Inter'; font-weight: 400 900; font-display: swap; src: url('../fontes/inter-latin.woff2') format('woff2'); }
   :root {
     --navy: #1f2a44; --mar: #1f5bca; --onda: #f28c38; --areia: #e9e2d3;
@@ -45,6 +46,10 @@
   .placa__texto h2 { margin: 14px 0 0; font-size: clamp(28px, 3.6vw, 42px); font-weight: 900; line-height: 1.05; letter-spacing: -0.035em; }
   .placa__texto p { margin: 14px 0 0; color: color-mix(in srgb, var(--areia) 86%, var(--navy)); }
   .botao { display: inline-flex; align-items: center; gap: 10px; min-height: 54px; margin-top: 26px; padding: 0 26px; border-radius: 100px; background: var(--onda); color: var(--navy); font-weight: 800; font-size: 17px; text-decoration: none; }
+  .acoes { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+  .acoes .botao { margin-top: 0; }
+  .botao svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .botao--linha { background: transparent; color: var(--areia); border: 1.5px solid color-mix(in srgb, var(--areia) 45%, transparent); }
   .placa__curva { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 90px; z-index: -1; }
 
   h3 { margin: 64px 0 18px; font-size: 26px; font-weight: 900; letter-spacing: -0.03em; }
@@ -72,10 +77,11 @@
   </main>
 <script>
   {
-    /* lista pública gravada pelo agente quando a diretoria aprova cada edição */
-    const URL_LISTA = 'https://akqiejrzzajvqrzvqoay.supabase.co/storage/v1/object/public/pecas-publicas/boletins.json'
+    /* lista das edições aprovadas, nesta mesma pasta */
+    const URL_LISTA = 'boletins.json'
     const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
     const quando = (iso) => { const d = new Date(iso + 'T12:00:00'); return isNaN(d) ? '' : `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}` }
+    const curta = (iso) => { const d = new Date(iso + 'T12:00:00'); return isNaN(d) ? '' : `${d.getDate()} ${MESES[d.getMonth()].slice(0, 3).toUpperCase()}` }
     const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
     const alvo = document.getElementById('boletins')
     const vazio = () => { alvo.innerHTML = '<div class="vazio">As edições publicadas aparecem aqui. Enquanto isso, o boletim chega toda semana pelo grupo de WhatsApp dos associados. Para entrar no grupo, <a href="https://wa.me/5548999497419">fale com a AJIN</a>.</div>' }
@@ -86,16 +92,16 @@
         const [ultimo, ...antes] = lista
         alvo.innerHTML = `
           <article class="placa">
-            <div class="placa__foto">${ultimo.capa ? `<img src="${esc(ultimo.capa)}" alt="Capa do boletim vol. ${esc(ultimo.volume)}" />` : ''}<span class="placa__vol">VOL. ${esc(ultimo.volume)}</span></div>
+            <div class="placa__foto">${ultimo.capa ? `<img src="${esc(ultimo.capa)}" alt="Capa do boletim semanal de ${esc(quando(ultimo.data))}" />` : ''}<span class="placa__vol">${esc(curta(ultimo.data))}</span></div>
             <div class="placa__texto">
               <small>Edição de ${esc(quando(ultimo.data))}</small>
               <h2>${esc(ultimo.titulo)}</h2>
               ${ultimo.chamada ? `<p>${esc(ultimo.chamada)}</p>` : ''}
-              <a class="botao" href="${esc(ultimo.pdf)}" target="_blank" rel="noopener">Ler o boletim em PDF</a>
+              <div class="acoes"><a class="botao" href="${esc(ultimo.pdf)}" download="Boletim-AJIN-${esc(ultimo.data)}.pdf"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m0 0 4-4m-4 4-4-4"/><path d="M3.5 14.5v1A1.5 1.5 0 0 0 5 17h10a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg>Baixar o PDF${ultimo.tamanho ? ` (${esc(ultimo.tamanho)})` : ''}</a><a class="botao botao--linha" href="${esc(ultimo.pdf)}" target="_blank" rel="noopener">Ler no navegador</a></div>
               <svg class="placa__curva" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><path fill="#f28c38" d="M0 170 C 300 80, 620 60, 900 140 S 1150 230, 1200 210 V300 H0z"/><path fill="#e9e2d3" d="M0 230 C 300 140, 640 130, 900 200 S 1150 280, 1200 260 V300 H0z"/></svg>
             </div>
           </article>
-          ${antes.length ? `<h3>Edições anteriores</h3><div class="lista">${antes.map((b) => `<a class="edicao" href="${esc(b.pdf)}" target="_blank" rel="noopener"><b>Vol. ${esc(b.volume)}</b><span>${esc(b.titulo)}</span><em>${esc(quando(b.data))}</em></a>`).join('')}</div>` : ''}`
+          ${antes.length ? `<h3>Edições anteriores</h3><div class="lista">${antes.map((b) => `<a class="edicao" href="${esc(b.pdf)}" target="_blank" rel="noopener"><b>${esc(quando(b.data))}</b><span>${esc(b.titulo)}</span></a>`).join('')}</div>` : ''}`
       })
       .catch(vazio)
   }
