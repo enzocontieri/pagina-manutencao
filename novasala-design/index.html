@@ -217,7 +217,7 @@ function largura(texto, peso, tamanho, espaco = 0) {
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
 // ---------- artes (unidades em mm) ----------
-const FRASES = { nome: ['Associação Jurerê Internacional', 'juntos pelo bem comum'] };   // o nome e, embaixo, a assinatura com o traço laranja em "bem comum" (Enzo, 22/10/2026)
+const FRASES = { nome: ['Associação Jurerê', 'Internacional'] };   // a faixa leva só o nome e o QR; "juntos pelo bem comum" fica nos painéis (Enzo, 22/10/2026)
 const DESTAQUE_FAIXA = 'bem comum';
 
 // QR code do cadastro de associados (https://www.ajin.org.br/cadastro/), correção M, versão 3: 29 x 29 módulos.
@@ -400,7 +400,7 @@ function arteCorredor(c) {
   const W = c.larguras.reduce((a, b) => a + b, 0), H = c.altura;
   const juntas = []; let acc = 0; for (const w of c.larguras.slice(0, -1)) { acc += w; juntas.push(acc); }
   // o vinil vai por fora, contínuo sobre as juntas: título e texto formam um bloco só, como na capa do site
-  const ls = 0, l1 = 'juntos pelo', l2 = 'bem comum';   // assinatura da AJIN (22/10/2026), traço laranja em "bem comum"
+  const ls = 0, l1 = 'Juntos pelo', l2 = 'bem comum';   // assinatura da AJIN, com J maiúsculo no superior (Enzo, 22/10/2026), traço laranja em "bem comum"
   const fsT = 236, mx = 156;
   // entrelinha 1,02 e o fio laranja colado em Jurerê: o fio fica livre do "l" de Internacional, que sobe mais que as outras letras
   const yT1 = 1120, yT2 = yT1 + fsT * 1.02;
@@ -420,7 +420,7 @@ function arteCorredor(c) {
   // selo no último vidro, centrado na altura do bloco
   const p4x = juntas[2], p4w = c.larguras[3], cx = p4x + p4w / 2, r = 330, rt = 280;
   const cy = (yT1 - fsT * 0.73 - 92 + fimBloco) / 2;
-  const anel = 'JURERÊ INTERNACIONAL É DE QUEM CUIDA · ';   // nome inteiro, uma volta só (duas não cabem)
+  const anel = 'ASSOCIAÇÃO JURERÊ INTERNACIONAL · JUNTOS PELO BEM COMUM · ';   // uma volta só, em 42 mm (Enzo, 22/10/2026)
   const chao = H - 190;
   const curva = `M0 ${chao + 30} C ${W * 0.22} ${chao + 120}, ${W * 0.45} ${chao + 110}, ${W * 0.6} ${chao + 30} S ${W * 0.86} ${chao - 50}, ${W} ${chao + 10}`;
   const logoW = 640, logoH = logoW / LOGO_RAZAO;
@@ -438,7 +438,7 @@ function arteCorredor(c) {
       <circle cx="${cx}" cy="${cy}" r="${r}" fill="${NAVY}" opacity=".6"/>
       <circle cx="${cx}" cy="${cy}" r="${r * 0.66}" fill="none" stroke="${AREIA}" stroke-opacity=".4" stroke-width="5"/>
       <path id="anel" d="M${cx},${cy} m-${rt},0 a${rt},${rt} 0 1,1 ${2 * rt},0 a${rt},${rt} 0 1,1 -${2 * rt},0" fill="none"/>
-      <text font-family="Inter" font-weight="700" font-size="48" fill="${AREIA}"><textPath href="#anel" textLength="${2 * Math.PI * rt - 30}" lengthAdjust="spacing">${anel}</textPath></text>
+      <text font-family="Inter" font-weight="700" font-size="42" fill="${AREIA}"><textPath href="#anel" textLength="${2 * Math.PI * rt - 30}" lengthAdjust="spacing">${anel}</textPath></text>
       <text x="${cx}" y="${cy - 52}" text-anchor="middle" font-family="Inter" font-weight="700" font-size="46" letter-spacing="8" fill="${ONDA}">DESDE</text>
       <text x="${cx}" y="${cy + 92}" text-anchor="middle" font-family="Inter" font-weight="900" font-size="150" letter-spacing="-4" fill="${AREIA}">1986</text>
     </g>
