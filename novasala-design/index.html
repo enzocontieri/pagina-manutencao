@@ -217,7 +217,8 @@ function largura(texto, peso, tamanho, espaco = 0) {
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
 // ---------- artes (unidades em mm) ----------
-const FRASES = { nome: ['Associação Jurerê', 'Internacional'] };   // a faixa leva só o nome da associação, com o QR (diretoria, 21/10/2026)
+const FRASES = { nome: ['Associação Jurerê Internacional', 'juntos pelo bem comum'] };   // o nome e, embaixo, a assinatura com o traço laranja em "bem comum" (Enzo, 22/10/2026)
+const DESTAQUE_FAIXA = 'bem comum';
 
 // QR code do cadastro de associados (https://www.ajin.org.br/cadastro/), correção M, versão 3: 29 x 29 módulos.
 // Gerado com o pacote qrcode em producao/qr-site.json; o gerar.js usa o mesmo arquivo.
@@ -324,6 +325,8 @@ function arteFaixa(c, frase) {
     const lh = fs * 1.1, t0 = cy - (linhas.length - 1) * lh / 2 + fs * 0.36;
     linhas.forEach((l, j) => {
       s += `<text x="${bx + logoW + respiro}" y="${t0 + j * lh}" font-family="Inter" font-weight="700" font-size="${fs}" fill="${AREIA}">${esc(l)}</text>`;
+      const k = l.indexOf(DESTAQUE_FAIXA);
+      if (k >= 0) s += `<rect x="${bx + logoW + respiro + largura(l.slice(0, k), 700, fs)}" y="${t0 + j * lh + fs * 0.12}" width="${largura(DESTAQUE_FAIXA, 700, fs)}" height="${fs * 0.11}" rx="${fs * 0.055}" fill="${ONDA}"/>`;
     });
     x += w;
   });
