@@ -235,7 +235,8 @@ function qrSite(x, y, lado, margem = 3) {   // margem em módulos (zona clara em
 // Textos conferidos no site: título da capa, frentes 01 a 06, contatos do rodapé e o fecho
 const FRENTES = ['Bairro mais seguro', 'Representatividade', 'Zeladoria', 'Meio ambiente', 'Cultura e convivência', 'Voluntariado'];
 const PAINEL = {
-  titulo: ['A sua voz em', 'Jurerê Internacional.'],   // sem data (diretoria, 21/10/2026), com o nome inteiro numa linha só
+  titulo: ['juntos pelo', 'bem comum'],   // assinatura da AJIN (pedido do Enzo, 22/10/2026), com j minúsculo e o traço laranja em "bem comum"
+  destaque: 'bem comum',   // sem data (diretoria, 21/10/2026), com o nome inteiro numa linha só
   chamada: 'ASSOCIE-SE', url: 'ajin.org.br/cadastro', dica: 'Aponte a câmera e faça parte da associação.',
 };
 function quebrar(t, peso, tam, max) {
@@ -259,9 +260,9 @@ function artePainel(c, i, x, w, H) {
   // entrelinha 1,18 e o fio laranja colado em Jurerê: o fio fica bem livre do "l" de Internacional
   let y = ly + lh + 95 * k + fsT * 0.76;
   PAINEL.titulo.forEach((l, j) => { s += T(l, 900, fsT, cx, y + j * lhT, AREIA, { ancora: 'middle' }); });
-  // fio laranja embaixo de "Jurerê", na linha em que ele estiver
-  const lj = PAINEL.titulo.findIndex(l => l.includes('Jurerê')), lin = PAINEL.titulo[lj];
-  const wl2 = largura(lin, 900, fsT), antes = largura(lin.slice(0, lin.indexOf('Jurerê')), 900, fsT), jur = largura('Jurerê', 900, fsT);
+  // traço laranja embaixo do destaque, na linha em que ele estiver
+  const lj = PAINEL.titulo.findIndex(l => l.includes(PAINEL.destaque)), lin = PAINEL.titulo[lj];
+  const wl2 = largura(lin, 900, fsT), antes = largura(lin.slice(0, lin.indexOf(PAINEL.destaque)), 900, fsT), jur = largura(PAINEL.destaque, 900, fsT);
   s += `<rect x="${cx - wl2 / 2 + antes}" y="${y + lj * lhT + 4.5 * k}" width="${jur}" height="${12 * k}" rx="${6 * k}" fill="${ONDA}"/>`;
   // QR do cadastro no centro do vidro, em destaque
   s += T(PAINEL.chamada, 700, 34 * k, cx, qy - 56 * k, ONDA, { ancora: 'middle', espaco: 0.14 });
@@ -299,16 +300,16 @@ function arteFaixa(c, frase) {
   const linhas = FRASES[frase] || FRASES.nome;
   let s = '', x = 0;
   // fonte única para todos os vidros, calculada pelo vidro mais apertado
-  const logoH = 50, logoW = logoH * LOGO_RAZAO, gap = 22;
+  const logoH = 50, logoW = logoH * LOGO_RAZAO, gap = 22, respiro = 32;   // sem a barra entre o logo e o nome (pedido do Enzo, 22/10/2026)
   const FOLGA = 70, FOLGA_PUXADOR = 255;            // o puxador vai até 24,5 cm da borda da porta: o texto fica fora dele
   // QR do cadastro nos vidros de c.qr: quadrado da altura da faixa (lê a cerca de 1 m), no fim do módulo, interrompendo o fio laranja
   const QR_LADO = 100, QR_GAP = 22;
   const faixas = c.larguras.map((_, i) => i).filter(i => !(c.paineis || []).includes(i));
   const livres = faixas.map(i => c.larguras[i] - FOLGA - (c.puxadores?.[i] ? FOLGA_PUXADOR : FOLGA) - ((c.qr || []).includes(i) ? QR_GAP + QR_LADO : 0));
   const base = Math.max(...linhas.map(l => largura(l, 700, 100)));
-  const fs = Math.min(linhas.length > 1 ? 31 : 40, (Math.min(...livres) - logoW - 2 * gap) / base * 100);
+  const fs = Math.min(linhas.length > 1 ? 31 : 40, (Math.min(...livres) - logoW - respiro) / base * 100);
   const txtW = Math.max(...linhas.map(l => largura(l, 700, fs)));
-  const bloco = logoW + 2 * gap + txtW;
+  const bloco = logoW + respiro + txtW;
   const avisos = [];
   c.larguras.forEach((w, i) => {
     if ((c.paineis || []).includes(i)) { s += artePainel(c, i, x, w, H); x += w; return; }
@@ -320,10 +321,9 @@ function arteFaixa(c, frase) {
     const bx = x + esq + (w - esq - dir - total) / 2, cy = centro - 2;
     if (comQr) s += qrSite(bx + bloco + QR_GAP, y0, QR_LADO, 2);
     s += `<image href="${LOGO_BRANCO}" x="${bx}" y="${cy - logoH / 2}" width="${logoW}" height="${logoH}" preserveAspectRatio="xMidYMid meet"/>`;
-    s += `<rect x="${bx + logoW + gap - 0.9}" y="${cy - 23}" width="1.8" height="46" fill="${AREIA}" opacity=".45"/>`;
     const lh = fs * 1.1, t0 = cy - (linhas.length - 1) * lh / 2 + fs * 0.36;
     linhas.forEach((l, j) => {
-      s += `<text x="${bx + logoW + 2 * gap}" y="${t0 + j * lh}" font-family="Inter" font-weight="700" font-size="${fs}" fill="${AREIA}">${esc(l)}</text>`;
+      s += `<text x="${bx + logoW + respiro}" y="${t0 + j * lh}" font-family="Inter" font-weight="700" font-size="${fs}" fill="${AREIA}">${esc(l)}</text>`;
     });
     x += w;
   });
@@ -397,11 +397,11 @@ function arteCorredor(c) {
   const W = c.larguras.reduce((a, b) => a + b, 0), H = c.altura;
   const juntas = []; let acc = 0; for (const w of c.larguras.slice(0, -1)) { acc += w; juntas.push(acc); }
   // o vinil vai por fora, contínuo sobre as juntas: título e texto formam um bloco só, como na capa do site
-  const ls = 0, l1 = 'A voz de Jurerê', l2 = 'Internacional.';
+  const ls = 0, l1 = 'juntos pelo', l2 = 'bem comum';   // assinatura da AJIN (22/10/2026), traço laranja em "bem comum"
   const fsT = 236, mx = 156;
   // entrelinha 1,02 e o fio laranja colado em Jurerê: o fio fica livre do "l" de Internacional, que sobe mais que as outras letras
   const yT1 = 1120, yT2 = yT1 + fsT * 1.02;
-  const antes = largura('A voz de ', 900, fsT, ls), jur = largura('Jurerê', 900, fsT, ls);
+  const jur = largura('bem comum', 900, fsT, ls);
   const larguraTitulo = Math.max(largura(l1, 900, fsT, ls), largura(l2, 900, fsT, ls));
   // texto embaixo do título, na mesma largura
   // o parágrafo embaixo do título saiu (diretoria, 21/10/2026): os contatos e o selo ficam onde estavam
@@ -429,7 +429,7 @@ function arteCorredor(c) {
     <rect x="${mx + 6}" y="${yT1 - fsT * 0.73 - 92}" width="110" height="14" rx="7" fill="${ONDA}"/>
     <text font-family="Inter" font-weight="900" font-size="${fsT}" letter-spacing="${ls * fsT}" fill="${AREIA}">
       <tspan x="${mx}" y="${yT1}">${l1}</tspan><tspan x="${mx}" y="${yT2}">${l2}</tspan></text>
-    <rect x="${mx + antes}" y="${yT1 + 16}" width="${jur}" height="20" rx="10" fill="${ONDA}"/>
+    <rect x="${mx}" y="${yT2 + 16}" width="${jur}" height="20" rx="10" fill="${ONDA}"/>
     ${contatos}
     <g>
       <circle cx="${cx}" cy="${cy}" r="${r}" fill="${NAVY}" opacity=".6"/>
